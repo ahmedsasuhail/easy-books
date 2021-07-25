@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   AppBar,
   Toolbar,
@@ -7,8 +7,8 @@ import {
   Menu,
   MenuItem,
   Fab,
-  withStyles
-} from "@material-ui/core";
+  withStyles,
+} from '@material-ui/core';
 import {
   Menu as MenuIcon,
   MailOutline as MailIcon,
@@ -16,120 +16,122 @@ import {
   Person as AccountIcon,
   Search as SearchIcon,
   Send as SendIcon,
-  ArrowBack as ArrowBackIcon
-} from "@material-ui/icons";
-import { fade } from "@material-ui/core/styles/colorManipulator";
-import classNames from "classnames";
+  ArrowBack as ArrowBackIcon,
+} from '@material-ui/icons';
+import { fade } from '@material-ui/core/styles/colorManipulator';
+import classNames from 'classnames';
 
-import { Badge, Typography } from "../Wrappers";
-import Notification from "../Notification";
-import UserAvatar from "../UserAvatar";
+import { Badge, Typography } from '../Wrappers';
+import Notification from '../Notification';
+import UserAvatar from '../UserAvatar';
 
 const messages = [
   {
     id: 0,
-    variant: "warning",
-    name: "Jane Hew",
-    message: "Hey! How is it going?",
-    time: "9:32"
+    variant: 'warning',
+    name: 'Jane Hew',
+    message: 'Hey! How is it going?',
+    time: '9:32',
   },
   {
     id: 1,
-    variant: "success",
-    name: "Lloyd Brown",
-    message: "Check out my new Dashboard",
-    time: "9:18"
+    variant: 'success',
+    name: 'Lloyd Brown',
+    message: 'Check out my new Dashboard',
+    time: '9:18',
   },
   {
     id: 2,
-    variant: "primary",
-    name: "Mark Winstein",
-    message: "I want rearrange the appointment",
-    time: "9:15"
+    variant: 'primary',
+    name: 'Mark Winstein',
+    message: 'I want rearrange the appointment',
+    time: '9:15',
   },
   {
     id: 3,
-    variant: "secondary",
-    name: "Liana Dutti",
-    message: "Good news from sale department",
-    time: "9:09"
-  }
+    variant: 'secondary',
+    name: 'Liana Dutti',
+    message: 'Good news from sale department',
+    time: '9:09',
+  },
 ];
 
 const notifications = [
-  { id: 0, color: "warning", message: "Check out this awesome ticket" },
+  { id: 0, color: 'warning', message: 'Check out this awesome ticket' },
   {
     id: 1,
-    color: "success",
-    type: "info",
-    message: "What is the best way to get ..."
+    color: 'success',
+    type: 'info',
+    message: 'What is the best way to get ...',
   },
   {
     id: 2,
-    color: "secondary",
-    type: "notification",
-    message: "This is just a simple notification"
+    color: 'secondary',
+    type: 'notification',
+    message: 'This is just a simple notification',
   },
   {
     id: 3,
-    color: "primary",
-    type: "e-commerce",
-    message: "12 new orders has arrived today"
-  }
+    color: 'primary',
+    type: 'e-commerce',
+    message: '12 new orders has arrived today',
+  },
 ];
 
 const Header = ({ classes, isSidebarOpened, toggleSidebar, ...props }) => (
-  <AppBar position="fixed" className={classes.appBar}>
+  <AppBar position='fixed' className={classes.appBar}>
     <Toolbar className={classes.toolbar}>
       <IconButton
-        color="inherit"
+        color='inherit'
         onClick={toggleSidebar}
         className={classNames(
           classes.headerMenuButton,
-          classes.headerMenuButtonCollapse
+          classes.headerMenuButtonCollapse,
         )}
       >
         {isSidebarOpened ? (
           <ArrowBackIcon
             classes={{
-              root: classNames(classes.headerIcon, classes.headerIconCollapse)
+              root: classNames(classes.headerIcon, classes.headerIconCollapse),
             }}
           />
         ) : (
           <MenuIcon
             classes={{
-              root: classNames(classes.headerIcon, classes.headerIconCollapse)
+              root: classNames(classes.headerIcon, classes.headerIconCollapse),
             }}
           />
         )}
       </IconButton>
-      <Typography variant="h6" weight="medium" className={classes.logotype}>React Material Admin</Typography>
+      <Typography variant='h6' weight='medium' className={classes.logotype}>
+        React Material Admin
+      </Typography>
       <div className={classes.grow} />
       <div
         className={classNames(classes.search, {
-          [classes.searchFocused]: props.isSearchOpen
+          [classes.searchFocused]: props.isSearchOpen,
         })}
       >
         <div
           className={classNames(classes.searchIcon, {
-            [classes.searchIconOpened]: props.isSearchOpen
+            [classes.searchIconOpened]: props.isSearchOpen,
           })}
           onClick={props.toggleSearch}
         >
           <SearchIcon classes={{ root: classes.headerIcon }} />
         </div>
         <InputBase
-          placeholder="Search…"
+          placeholder='Search…'
           classes={{
             root: classes.inputRoot,
-            input: classes.inputInput
+            input: classes.inputInput,
           }}
         />
       </div>
       <IconButton
-        color="inherit"
-        aria-haspopup="true"
-        aria-controls="mail-menu"
+        color='inherit'
+        aria-haspopup='true'
+        aria-controls='mail-menu'
         onClick={props.openNotificationsMenu}
         className={classes.headerMenuButton}
       >
@@ -137,36 +139,36 @@ const Header = ({ classes, isSidebarOpened, toggleSidebar, ...props }) => (
           badgeContent={
             props.isNotificationsUnread ? notifications.length : null
           }
-          colortheme="warning"
+          colortheme='warning'
         >
           <NotificationsIcon classes={{ root: classes.headerIcon }} />
         </Badge>
       </IconButton>
       <IconButton
-        color="inherit"
-        aria-haspopup="true"
-        aria-controls="mail-menu"
+        color='inherit'
+        aria-haspopup='true'
+        aria-controls='mail-menu'
         onClick={props.openMailMenu}
         className={classes.headerMenuButton}
       >
         <Badge
           badgeContent={props.isMailsUnread ? messages.length : null}
-          color="secondary"
+          color='secondary'
         >
           <MailIcon classes={{ root: classes.headerIcon }} />
         </Badge>
       </IconButton>
       <IconButton
-        aria-haspopup="true"
-        color="inherit"
+        aria-haspopup='true'
+        color='inherit'
         className={classes.headerMenuButton}
-        aria-controls="profile-menu"
+        aria-controls='profile-menu'
         onClick={props.openProfileMenu}
       >
         <AccountIcon classes={{ root: classes.headerIcon }} />
       </IconButton>
       <Menu
-        id="mail-menu"
+        id='mail-menu'
         open={Boolean(props.mailMenu)}
         anchorEl={props.mailMenu}
         onClose={props.closeMailMenu}
@@ -176,42 +178,42 @@ const Header = ({ classes, isSidebarOpened, toggleSidebar, ...props }) => (
         disableAutoFocusItem
       >
         <div className={classes.profileMenuUser}>
-          <Typography variant="h4" weight="medium">
+          <Typography variant='h4' weight='medium'>
             New Messages
           </Typography>
           <Typography
             className={classes.profileMenuLink}
-            component="a"
-            color="secondary"
+            component='a'
+            color='secondary'
           >
             {messages.length} New Messages
           </Typography>
         </div>
-        {messages.map(message => (
+        {messages.map((message) => (
           <MenuItem key={message.id} className={classes.messageNotification}>
             <div className={classes.messageNotificationSide}>
               <UserAvatar color={message.variant} name={message.name} />
-              <Typography size="sm" color="textSecondary">
+              <Typography size='sm' color='textSecondary'>
                 {message.time}
               </Typography>
             </div>
             <div
               className={classNames(
                 classes.messageNotificationSide,
-                classes.messageNotificationBodySide
+                classes.messageNotificationBodySide,
               )}
             >
-              <Typography weight="medium" gutterBottom>
+              <Typography weight='medium' gutterBottom>
                 {message.name}
               </Typography>
-              <Typography color="textSecondary">{message.message}</Typography>
+              <Typography color='textSecondary'>{message.message}</Typography>
             </div>
           </MenuItem>
         ))}
         <Fab
-          variant="extended"
-          color="primary"
-          aria-label="Add"
+          variant='extended'
+          color='primary'
+          aria-label='Add'
           className={classes.sendMessageButton}
         >
           Send New Message
@@ -219,25 +221,25 @@ const Header = ({ classes, isSidebarOpened, toggleSidebar, ...props }) => (
         </Fab>
       </Menu>
       <Menu
-        id="notifications-menu"
+        id='notifications-menu'
         open={Boolean(props.notificationsMenu)}
         anchorEl={props.notificationsMenu}
         onClose={props.closeNotificationsMenu}
         className={classes.headerMenu}
         disableAutoFocusItem
       >
-        {notifications.map(notification => (
+        {notifications.map((notification) => (
           <MenuItem
             key={notification.id}
             onClick={props.closeNotificationsMenu}
             className={classes.headerMenuItem}
           >
-            <Notification {...notification} typographyVariant="inherit" />
+            <Notification {...notification} typographyVariant='inherit' />
           </MenuItem>
         ))}
       </Menu>
       <Menu
-        id="profile-menu"
+        id='profile-menu'
         open={Boolean(props.profileMenu)}
         anchorEl={props.profileMenu}
         onClose={props.closeProfileMenu}
@@ -246,14 +248,14 @@ const Header = ({ classes, isSidebarOpened, toggleSidebar, ...props }) => (
         disableAutoFocusItem
       >
         <div className={classes.profileMenuUser}>
-          <Typography variant="h4" weight="medium">
+          <Typography variant='h4' weight='medium'>
             John Smith
           </Typography>
           <Typography
             className={classes.profileMenuLink}
-            component="a"
-            color="primary"
-            href="https://flatlogic.com"
+            component='a'
+            color='primary'
+            href='https://flatlogic.com'
           >
             Flalogic.com
           </Typography>
@@ -261,7 +263,7 @@ const Header = ({ classes, isSidebarOpened, toggleSidebar, ...props }) => (
         <MenuItem
           className={classNames(
             classes.profileMenuItem,
-            classes.headerMenuItem
+            classes.headerMenuItem,
           )}
         >
           <AccountIcon className={classes.profileMenuIcon} /> Profile
@@ -269,7 +271,7 @@ const Header = ({ classes, isSidebarOpened, toggleSidebar, ...props }) => (
         <MenuItem
           className={classNames(
             classes.profileMenuItem,
-            classes.headerMenuItem
+            classes.headerMenuItem,
           )}
         >
           <AccountIcon className={classes.profileMenuIcon} /> Tasks
@@ -277,7 +279,7 @@ const Header = ({ classes, isSidebarOpened, toggleSidebar, ...props }) => (
         <MenuItem
           className={classNames(
             classes.profileMenuItem,
-            classes.headerMenuItem
+            classes.headerMenuItem,
           )}
         >
           <AccountIcon className={classes.profileMenuIcon} /> Messages
@@ -285,7 +287,7 @@ const Header = ({ classes, isSidebarOpened, toggleSidebar, ...props }) => (
         <div className={classes.profileMenuUser}>
           <Typography
             className={classes.profileMenuLink}
-            color="primary"
+            color='primary'
             onClick={props.signOut}
           >
             Sign Out
@@ -296,161 +298,161 @@ const Header = ({ classes, isSidebarOpened, toggleSidebar, ...props }) => (
   </AppBar>
 );
 
-const styles = theme => ({
+const styles = (theme) => ({
   logotype: {
-    color: "white",
+    color: 'white',
     marginLeft: theme.spacing.unit * 2.5,
     marginRight: theme.spacing.unit * 2.5,
     fontWeight: 500,
     fontSize: 18,
-    whiteSpace: "nowrap",
-    [theme.breakpoints.down("xs")]: {
-      display: "none"
-    }
+    whiteSpace: 'nowrap',
+    [theme.breakpoints.down('xs')]: {
+      display: 'none',
+    },
   },
   appBar: {
-    width: "100vw",
+    width: '100vw',
     zIndex: theme.zIndex.drawer + 1,
-    transition: theme.transitions.create(["margin"], {
+    transition: theme.transitions.create(['margin'], {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    })
+      duration: theme.transitions.duration.leavingScreen,
+    }),
   },
   toolbar: {
     paddingLeft: theme.spacing.unit * 2,
-    paddingRight: theme.spacing.unit * 2
+    paddingRight: theme.spacing.unit * 2,
   },
   hide: {
-    display: "none"
+    display: 'none',
   },
   grow: {
-    flexGrow: 1
+    flexGrow: 1,
   },
   search: {
-    position: "relative",
+    position: 'relative',
     borderRadius: 25,
     paddingLeft: theme.spacing.unit * 2.5,
     width: 36,
     backgroundColor: fade(theme.palette.common.black, 0),
-    transition: theme.transitions.create(["background-color", "width"]),
-    "&:hover": {
-      cursor: "pointer",
-      backgroundColor: fade(theme.palette.common.black, 0.08)
-    }
+    transition: theme.transitions.create(['background-color', 'width']),
+    '&:hover': {
+      cursor: 'pointer',
+      backgroundColor: fade(theme.palette.common.black, 0.08),
+    },
   },
   searchFocused: {
     backgroundColor: fade(theme.palette.common.black, 0.08),
-    width: "100%",
-    [theme.breakpoints.up("md")]: {
-      width: 250
-    }
+    width: '100%',
+    [theme.breakpoints.up('md')]: {
+      width: 250,
+    },
   },
   searchIcon: {
     width: 36,
     right: 0,
-    height: "100%",
-    position: "absolute",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    transition: theme.transitions.create("right"),
-    "&:hover": {
-      cursor: "pointer"
-    }
+    height: '100%',
+    position: 'absolute',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: theme.transitions.create('right'),
+    '&:hover': {
+      cursor: 'pointer',
+    },
   },
   searchIconOpened: {
-    right: theme.spacing.unit * 1.25
+    right: theme.spacing.unit * 1.25,
   },
   inputRoot: {
-    color: "inherit",
-    width: "100%"
+    color: 'inherit',
+    width: '100%',
   },
   inputInput: {
     height: 36,
     padding: 0,
     paddingRight: 36 + theme.spacing.unit * 1.25,
-    width: "100%"
+    width: '100%',
   },
   messageContent: {
-    display: "flex",
-    flexDirection: "column"
+    display: 'flex',
+    flexDirection: 'column',
   },
   headerMenu: {
-    marginTop: theme.spacing.unit * 7
+    marginTop: theme.spacing.unit * 7,
   },
   headerMenuList: {
-    display: "flex",
-    flexDirection: "column"
+    display: 'flex',
+    flexDirection: 'column',
   },
   headerMenuItem: {
-    "&:hover, &:focus": {
+    '&:hover, &:focus': {
       backgroundColor: theme.palette.primary.main,
-      color: "white"
-    }
+      color: 'white',
+    },
   },
   headerMenuButton: {
     marginLeft: theme.spacing.unit * 2,
-    padding: theme.spacing.unit / 2
+    padding: theme.spacing.unit / 2,
   },
   headerMenuButtonCollapse: {
-    marginRight: theme.spacing.unit * 2
+    marginRight: theme.spacing.unit * 2,
   },
   headerIcon: {
     fontSize: 28,
-    color: "rgba(255, 255, 255, 0.35)"
+    color: 'rgba(255, 255, 255, 0.35)',
   },
   headerIconCollapse: {
-    color: "white"
+    color: 'white',
   },
   profileMenu: {
-    minWidth: 265
+    minWidth: 265,
   },
   profileMenuUser: {
-    display: "flex",
-    flexDirection: "column",
-    padding: theme.spacing.unit * 2
+    display: 'flex',
+    flexDirection: 'column',
+    padding: theme.spacing.unit * 2,
   },
   profileMenuItem: {
-    color: theme.palette.text.hint
+    color: theme.palette.text.hint,
   },
   profileMenuIcon: {
     marginRight: theme.spacing.unit * 2,
-    color: theme.palette.text.hint
+    color: theme.palette.text.hint,
   },
   profileMenuLink: {
     fontSize: 16,
-    textDecoration: "none",
-    "&:hover": {
-      cursor: "pointer"
-    }
+    textDecoration: 'none',
+    '&:hover': {
+      cursor: 'pointer',
+    },
   },
   messageNotification: {
-    height: "auto",
-    display: "flex",
-    alignItems: "center",
-    "&:hover, &:focus": {
-      backgroundColor: theme.palette.background.light
-    }
+    height: 'auto',
+    display: 'flex',
+    alignItems: 'center',
+    '&:hover, &:focus': {
+      backgroundColor: theme.palette.background.light,
+    },
   },
   messageNotificationSide: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    marginRight: theme.spacing.unit * 2
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginRight: theme.spacing.unit * 2,
   },
   messageNotificationBodySide: {
-    alignItems: "flex-start",
-    marginRight: 0
+    alignItems: 'flex-start',
+    marginRight: 0,
   },
   sendMessageButton: {
     margin: theme.spacing.unit * 4,
     marginTop: theme.spacing.unit * 2,
     marginBottom: theme.spacing.unit * 2,
-    textTransform: "none"
+    textTransform: 'none',
   },
   sendButtonIcon: {
-    marginLeft: theme.spacing.unit * 2
-  }
+    marginLeft: theme.spacing.unit * 2,
+  },
 });
 
 export default withStyles(styles)(Header);
