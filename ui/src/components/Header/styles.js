@@ -166,10 +166,4 @@ export default makeStyles((theme) => ({
   sendButtonIcon: {
     marginLeft: theme.spacing(2),
   },
-  purchaseBtn: {
-    [theme.breakpoints.down('sm')]: {
-      display: 'none',
-    },
-    marginRight: theme.spacing(3),
-  },
 }));

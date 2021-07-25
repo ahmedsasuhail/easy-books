@@ -7,7 +7,6 @@ import {
   Menu,
   MenuItem,
   Fab,
-  Link,
 } from '@material-ui/core';
 import {
   Menu as MenuIcon,
@@ -24,7 +23,7 @@ import classNames from 'classnames';
 import useStyles from './styles';
 
 // components
-import { Badge, Typography, Button } from '../Wrappers';
+import { Badge, Typography } from '../Wrappers';
 import Notification from '../Notification/Notification';
 import UserAvatar from '../UserAvatar/UserAvatar';
 
@@ -140,15 +139,6 @@ export default function Header(props) {
           React Material Admin
         </Typography>
         <div className={classes.grow} />
-        <Button
-          component={Link}
-          href='https://flatlogic.com/templates/react-material-admin-full'
-          variant={'outlined'}
-          color={'secondary'}
-          className={classes.purchaseBtn}
-        >
-          Unlock full version
-        </Button>
         <div
           className={classNames(classes.search, {
             [classes.searchFocused]: isSearchOpen,
@@ -182,7 +172,7 @@ export default function Header(props) {
         >
           <Badge
             badgeContent={isNotificationsUnread ? notifications.length : null}
-            color='warning'
+            color='info'
           >
             <NotificationsIcon classes={{ root: classes.headerIcon }} />
           </Badge>
@@ -199,7 +189,7 @@ export default function Header(props) {
         >
           <Badge
             badgeContent={isMailsUnread ? messages.length : null}
-            color='secondary'
+            color='info'
           >
             <MailIcon classes={{ root: classes.headerIcon }} />
           </Badge>
