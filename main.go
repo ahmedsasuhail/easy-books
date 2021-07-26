@@ -1,18 +1,10 @@
 package main
 
 import (
-	"net/http"
-
-	"github.com/gin-gonic/gin"
+	"github.com/ahmedsasuhail/easy-books/server"
 )
 
 func main() {
-	r := gin.Default()
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "App initialized.",
-		})
-	})
-
-	r.Run()
+	r := server.Init()
+	server.Run(r)
 }
