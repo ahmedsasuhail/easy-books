@@ -4,6 +4,7 @@ package controllers
 import (
 	"net/http"
 
+	"github.com/ahmedsasuhail/easy-books/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,7 +17,9 @@ func Forbidden(c *gin.Context) {
 // AppInit initializes the backend app and displays a JSON message.
 func AppInit(c *gin.Context) {
 	// TODO: Add some actual initialization stuff.
-	c.JSON(http.StatusOK, gin.H{
-		"message": "App initialized.",
+	c.JSON(http.StatusOK, models.Response{
+		Status:  "success",
+		Code:    http.StatusOK,
+		Message: "App initialized.",
 	})
 }
