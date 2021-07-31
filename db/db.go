@@ -2,6 +2,7 @@
 package db
 
 import (
+	"github.com/ahmedsasuhail/easy-books/models"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
@@ -32,4 +33,18 @@ func ConnectPostgres(uri string) (*PostgresClient, error) {
 	}
 
 	return &PostgresClient{db}, nil
+}
+
+// GetUser searches for a user in the database based on the provided email address.
+// If the user does not exist, an error is returned. If the user exists, the user
+// returned.
+func (db *PostgresClient) GetUser(email string) (*models.User, error) {
+	user := &models.User{}
+
+	// Search the database.
+	if err := db.Where("Email = ?", email).First(user).Error; err != nil {
+		return nil, err
+	}
+
+	return user, nil
 }

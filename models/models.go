@@ -2,7 +2,6 @@
 package models
 
 import (
-	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"
 )
 
@@ -21,17 +20,4 @@ type User struct {
 	Name     string
 	Email    string `gorm:"type:varchar(100);unique_index"`
 	Password string `json:"Password"`
-}
-
-// Token represents a JWT token.
-type Token struct {
-	UserID uint
-	Name   string
-	Email  string
-	*jwt.StandardClaims
-}
-
-// Exception represents a JSON error response.
-type Exception struct {
-	Message string `json:"message"`
 }

@@ -17,10 +17,14 @@ func Init() *gin.Engine {
 	// TODO: add some init logging.
 	// TODO: gracefully handle termination (Ctrl-C).
 
-	// Try retrieving Postgres URI from environment and panic if not found.
+	// Try retrieving required environment variables and panic if not found.
 	postgresURI, exists := os.LookupEnv("EB_POSTGRES_URI")
 	if !exists {
 		panic(errors.New("variable $EB_POSTGRES_URI not found in current environment"))
+	}
+	_, exists = os.LookupEnv("EB_SECRET_KEY")
+	if !exists {
+		panic(errors.New("variable $EB_SECRET_KEY not found in current environment"))
 	}
 
 	// Try connecting to the PostgreSQL database.

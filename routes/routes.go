@@ -17,6 +17,11 @@ func Get() *gin.Engine {
 	app := router.Group("/eb")
 	{
 		app.GET("/", controllers.AppInit)
+
+		auth := app.Group("/auth")
+		{
+			auth.POST("/login", controllers.Login)
+		}
 	}
 
 	return router
