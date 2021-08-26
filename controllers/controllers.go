@@ -2,7 +2,9 @@
 package controllers
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 
@@ -29,11 +31,25 @@ func AppInit(c *gin.Context) {
 	})
 }
 
+// TODO: Check whether errors should be returned in response, rather than panicking.
 // Login checks the provided credentials and returns a response containing
 // a JWT auth token for the provided credentials.
 func Login(c *gin.Context) {
-	email := c.GetHeader("email")
-	password := c.GetHeader("password")
+	// Read and parse request body.
+	requestBody, err := ioutil.ReadAll(c.Request.Body)
+	if err != nil {
+		panic(err)
+	}
+
+	var jsonBody map[string]string
+	err = json.Unmarshal(requestBody, &jsonBody)
+	if err != nil {
+		panic(err)
+	}
+
+	// TODO: Add proper error handling for missing keys.
+	email := jsonBody["email"]
+	password := jsonBody["password"]
 
 	// TODO: try using global DB connection, rather than creating a new local one.
 	postgresURI := os.Getenv("EB_POSTGRES_URI")
