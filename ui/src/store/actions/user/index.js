@@ -1,5 +1,5 @@
 import { userActions } from './userAction';
-import { usePost, useGet } from '../utilities/webServices';
+import { usePost, useGet } from '../../../utils/webServices';
 
 // Action Creators
 // Register
@@ -20,19 +20,23 @@ export const userRegisteration = (values) => {
 };
 
 // Login
-export const userLogin = (values) => {
+export const userLogin = (login, password, history) => {
   return async (dispatch) => {
     dispatch(userActions.loading());
     try {
-      const response = await usePost('/authenticate', values);
+      const response = await usePost('/eb/auth/login', {
+        email: login,
+        password: password,
+      });
       if (response.data && response.data.token) {
         let authData = {
-          username: values.username,
+          email: response.data.email,
           token: response.data.token,
-          user: response.data.user,
+          name: response.data.name,
         };
-        localStorage.setItem('tmsAuth', JSON.stringify(authData));
+        localStorage.setItem('quickBookAuth', JSON.stringify(authData));
         dispatch(userActions.loginSuccess(response.data));
+        history.push('/app/dashboard');
       } else {
         dispatch(userActions.loginFailure(response));
       }
@@ -43,10 +47,11 @@ export const userLogin = (values) => {
 };
 
 // Logout
-export const userLogout = () => {
+export const userLogout = (history) => {
   return (dispatch) => {
-    localStorage.removeItem('tmsAuth');
+    localStorage.removeItem('quickBookAuth');
     dispatch(userActions.logoutUser());
+    history.push('/login');
   };
 };
 

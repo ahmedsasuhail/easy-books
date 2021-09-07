@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import {
   AppBar,
   Toolbar,
@@ -33,7 +34,7 @@ import {
   useLayoutDispatch,
   toggleSidebar,
 } from '../../context/LayoutContext';
-import { useUserDispatch, signOut } from '../../context/UserContext';
+import { userLogout } from '../../store/actions/user';
 
 const messages = [
   {
@@ -94,7 +95,7 @@ export default function Header(props) {
   // global
   var layoutState = useLayoutState();
   var layoutDispatch = useLayoutDispatch();
-  var userDispatch = useUserDispatch();
+  const dispatch = useDispatch();
 
   // local
   var [mailMenu, setMailMenu] = useState(null);
@@ -326,7 +327,7 @@ export default function Header(props) {
             <Typography
               className={classes.profileMenuLink}
               color='primary'
-              onClick={() => signOut(userDispatch, props.history)}
+              onClick={() => dispatch(userLogout(props.history))}
             >
               Sign Out
             </Typography>

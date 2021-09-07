@@ -10,7 +10,7 @@ let data_store = localStorage.getItem('quickBookAuth')
 const initialState = {
   isAuthenticated: data_store && data_store.token ? true : false,
   token: data_store && data_store.token ? data_store.token : null,
-  user: data_store && data_store.user ? data_store.user : null,
+  name: data_store && data_store.name ? data_store.name : null,
   message: null,
   messageType: null, // 0 is Success, 1 is Error
   loading: false,
@@ -37,7 +37,7 @@ const userReducer = (state = initialState, action) => {
       return mergeObjects(state, {
         isAuthenticated: true,
         token: action.payload.token,
-        user: action.payload.user,
+        name: action.payload.name,
         loading: false,
       });
     case actionTypes.USER_LOGIN_FAILURE:
@@ -51,7 +51,7 @@ const userReducer = (state = initialState, action) => {
       return mergeObjects(state, {
         isAuthenticated: false,
         token: null,
-        user: null,
+        name: null,
         message: 'You have been logged out. Please login to continue.',
       });
     // Verify Token
@@ -73,7 +73,7 @@ const userReducer = (state = initialState, action) => {
         messageType: 1,
         loading: false,
       });
-    // Loading User Request
+    // Loading name Request
     case actionTypes.LOADING_REQUEST:
       return mergeObjects(state, {
         message: null,

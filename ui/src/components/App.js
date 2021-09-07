@@ -1,5 +1,6 @@
 import React from 'react';
 import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 // components
 import Layout from './Layout';
@@ -8,12 +9,9 @@ import Layout from './Layout';
 import Error from '../pages/error';
 import Login from '../pages/login';
 
-// context
-import { useUserState } from '../context/UserContext';
-
 export default function App() {
   // global
-  var { isAuthenticated } = useUserState();
+  const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
 
   return (
     <HashRouter>

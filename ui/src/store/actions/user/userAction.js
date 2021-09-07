@@ -1,7 +1,14 @@
-import * as actionTypes from './actionTypes';
+import * as actionTypes from '../actionTypes';
 
 // User Actions
 export const userActions = {
+  // Loading User Request
+  loading: () => {
+    return {
+      type: actionTypes.LOADING_REQUEST,
+    };
+  },
+
   // Registration
   registrationSuccess: (values) => {
     return {
@@ -25,7 +32,7 @@ export const userActions = {
       type: actionTypes.USER_LOGIN_SUCCESS,
       payload: {
         token: values.token,
-        user: values.user,
+        name: values.name,
       },
     };
   },
@@ -70,13 +77,6 @@ export const userActions = {
         data: values.data ? true : false,
         message: values.message,
       },
-    };
-  },
-
-  // Loading User Request
-  loading: () => {
-    return {
-      type: actionTypes.LOADING_REQUEST,
     };
   },
 };

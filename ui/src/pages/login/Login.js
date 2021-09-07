@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   Grid,
   CircularProgress,
@@ -19,22 +20,21 @@ import useStyles from './styles';
 import logo from './logo.svg';
 import google from '../../images/google.svg';
 
-// context
-import { useUserDispatch, loginUser } from '../../context/UserContext';
+// redux
+import { userLogin, userRegisteration } from '../../store/actions/user';
 
 function Login(props) {
   var classes = useStyles();
 
-  // global
-  var userDispatch = useUserDispatch();
-
   // local
-  var [isLoading, setIsLoading] = useState(false);
-  var [error, setError] = useState(null);
   var [activeTabId, setActiveTabId] = useState(0);
-  var [nameValue, setNameValue] = useState('');
-  var [loginValue, setLoginValue] = useState('admin@flatlogic.com');
+  var [nameValue, setNameValue] = useState('John Doe');
+  var [loginValue, setLoginValue] = useState('john.doe@example.com');
   var [passwordValue, setPasswordValue] = useState('password');
+
+  var isLoading = useSelector((state) => state.user.loading);
+  var error = useSelector((state) => state.user.messageType);
+  const dispatch = useDispatch();
 
   return (
     <Grid container className={classes.container}>
@@ -112,13 +112,8 @@ function Login(props) {
                       loginValue.length === 0 || passwordValue.length === 0
                     }
                     onClick={() =>
-                      loginUser(
-                        userDispatch,
-                        loginValue,
-                        passwordValue,
-                        props.history,
-                        setIsLoading,
-                        setError,
+                      dispatch(
+                        userLogin(loginValue, passwordValue, props.history),
                       )
                     }
                     variant='contained'
@@ -202,13 +197,12 @@ function Login(props) {
                 ) : (
                   <Button
                     onClick={() =>
-                      loginUser(
-                        userDispatch,
-                        loginValue,
-                        passwordValue,
-                        props.history,
-                        setIsLoading,
-                        setError,
+                      dispatch(
+                        userRegisteration(
+                          loginValue,
+                          passwordValue,
+                          props.history,
+                        ),
                       )
                     }
                     disabled={
