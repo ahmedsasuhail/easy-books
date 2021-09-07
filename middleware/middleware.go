@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// ValidateJWT is a middleware that validates a provided JWT authentication token.
+// ValidateJWT validates a provided JWT authentication token.
 func ValidateJWT(secret, issuer string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		const BEARER_SCHEMA = "Bearer"
