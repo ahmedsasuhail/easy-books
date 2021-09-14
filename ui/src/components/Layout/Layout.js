@@ -26,6 +26,11 @@ import Maps from '../../pages/maps';
 import Tables from '../../pages/tables';
 import Icons from '../../pages/icons';
 import Charts from '../../pages/charts';
+import Miscellaneous from '../../pages/miscellaneous/ReadMiscellaneous';
+import Purchases from '../../pages/purchases/ReadPurchase';
+import Sales from '../../pages/sales/ReadSales';
+import Inventory from '../../pages/inventory/ReadInventory';
+import Contacts from '../../pages/contacts/ReadContact';
 
 // context
 import { useLayoutState } from '../../context/LayoutContext';
@@ -52,6 +57,11 @@ function Layout(props) {
             <Route path='/app/typography' component={Typography} />
             <Route path='/app/tables' component={Tables} />
             <Route path='/app/notifications' component={Notifications} />
+            <Route path='/app/miscellaneous' component={Miscellaneous} />
+            <Route path='/app/purchases' component={Purchases} />
+            <Route path='/app/sales' component={Sales} />
+            <Route path='/app/inventory' component={Inventory} />
+            <Route path='/app/contacts' component={Contacts} />
             <Route
               exact
               path='/app/ui'

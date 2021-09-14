@@ -36,7 +36,7 @@ export const userLogin = (login, password, history) => {
         };
         localStorage.setItem('quickBookAuth', JSON.stringify(authData));
         dispatch(userActions.loginSuccess(response.data));
-        history.push('/app/dashboard');
+        history.push('/app/purchases');
       } else {
         dispatch(userActions.loginFailure(response));
       }
