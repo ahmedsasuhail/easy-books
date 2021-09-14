@@ -31,6 +31,8 @@
     "react-syntax-highlighter": "^15.4.3",
     "react-toastify": "^7.0.3",
     "recharts": "^2.0.4",
+    "redux": "^4.1.1",
+    "redux-thunk": "^2.3.0",
     "tinycolor2": "^1.4.2"
   },
   "scripts": {

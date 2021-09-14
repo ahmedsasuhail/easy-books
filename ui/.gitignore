@@ -1,6 +1,7 @@
 # Dependencies
 /node_modules
 .eslintcache
+.prettierrc
 
 # Production
 /build
@@ -10,6 +11,8 @@
 .env.development.local
 .env.test.local
 .env.production.local
+.env
+.env.example
 
 # Logs
 npm-debug.log*
