@@ -3,8 +3,8 @@ package db
 
 import (
 	"github.com/ahmedsasuhail/easy-books/models"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 // PostgresClient represents a PostgreSQL database connection client.
@@ -19,15 +19,10 @@ func (db *PostgresClient) Migrate(models []interface{}) {
 	}
 }
 
-// Disconnect closes a PostgreSQL database connection.
-func (db *PostgresClient) Disconnect() {
-	db.Close()
-}
-
 // ConnectPostgres establishes a PostgreSQL database connection and returns the
 // connection client.
 func ConnectPostgres(uri string) (*PostgresClient, error) {
-	db, err := gorm.Open("postgres", uri)
+	db, err := gorm.Open(postgres.Open(uri), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}

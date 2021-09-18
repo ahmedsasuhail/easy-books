@@ -2,7 +2,7 @@
 package models
 
 import (
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 // Response represents a well structured JSON response.

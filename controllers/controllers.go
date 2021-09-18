@@ -57,7 +57,6 @@ func Login(c *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
-	defer pgClient.Disconnect()
 
 	// Read user from DB.
 	user, err := pgClient.GetUser(email)

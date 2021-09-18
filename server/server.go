@@ -32,7 +32,6 @@ func Init() *gin.Engine {
 	if err != nil {
 		panic(err)
 	}
-	defer pgClient.Disconnect()
 
 	// Migrate required models.
 	models := []interface{}{
