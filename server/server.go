@@ -9,13 +9,26 @@ import (
 	"github.com/ahmedsasuhail/easy-books/models"
 	"github.com/ahmedsasuhail/easy-books/routes"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
+// Config represents the server configuration parameters.
+type Config struct {
+	EnvFile *string
+}
+
 // Init initializes the webserver and returns the router.
-func Init() *gin.Engine {
+func Init(config *Config) *gin.Engine {
 	// TODO: add more initialization (environment configuration, db connections, etc.).
 	// TODO: add some init logging.
 	// TODO: gracefully handle termination (Ctrl-C).
+
+	// Load environment file.
+	if config.EnvFile != nil && *config.EnvFile != "" {
+		godotenv.Load(*config.EnvFile)
+	} else {
+		godotenv.Load()
+	}
 
 	// Retrieve required variables from environment and exit if any not found.
 	env := []string{
