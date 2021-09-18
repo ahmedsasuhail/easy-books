@@ -2,7 +2,7 @@
 package server
 
 import (
-	"errors"
+	"fmt"
 	"os"
 
 	"github.com/ahmedsasuhail/easy-books/db"
@@ -17,18 +17,34 @@ func Init() *gin.Engine {
 	// TODO: add some init logging.
 	// TODO: gracefully handle termination (Ctrl-C).
 
-	// Try retrieving required environment variables and panic if not found.
-	postgresURI, exists := os.LookupEnv("EB_POSTGRES_URI")
-	if !exists {
-		panic(errors.New("variable $EB_POSTGRES_URI not found in current environment"))
+	// Retrieve required variables from environment and exit if any not found.
+	env := []string{
+		"EB_POSTGRES_URI",
+		"EB_SECRET_KEY",
 	}
-	_, exists = os.LookupEnv("EB_SECRET_KEY")
-	if !exists {
-		panic(errors.New("variable $EB_SECRET_KEY not found in current environment"))
+	var missingEnv []string
+
+	for _, key := range env {
+		_, exists := os.LookupEnv(key)
+		if !exists {
+			missingEnv = append(missingEnv, key)
+		}
+	}
+
+	if len(missingEnv) > 0 {
+		fmt.Println("The following variables were not found in the current environment:")
+		fmt.Println()
+
+		for _, val := range missingEnv {
+			fmt.Printf("$%s\n", val)
+		}
+
+		fmt.Println()
+		os.Exit(1)
 	}
 
 	// Try connecting to the PostgreSQL database.
-	pgClient, err := db.ConnectPostgres(postgresURI)
+	pgClient, err := db.ConnectPostgres(os.Getenv("EB_POSTGRES_URI"))
 	if err != nil {
 		panic(err)
 	}
