@@ -35,7 +35,13 @@ func Init() *gin.Engine {
 
 	// Migrate required models.
 	models := []interface{}{
-		models.User{},
+		models.Users{},
+		models.Inventory{},
+		models.Purchases{},
+		models.Relationships{},
+		models.Sales{},
+		models.SalesReturns{},
+		models.Miscellaneous{},
 	}
 	pgClient.Migrate(models)
 

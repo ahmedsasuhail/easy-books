@@ -33,8 +33,8 @@ func ConnectPostgres(uri string) (*PostgresClient, error) {
 // GetUser searches for a user in the database based on the provided email address.
 // If the user does not exist, an error is returned. If the user exists, the user
 // returned.
-func (db *PostgresClient) GetUser(email string) (*models.User, error) {
-	user := &models.User{}
+func (db *PostgresClient) GetUser(email string) (*models.Users, error) {
+	user := &models.Users{}
 
 	// Search the database.
 	if err := db.Where("Email = ?", email).First(user).Error; err != nil {
