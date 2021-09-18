@@ -1,0 +1,42 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Easy-Books: Build Project",
+      "type": "shell",
+      "command": "go build -o ${input:binaryName}",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": ["$go"]
+    },
+    {
+      "label": "Easy-Books: Run Project",
+      "type": "shell",
+      "command": "go",
+      "args": ["run", "main.go"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": ["$go"]
+    },
+    {
+      "label": "Easy-Books: Clean Project",
+      "type": "shell",
+      "command": "rm",
+      "args": ["${input:binaryName}"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": ["$go"]
+    }
+  ],
+  "inputs": [
+    {
+      "id": "binaryName",
+      "description": "The name of the project output binary.",
+      "default": "easy-books",
+      "type": "promptString"
+    }
+  ]
+}
