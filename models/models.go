@@ -49,6 +49,9 @@ type Sales struct {
 	RelationshipID uint64
 	PurchaseID     uint64
 	InventoryID    uint64
+	Relationships  Relationships `gorm:"foreignKey:RelationshipID"`
+	Purchases      Purchases     `gorm:"foreignKey:PurchaseID"`
+	Inventory      Inventory     `gorm:"foreignKey:InventoryID"`
 }
 
 func (Sales) TableName() string {
@@ -61,6 +64,7 @@ type SalesReturns struct {
 	ID      uint64 `gorm:"primaryKey"`
 	Date    datatypes.Date
 	SalesID uint64
+	Sales   Sales `gorm:"foreignKey:SalesID"`
 }
 
 func (SalesReturns) TableName() string {
@@ -76,6 +80,7 @@ type Purchases struct {
 	Price          float64 `sql:"type:decimal(8,2);"`
 	Date           datatypes.Date
 	RelationshipID uint64
+	Relationships  Relationships `gorm:"foreignKey:RelationshipID"`
 }
 
 func (Purchases) TableName() string {
@@ -89,6 +94,7 @@ type Inventory struct {
 	PartName   string
 	Quantity   uint32
 	PurchaseID uint64
+	Purchases  Purchases `gorm:"foreignKey:PurchaseID"`
 }
 
 func (Inventory) TableName() string {
