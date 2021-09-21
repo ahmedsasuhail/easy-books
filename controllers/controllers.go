@@ -2,6 +2,7 @@
 package controllers
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -101,6 +102,76 @@ func Login(c *gin.Context) {
 				Status:  "fail",
 				Code:    http.StatusUnauthorized,
 				Message: "Provided password is incorrect.",
+			})
+		}
+	}
+}
+
+// TODO: Check whether errors should be returned in response, rather than panicking.
+// Register adds a new user to the database.
+func Register(c *gin.Context) {
+	// Read and parse request body.
+	requestBody, err := ioutil.ReadAll(c.Request.Body)
+	if err != nil {
+		panic(err)
+	}
+
+	var jsonBody map[string]string
+	err = json.Unmarshal(requestBody, &jsonBody)
+	if err != nil {
+		panic(err)
+	}
+
+	// TODO: Add proper error handling for missing keys.
+	name := jsonBody["name"]
+	email := jsonBody["email"]
+	password := jsonBody["password"]
+
+	// TODO: try using global DB connection, rather than creating a new local one.
+	postgresURI := os.Getenv("EB_POSTGRES_URI")
+	pgClient, err := db.ConnectPostgres(postgresURI)
+	if err != nil {
+		panic(err)
+	}
+
+	// Check if user already exists.
+	_, err = pgClient.GetUser(email)
+	if err == nil {
+		c.JSON(http.StatusBadRequest, models.Response{
+			Status:  "fail",
+			Code:    http.StatusBadRequest,
+			Message: fmt.Sprintf("User with email %s already exists", email),
+		})
+	} else {
+		hash := sha3.New512()
+		hash.Write([]byte(password))
+		hashedPassword := hex.EncodeToString(hash.Sum(nil))
+
+		user := &models.Users{
+			Name:     name,
+			Email:    email,
+			Password: hashedPassword,
+		}
+
+		// If there was an error while creating the user, return an error response
+		// with the DB error message.
+		createdUser := pgClient.Create(user)
+		if createdUser.Error != nil {
+			fmt.Println(createdUser.Error)
+			c.JSON(http.StatusInternalServerError, models.Response{
+				Status:  "error",
+				Code:    http.StatusInternalServerError,
+				Message: createdUser.Error.Error(),
+			})
+		} else {
+			c.JSON(http.StatusOK, models.Response{
+				Status:  "success",
+				Code:    http.StatusOK,
+				Message: "User successfully registered.",
+				Data: map[string]string{
+					"name":  name,
+					"email": email,
+				},
 			})
 		}
 	}

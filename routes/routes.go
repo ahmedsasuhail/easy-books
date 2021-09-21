@@ -22,6 +22,7 @@ func Get() *gin.Engine {
 		auth := app.Group("/auth")
 		{
 			auth.POST("/login", controllers.Login)
+			auth.POST("/register", controllers.Register)
 		}
 	}
 
