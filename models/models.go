@@ -106,7 +106,7 @@ type Relationships struct {
 
 	ID          uint64 `gorm:"primaryKey"`
 	Name        string
-	PhoneNumber string
+	PhoneNumber string `gorm:"type:varchar(10);unique_index"`
 	Address     string
 }
 
