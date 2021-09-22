@@ -95,6 +95,7 @@ type Inventory struct {
 	Quantity   uint32
 	PurchaseID uint64
 	Purchases  Purchases `gorm:"foreignKey:PurchaseID"`
+	Date       datatypes.Date
 }
 
 func (Inventory) TableName() string {
