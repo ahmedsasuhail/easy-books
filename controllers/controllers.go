@@ -32,19 +32,28 @@ func AppInit(c *gin.Context) {
 	})
 }
 
-// TODO: Check whether errors should be returned in response, rather than panicking.
 // Login checks the provided credentials and returns a response containing
 // a JWT auth token for the provided credentials.
 func Login(c *gin.Context) {
 	// Read and parse request body.
 	requestBody, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.Response{
+			Status:  "error",
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
 		panic(err)
 	}
 
 	var jsonBody map[string]string
 	err = json.Unmarshal(requestBody, &jsonBody)
 	if err != nil {
+		c.JSON(http.StatusBadRequest, models.Response{
+			Status:  "fail",
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
 		panic(err)
 	}
 
@@ -83,7 +92,11 @@ func Login(c *gin.Context) {
 				"Easy-Books",
 			).GenerateToken(user.ID, user.Name, user.Email)
 			if err != nil {
-				// ? Maybe this should return an error response instead.
+				c.JSON(http.StatusInternalServerError, models.Response{
+					Status:  "error",
+					Code:    http.StatusInternalServerError,
+					Message: err.Error(),
+				})
 				panic(err)
 			}
 
@@ -107,19 +120,27 @@ func Login(c *gin.Context) {
 	}
 }
 
-// TODO: Check whether errors should be returned in response, rather than panicking.
 // Register adds a new user to the database.
 func Register(c *gin.Context) {
 	// Read and parse request body.
 	requestBody, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.Response{
+			Status:  "error",
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
 		panic(err)
 	}
 
 	var jsonBody map[string]string
 	err = json.Unmarshal(requestBody, &jsonBody)
 	if err != nil {
-		panic(err)
+		c.JSON(http.StatusBadRequest, models.Response{
+			Status:  "fail",
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
 	}
 
 	// TODO: Add proper error handling for missing keys.
@@ -131,6 +152,11 @@ func Register(c *gin.Context) {
 	postgresURI := os.Getenv("EB_POSTGRES_URI")
 	pgClient, err := db.ConnectPostgres(postgresURI)
 	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.Response{
+			Status:  "error",
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
 		panic(err)
 	}
 
