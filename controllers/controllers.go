@@ -42,6 +42,8 @@ func Login(c *gin.Context) {
 	var jsonBody map[string]string
 	err := parseRequestBody(c, &jsonBody)
 	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
 		return
 	}
 
@@ -58,6 +60,8 @@ func Login(c *gin.Context) {
 			http.StatusNotFound,
 			fmt.Sprintf("The email %s does not exist.", email),
 		)
+
+		return
 	} else {
 		hash := sha3.New512()
 		hash.Write([]byte(password))
@@ -69,7 +73,8 @@ func Login(c *gin.Context) {
 			token, err := auth.GenerateToken(user.Email)
 			if err != nil {
 				errorResponse(c, http.StatusInternalServerError, err.Error())
-				panic(err)
+
+				return
 			} else {
 				successResponse(
 					c,
@@ -90,6 +95,8 @@ func Login(c *gin.Context) {
 				http.StatusUnauthorized,
 				"Provided password is incorrect.",
 			)
+
+			return
 		}
 	}
 }
@@ -100,6 +107,8 @@ func Register(c *gin.Context) {
 	var jsonBody map[string]string
 	err := parseRequestBody(c, &jsonBody)
 	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
 		return
 	}
 
@@ -115,6 +124,8 @@ func Register(c *gin.Context) {
 			http.StatusBadRequest,
 			fmt.Sprintf("User with email %s already exists.", email),
 		)
+
+		return
 	} else {
 		hash := sha3.New512()
 		hash.Write([]byte(password))
@@ -135,7 +146,8 @@ func Register(c *gin.Context) {
 				http.StatusInternalServerError,
 				createdUser.Error.Error(),
 			)
-			panic(createdUser.Error.Error())
+
+			return
 		} else {
 			successResponse(
 				c,

@@ -12,7 +12,7 @@ import (
 
 // errorResponse is a convenience function that allows for writing an error response.
 func errorResponse(c *gin.Context, code uint, msg string) {
-	c.JSON(int(code), models.Response{
+	c.AbortWithStatusJSON(int(code), models.Response{
 		Status:  "error",
 		Code:    code,
 		Message: msg,
@@ -21,7 +21,7 @@ func errorResponse(c *gin.Context, code uint, msg string) {
 
 // failResponse is a convenience function that allows for writing a failed response.
 func failResponse(c *gin.Context, code uint, msg string) {
-	c.JSON(int(code), models.Response{
+	c.AbortWithStatusJSON(int(code), models.Response{
 		Status:  "fail",
 		Code:    code,
 		Message: msg,
@@ -43,13 +43,11 @@ func successResponse(c *gin.Context, code uint, msg string, data interface{}) {
 func parseRequestBody(c *gin.Context, receiver interface{}) error {
 	requestBody, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
-		errorResponse(c, http.StatusInternalServerError, err.Error())
 		return err
 	}
 
 	err = json.Unmarshal(requestBody, &receiver)
 	if err != nil {
-		errorResponse(c, http.StatusInternalServerError, err.Error())
 		return err
 	}
 

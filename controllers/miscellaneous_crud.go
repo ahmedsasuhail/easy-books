@@ -28,7 +28,8 @@ func CreateOrUpdateMiscellaneous(c *gin.Context) {
 	}).Create(&entity).Error
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
-		panic(err)
+
+		return
 	} else {
 		pgClient.First(&entity)
 		successResponse(c, http.StatusOK, "", &entity)
@@ -53,6 +54,8 @@ func ReadMiscellaneous(c *gin.Context) {
 
 	if result.Error != nil {
 		errorResponse(c, http.StatusInternalServerError, result.Error.Error())
+
+		return
 	} else {
 		successResponse(c, http.StatusOK, "", map[string]interface{}{
 			"page":    pagination.Page,
@@ -68,12 +71,15 @@ func DeleteMiscellaneous(c *gin.Context) {
 	err := parseRequestBody(c, &entity)
 	if err != nil {
 		errorResponse(c, http.StatusBadRequest, err.Error())
+
+		return
 	}
 
 	err = pgClient.Where("id = ?", entity.ID).Delete(&entity).Error
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
-		panic(err)
+
+		return
 	} else {
 		successResponse(c, http.StatusOK, "Deleted record.", entity)
 	}
