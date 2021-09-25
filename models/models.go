@@ -18,6 +18,14 @@ type Response struct {
 	Data    interface{} `json:"data"`
 }
 
+// Pagination represents a pagination request.
+type Pagination struct {
+	Page      int
+	PageLimit int
+	OrderBy   string
+	SortOrder string // Can either be `"asc"` or `"desc"`.
+}
+
 // ----------------------------------------------------------------------------
 // DATABASE MODELS
 // ----------------------------------------------------------------------------

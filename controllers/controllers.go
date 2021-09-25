@@ -3,9 +3,7 @@ package controllers
 
 import (
 	"encoding/hex"
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"os"
 
@@ -42,7 +40,10 @@ func AppInit(c *gin.Context) {
 func Login(c *gin.Context) {
 	// Read and parse request body.
 	var jsonBody map[string]string
-	parseRequestBody(c, &jsonBody)
+	err := parseRequestBody(c, &jsonBody)
+	if err != nil {
+		return
+	}
 
 	// TODO: Add proper error handling for missing keys.
 	email := jsonBody["email"]
@@ -99,16 +100,10 @@ func Login(c *gin.Context) {
 // Register adds a new user to the database.
 func Register(c *gin.Context) {
 	// Read and parse request body.
-	requestBody, err := ioutil.ReadAll(c.Request.Body)
-	if err != nil {
-		errorResponse(c, http.StatusInternalServerError, err.Error())
-		panic(err)
-	}
-
 	var jsonBody map[string]string
-	err = json.Unmarshal(requestBody, &jsonBody)
+	err := parseRequestBody(c, &jsonBody)
 	if err != nil {
-		failResponse(c, http.StatusBadRequest, err.Error())
+		return
 	}
 
 	// TODO: Add proper error handling for missing keys.
@@ -121,7 +116,7 @@ func Register(c *gin.Context) {
 	if err == nil {
 		failResponse(c,
 			http.StatusBadRequest,
-			fmt.Sprintf("User with email % already exists.", email),
+			fmt.Sprintf("User with email %s already exists.", email),
 		)
 	} else {
 		hash := sha3.New512()

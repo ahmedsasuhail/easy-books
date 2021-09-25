@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 
 	"github.com/ahmedsasuhail/easy-books/models"
 	"github.com/gin-gonic/gin"
@@ -39,14 +40,73 @@ func successResponse(c *gin.Context, code uint, msg string, data interface{}) {
 
 // parseRequestBody parses a request's JSON body onto an appropriate receiver.
 // It triggers and internal server error response if an error is encountered.
-func parseRequestBody(c *gin.Context, receiver interface{}) {
+func parseRequestBody(c *gin.Context, receiver interface{}) error {
 	requestBody, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
+		return err
 	}
 
 	err = json.Unmarshal(requestBody, &receiver)
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
+		return err
+	}
+
+	return nil
+}
+
+// parsePaginationRequest parses a URL query and maps it onto a `Pagination` structure.
+func parsePaginationRequest(c *gin.Context) models.Pagination {
+	query := c.Request.URL.Query()
+
+	// Pagination parameters.
+	page := 1
+	pageLimit := 50
+	orderBy := "id"
+	sortOrder := "asc"
+
+	for key, value := range query {
+		queryValue := value[len(value)-1]
+		var err error
+
+		switch key {
+		case "page":
+			page, err = strconv.Atoi(queryValue)
+			if err != nil {
+				errorResponse(
+					c,
+					http.StatusBadRequest,
+					"Invalid type for key `page` (uint32 expected).",
+				)
+
+				return models.Pagination{}
+			}
+
+		case "page_limit":
+			pageLimit, err = strconv.Atoi(queryValue)
+			if err != nil {
+				errorResponse(
+					c,
+					http.StatusBadRequest,
+					"Invalid type for key `page_limit` (uint32 expected).",
+				)
+
+				return models.Pagination{}
+			}
+
+		case "sort_order":
+			sortOrder = queryValue
+
+		case "order_by":
+			orderBy = queryValue
+		}
+	}
+
+	return models.Pagination{
+		Page:      page,
+		PageLimit: pageLimit,
+		OrderBy:   orderBy,
+		SortOrder: sortOrder,
 	}
 }
