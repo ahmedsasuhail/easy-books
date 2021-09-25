@@ -66,12 +66,7 @@ func Login(c *gin.Context) {
 		// Validate credentials and return generated JWT token.
 		// TODO: find a better way to perform the comparison.
 		if fmt.Sprintf("%x", hashedPassword) == user.Password {
-			secretKey := os.Getenv("EB_SECRET_KEY")
-
-			token, err := auth.JWTAuthService(
-				secretKey,
-				"Easy-Books",
-			).GenerateToken(user.ID, user.Name, user.Email)
+			token, err := auth.GenerateToken(user.Email)
 			if err != nil {
 				errorResponse(c, http.StatusInternalServerError, err.Error())
 				panic(err)
@@ -80,10 +75,12 @@ func Login(c *gin.Context) {
 					c,
 					http.StatusOK,
 					"",
-					map[string]string{
-						"name":  user.Name,
-						"email": user.Email,
-						"token": token,
+					map[string]interface{}{
+						"user": map[string]string{
+							"name":  user.Name,
+							"email": user.Email,
+						},
+						"auth": token,
 					},
 				)
 			}

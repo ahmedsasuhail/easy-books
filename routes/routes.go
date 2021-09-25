@@ -2,8 +2,6 @@
 package routes
 
 import (
-	"os"
-
 	"github.com/ahmedsasuhail/easy-books/controllers"
 	"github.com/ahmedsasuhail/easy-books/middleware"
 	"github.com/gin-gonic/gin"
@@ -26,7 +24,7 @@ func Get() *gin.Engine {
 		}
 
 		miscellaneous := app.Group("/miscellaneous")
-		miscellaneous.Use(middleware.ValidateJWT(os.Getenv("EB_SECRET"), "easy-books"))
+		miscellaneous.Use(middleware.ValidateJWT())
 		{
 			miscellaneous.PUT("/", controllers.CreateOrUpdateMiscellaneous)
 			miscellaneous.GET("/", controllers.ReadMiscellaneous)

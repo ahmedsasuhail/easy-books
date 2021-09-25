@@ -1,66 +1,59 @@
 package auth
 
 import (
+	"errors"
 	"fmt"
+	"os"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt"
 )
 
-type JWTService interface {
-	GenerateToken(uid uint, name, email string) (string, error)
-	ValidateToken(token string) (*jwt.Token, error)
+// Token represents a JWT token.
+type Token struct {
+	Token  string `json:"token"`
+	Expiry string `json:"expiry"`
 }
 
-type authCustomClaims struct {
-	UserID uint
-	Name   string
-	Email  string
-	*jwt.StandardClaims
-}
-
-type jwtServices struct {
-	secret string
-	issuer string
-}
-
-// GenerateToken generates a JWT token using the specified parameters.
-func (service *jwtServices) GenerateToken(uid uint, name, email string) (string, error) {
-	claims := &authCustomClaims{
-		uid,
-		name,
-		email,
-		&jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour * 40).Unix(),
-			Issuer:    service.issuer,
-			IssuedAt:  time.Now().Unix(),
-		},
+// TODO: Make expiry time configurable.
+// TODO: Allow refreshing tokens.
+// TODO: Handle logging out.
+// GenerateToken generates and returns a JWT token.
+func GenerateToken(email string) (*Token, error) {
+	expiry := time.Now().Add(time.Hour * 24).Unix()
+	claims := jwt.MapClaims{
+		"authorized": true,
+		"email":      email,
+		"expiry":     expiry,
 	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
-	t, err := token.SignedString([]byte(service.secret))
+	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS512"), claims)
+	tokenString, err := token.SignedString([]byte(os.Getenv("EB_SECRET")))
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return t, nil
+	return &Token{
+		Token:  tokenString,
+		Expiry: time.Unix(expiry, 0).Format("02/01/2006 15:04:05"),
+	}, nil
 }
 
-// ValidateToken validates a provided JWT token.
-func (service *jwtServices) ValidateToken(encToken string) (*jwt.Token, error) {
-	return jwt.Parse(encToken, func(token *jwt.Token) (interface{}, error) {
-		if _, valid := token.Method.(*jwt.SigningMethodHMAC); !valid {
-			return nil, fmt.Errorf("invalid token %v", token.Header["alg"])
-		}
-		return []byte(service.secret), nil
-	})
-}
+// ValidateToken validates a JWT token and returns an error if the token is not valid.
+func ValidateToken(token string) error {
+	parsedToken, err := jwt.Parse(
+		token,
+		func(token *jwt.Token) (interface{}, error) {
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+			}
 
-// JWTAuthService creates and returns a JWT service.
-func JWTAuthService(secret, issuer string) JWTService {
-	return &jwtServices{
-		secret,
-		issuer,
+			return []byte(os.Getenv("EB_SECRET")), nil
+		},
+	)
+
+	if !parsedToken.Valid {
+		return errors.New("invalid auth token")
 	}
+
+	return err
 }

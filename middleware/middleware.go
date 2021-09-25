@@ -1,12 +1,11 @@
 package middleware
 
 import (
-	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/ahmedsasuhail/easy-books/auth"
 	"github.com/ahmedsasuhail/easy-books/models"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 )
 
@@ -28,23 +27,31 @@ func CORSMiddleware() gin.HandlerFunc {
 }
 
 // ValidateJWT validates a provided JWT authentication token.
-func ValidateJWT(secret, issuer string) gin.HandlerFunc {
+func ValidateJWT() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		const BEARER_SCHEMA = "Bearer"
-		authHeader := c.GetHeader("Authorization")
-		tokenString := authHeader[len(BEARER_SCHEMA):]
-		token, err := auth.JWTAuthService(secret, issuer).ValidateToken(tokenString)
-
-		if token.Valid {
-			claims := token.Claims.(jwt.MapClaims)
-			fmt.Println(claims)
+		// Read and parse bearer token.
+		bearerToken := c.GetHeader("Authorization")
+		var token string
+		if strings.HasPrefix(bearerToken, "Bearer") {
+			token = strings.Trim(strings.Replace(bearerToken, "Bearer", "", -1), " ")
 		} else {
-			fmt.Println(err)
-			c.JSON(http.StatusUnauthorized, models.Response{
+			c.AbortWithStatusJSON(http.StatusNotAcceptable, models.Response{
 				Status:  "fail",
-				Code:    http.StatusUnauthorized,
-				Message: "Invalid auth token.",
+				Code:    http.StatusNotAcceptable,
+				Message: "Invalid bearer token format.",
 			})
 		}
+
+		// Validate token.
+		err := auth.ValidateToken(token)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, models.Response{
+				Status:  "fail",
+				Code:    http.StatusUnauthorized,
+				Message: err.Error(),
+			})
+		}
+
+		c.Next()
 	}
 }
