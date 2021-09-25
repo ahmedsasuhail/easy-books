@@ -16,6 +16,21 @@ import (
 	"golang.org/x/crypto/sha3"
 )
 
+var pgClient *db.PostgresClient
+
+// InitDB initializes a database connection and migrates the specified models.
+func InitDB(models []interface{}) error {
+	var err error
+	pgClient, err = db.ConnectPostgres(os.Getenv("EB_POSTGRES_URI"))
+	if err != nil {
+		return err
+	}
+
+	pgClient.Migrate(models)
+
+	return nil
+}
+
 // Forbidden is a convenience handler that can be used to return the HTTP
 // Status "Forbidden" for a particular route.
 func Forbidden(c *gin.Context) {
@@ -60,13 +75,6 @@ func Login(c *gin.Context) {
 	// TODO: Add proper error handling for missing keys.
 	email := jsonBody["email"]
 	password := jsonBody["password"]
-
-	// TODO: try using global DB connection, rather than creating a new local one.
-	postgresURI := os.Getenv("EB_POSTGRES_URI")
-	pgClient, err := db.ConnectPostgres(postgresURI)
-	if err != nil {
-		panic(err)
-	}
 
 	// Read user from DB.
 	user, err := pgClient.GetUser(email)
@@ -147,18 +155,6 @@ func Register(c *gin.Context) {
 	name := jsonBody["name"]
 	email := jsonBody["email"]
 	password := jsonBody["password"]
-
-	// TODO: try using global DB connection, rather than creating a new local one.
-	postgresURI := os.Getenv("EB_POSTGRES_URI")
-	pgClient, err := db.ConnectPostgres(postgresURI)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.Response{
-			Status:  "error",
-			Code:    http.StatusInternalServerError,
-			Message: err.Error(),
-		})
-		panic(err)
-	}
 
 	// Check if user already exists.
 	_, err = pgClient.GetUser(email)

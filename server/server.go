@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ahmedsasuhail/easy-books/db"
+	"github.com/ahmedsasuhail/easy-books/controllers"
 	"github.com/ahmedsasuhail/easy-books/models"
 	"github.com/ahmedsasuhail/easy-books/routes"
 	"github.com/gin-gonic/gin"
@@ -13,7 +13,6 @@ import (
 
 // Init initializes the webserver and returns the router.
 func Init() *gin.Engine {
-	// TODO: add more initialization (environment configuration, db connections, etc.).
 	// TODO: add some init logging.
 	// TODO: gracefully handle termination (Ctrl-C).
 
@@ -43,13 +42,7 @@ func Init() *gin.Engine {
 		os.Exit(1)
 	}
 
-	// Try connecting to the PostgreSQL database.
-	pgClient, err := db.ConnectPostgres(os.Getenv("EB_POSTGRES_URI"))
-	if err != nil {
-		panic(err)
-	}
-
-	// Migrate required models.
+	// Required models to migrate.
 	models := []interface{}{
 		models.Users{},
 		models.Inventory{},
@@ -59,7 +52,12 @@ func Init() *gin.Engine {
 		models.SalesReturns{},
 		models.Miscellaneous{},
 	}
-	pgClient.Migrate(models)
+
+	// Try establishing a DB connection and migrate the models.
+	err := controllers.InitDB(models)
+	if err != nil {
+		panic(err)
+	}
 
 	return routes.Get()
 }
