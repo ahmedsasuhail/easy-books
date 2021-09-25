@@ -31,46 +31,18 @@ func InitDB(models []interface{}) error {
 	return nil
 }
 
-// Forbidden is a convenience handler that can be used to return the HTTP
-// Status "Forbidden" for a particular route.
-func Forbidden(c *gin.Context) {
-	c.AbortWithStatus(http.StatusForbidden)
-}
-
 // AppInit initializes the backend app and displays a JSON message.
 func AppInit(c *gin.Context) {
 	// TODO: Add some actual initialization stuff.
-	c.JSON(http.StatusOK, models.Response{
-		Status:  "success",
-		Code:    http.StatusOK,
-		Message: "App initialized.",
-	})
+	successResponse(c, http.StatusOK, "App initialized.", nil)
 }
 
 // Login checks the provided credentials and returns a response containing
 // a JWT auth token for the provided credentials.
 func Login(c *gin.Context) {
 	// Read and parse request body.
-	requestBody, err := ioutil.ReadAll(c.Request.Body)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.Response{
-			Status:  "error",
-			Code:    http.StatusInternalServerError,
-			Message: err.Error(),
-		})
-		panic(err)
-	}
-
 	var jsonBody map[string]string
-	err = json.Unmarshal(requestBody, &jsonBody)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, models.Response{
-			Status:  "fail",
-			Code:    http.StatusBadRequest,
-			Message: err.Error(),
-		})
-		panic(err)
-	}
+	parseRequestBody(c, &jsonBody)
 
 	// TODO: Add proper error handling for missing keys.
 	email := jsonBody["email"]
@@ -80,11 +52,11 @@ func Login(c *gin.Context) {
 	user, err := pgClient.GetUser(email)
 	if err != nil {
 		// TODO: check whether 404 is appropriate status code for this response.
-		c.JSON(http.StatusNotFound, models.Response{
-			Status:  "fail",
-			Code:    http.StatusNotFound,
-			Message: fmt.Sprintf("The email %s does not exist", email),
-		})
+		failResponse(
+			c,
+			http.StatusNotFound,
+			fmt.Sprintf("The email %s does not exist.", email),
+		)
 	} else {
 		hash := sha3.New512()
 		hash.Write([]byte(password))
@@ -100,30 +72,26 @@ func Login(c *gin.Context) {
 				"Easy-Books",
 			).GenerateToken(user.ID, user.Name, user.Email)
 			if err != nil {
-				c.JSON(http.StatusInternalServerError, models.Response{
-					Status:  "error",
-					Code:    http.StatusInternalServerError,
-					Message: err.Error(),
-				})
+				errorResponse(c, http.StatusInternalServerError, err.Error())
 				panic(err)
+			} else {
+				successResponse(
+					c,
+					http.StatusOK,
+					"",
+					map[string]string{
+						"name":  user.Name,
+						"email": user.Email,
+						"token": token,
+					},
+				)
 			}
-
-			c.JSON(http.StatusOK, models.Response{
-				Status:  "success",
-				Code:    http.StatusOK,
-				Message: "User successfully logged in.",
-				Data: map[string]string{
-					"name":  user.Name,
-					"email": user.Email,
-					"token": token,
-				},
-			})
 		} else {
-			c.JSON(http.StatusUnauthorized, models.Response{
-				Status:  "fail",
-				Code:    http.StatusUnauthorized,
-				Message: "Provided password is incorrect.",
-			})
+			failResponse(
+				c,
+				http.StatusUnauthorized,
+				"Provided password is incorrect.",
+			)
 		}
 	}
 }
@@ -133,22 +101,14 @@ func Register(c *gin.Context) {
 	// Read and parse request body.
 	requestBody, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.Response{
-			Status:  "error",
-			Code:    http.StatusInternalServerError,
-			Message: err.Error(),
-		})
+		errorResponse(c, http.StatusInternalServerError, err.Error())
 		panic(err)
 	}
 
 	var jsonBody map[string]string
 	err = json.Unmarshal(requestBody, &jsonBody)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, models.Response{
-			Status:  "fail",
-			Code:    http.StatusBadRequest,
-			Message: err.Error(),
-		})
+		failResponse(c, http.StatusBadRequest, err.Error())
 	}
 
 	// TODO: Add proper error handling for missing keys.
@@ -159,11 +119,10 @@ func Register(c *gin.Context) {
 	// Check if user already exists.
 	_, err = pgClient.GetUser(email)
 	if err == nil {
-		c.JSON(http.StatusBadRequest, models.Response{
-			Status:  "fail",
-			Code:    http.StatusBadRequest,
-			Message: fmt.Sprintf("User with email %s already exists", email),
-		})
+		failResponse(c,
+			http.StatusBadRequest,
+			fmt.Sprintf("User with email % already exists.", email),
+		)
 	} else {
 		hash := sha3.New512()
 		hash.Write([]byte(password))
@@ -179,22 +138,22 @@ func Register(c *gin.Context) {
 		// with the DB error message.
 		createdUser := pgClient.Create(user)
 		if createdUser.Error != nil {
-			fmt.Println(createdUser.Error)
-			c.JSON(http.StatusInternalServerError, models.Response{
-				Status:  "error",
-				Code:    http.StatusInternalServerError,
-				Message: createdUser.Error.Error(),
-			})
+			errorResponse(
+				c,
+				http.StatusInternalServerError,
+				createdUser.Error.Error(),
+			)
+			panic(createdUser.Error.Error())
 		} else {
-			c.JSON(http.StatusOK, models.Response{
-				Status:  "success",
-				Code:    http.StatusOK,
-				Message: "User successfully registered.",
-				Data: map[string]string{
+			successResponse(
+				c,
+				http.StatusOK,
+				"",
+				map[string]string{
 					"name":  name,
 					"email": email,
 				},
-			})
+			)
 		}
 	}
 }
