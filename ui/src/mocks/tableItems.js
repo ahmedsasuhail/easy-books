@@ -132,7 +132,7 @@ export const salesItems = [
     contact_id: 'C1',
     purchase_id: 'P1',
     inventory_id: 'I1',
-    returned: 'false',
+    returned: false,
     returned_date: '',
   },
   {
@@ -142,7 +142,7 @@ export const salesItems = [
     contact_id: 'C2',
     purchase_id: 'P2',
     inventory_id: 'I2',
-    returned: 'true',
+    returned: true,
     returned_date: '2021-09-12',
   },
   {
@@ -152,7 +152,7 @@ export const salesItems = [
     contact_id: 'C3',
     purchase_id: 'P3',
     inventory_id: 'I3',
-    returned: 'false',
+    returned: false,
     returned_date: '',
   },
   {
@@ -162,7 +162,7 @@ export const salesItems = [
     contact_id: 'C4',
     purchase_id: 'P4',
     inventory_id: 'I4',
-    returned: 'true',
+    returned: true,
     returned_date: '2021-09-14',
   },
   {
@@ -172,7 +172,7 @@ export const salesItems = [
     contact_id: 'C5',
     purchase_id: 'P5',
     inventory_id: 'I5',
-    returned: 'false',
+    returned: false,
     returned_date: '',
   },
   {
@@ -182,7 +182,7 @@ export const salesItems = [
     contact_id: 'C6',
     purchase_id: 'P6',
     inventory_id: 'I6',
-    returned: 'false',
+    returned: false,
     returned_date: '',
   },
   {
@@ -192,7 +192,7 @@ export const salesItems = [
     contact_id: 'C7',
     purchase_id: 'P7',
     inventory_id: 'I7',
-    returned: 'true',
+    returned: true,
     returned_date: '2021-09-17',
   },
   {
@@ -202,7 +202,7 @@ export const salesItems = [
     contact_id: 'C8',
     purchase_id: 'P8',
     inventory_id: 'I8',
-    returned: 'false',
+    returned: false,
     returned_date: '',
   },
 ];

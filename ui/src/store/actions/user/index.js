@@ -1,5 +1,6 @@
 import { userActions } from './userAction';
 import { usePost, useGet } from '../../../utils/webServices';
+import axios from '../../../utils/axiosInstance';
 
 // Action Creators
 // Register
@@ -7,7 +8,10 @@ export const userRegisteration = (values) => {
   return async (dispatch) => {
     dispatch(userActions.loading());
     try {
-      const response = await usePost('/register', values);
+      const response = await axios.post(
+        'auth/register',
+        JSON.stringify({ ...values }),
+      );
       if (response.data && response.data.userName) {
         dispatch(userActions.registrationSuccess(response));
       } else {
@@ -24,17 +28,21 @@ export const userLogin = (login, password, history) => {
   return async (dispatch) => {
     dispatch(userActions.loading());
     try {
-      const response = await usePost('/eb/auth/login', {
-        email: login,
-        password: password,
-      });
-      if (response.data && response.data.token) {
+      const response = await axios.post(
+        'auth/login',
+        JSON.stringify({
+          email: login,
+          password: password,
+        }),
+      );
+
+      if (response.data && response.data.data.auth.token) {
         let authData = {
-          email: response.data.email,
-          token: response.data.token,
-          name: response.data.name,
+          email: response.data.data.user.email,
+          token: response.data.data.auth.token,
+          name: response.data.data.user.name,
         };
-        localStorage.setItem('quickBookAuth', JSON.stringify(authData));
+        localStorage.setItem('easyBooksAuth', JSON.stringify(authData));
         dispatch(userActions.loginSuccess(response.data));
         history.push('/app/purchases');
       } else {
@@ -49,7 +57,7 @@ export const userLogin = (login, password, history) => {
 // Logout
 export const userLogout = (history) => {
   return (dispatch) => {
-    localStorage.removeItem('quickBookAuth');
+    localStorage.removeItem('easyBooksAuth');
     dispatch(userActions.logoutUser());
     history.push('/login');
   };

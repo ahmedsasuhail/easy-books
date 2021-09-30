@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Grid, Button, IconButton } from '@material-ui/core';
 import { Edit as EditIcon, Delete as DeleteIcon } from '@material-ui/icons';
 import MUIDataTable from 'mui-datatables';
@@ -6,19 +7,33 @@ import MUIDataTable from 'mui-datatables';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import Dialog from '../../components/Dialog/Dialog';
 import CreateUpdateMiscellaneous from './CreateUpdateMiscellaneous';
-import { miscellaneousItems } from '../../mocks/tableItems';
+
+import {
+  miscellaneousRead,
+  miscellaneousCreateUpdate,
+  miscellaneousDelete,
+} from '../../store/actions/miscellaneous';
 
 const ReadMiscellaneous = () => {
+  const dispatch = useDispatch();
+  const miscellaneousItems = useSelector(
+    (state) => state.miscellaneous.miscellaneous,
+  ).records;
+  const token = useSelector((state) => state.user.token);
+
+  const handleReadMiscellaneous = () => {
+    dispatch(miscellaneousRead({ token: token }));
+  };
+
   // On Load
   useEffect(() => {
     document.title = `Miscellaneous | ${process.env.REACT_APP_NAME}`;
+    handleReadMiscellaneous();
   }, []);
 
   // Local
-  const [
-    openCreateUpdateMiscellaneous,
-    setOpenCreateUpdateMiscellaneous,
-  ] = useState(false);
+  const [openCreateUpdateMiscellaneous, setOpenCreateUpdateMiscellaneous] =
+    useState(false);
   const [valueForm, setValueForm] = useState(null);
 
   const handleOpenCreateMiscellaneous = () => {
@@ -36,12 +51,8 @@ const ReadMiscellaneous = () => {
   };
 
   const handleSubmitCreateUpdateMiscellaneous = (values) => {
-    const IDExists = values.hasOwnProperty('id');
-    if (IDExists) {
-      console.log('Update');
-    } else {
-      console.log('Create ');
-    }
+    values.date = new Date(values.date).toISOString();
+    dispatch(miscellaneousCreateUpdate({ values, token }));
     handleCloseCreateOrEditMiscellaneous();
   };
 
@@ -50,7 +61,7 @@ const ReadMiscellaneous = () => {
       `Are you sure you want to delete miscellaneous ${name}?`,
     );
     if (result) {
-      console.log('Delete');
+      dispatch(miscellaneousDelete({ id, token }));
     }
   };
 
@@ -58,16 +69,19 @@ const ReadMiscellaneous = () => {
   let tableStructure = [];
   if (miscellaneousItems) {
     tableStructure = miscellaneousItems.map((miscellaneous, idx) => {
+      const miscellaneousDate = new Date(miscellaneous.Date)
+        .toISOString()
+        .split('T')[0];
       return [
-        miscellaneous.id ? miscellaneous.id : idx + 1,
-        miscellaneous.description ? miscellaneous.description : 'Not Specified',
-        miscellaneous.price ? miscellaneous.price : 'Not Specified',
-        miscellaneous.date ? miscellaneous.date : 'Not Specified',
+        idx + 1,
+        miscellaneous.Description ? miscellaneous.Description : 'Not Specified',
+        miscellaneous.Price ? miscellaneous.Price : 'Not Specified',
+        miscellaneous.Date ? miscellaneousDate : 'Not Specified',
         {
-          id: miscellaneous.id,
-          description: miscellaneous.description,
-          price: miscellaneous.price,
-          date: miscellaneous.date || null,
+          id: miscellaneous.ID,
+          description: miscellaneous.Description,
+          price: miscellaneous.Price,
+          date: miscellaneousDate || null,
         },
       ];
     });

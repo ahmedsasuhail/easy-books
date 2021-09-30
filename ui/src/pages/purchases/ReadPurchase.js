@@ -15,9 +15,8 @@ const ReadPurchase = (props) => {
   }, []);
 
   // Local
-  const [openCreateUpdatePurchase, setOpenCreateUpdatePurchase] = useState(
-    false,
-  );
+  const [openCreateUpdatePurchase, setOpenCreateUpdatePurchase] =
+    useState(false);
   const [valueForm, setValueForm] = useState(null);
 
   const handleOpenCreatePurchase = () => {
@@ -60,20 +59,20 @@ const ReadPurchase = (props) => {
       return [
         purchase.id ? purchase.id : idx + 1,
         purchase.company_name ? purchase.company_name : 'Not Specified',
+        purchase.vehicle_name ? purchase.vehicle_name : 'Not Specified',
+        purchase.price ? purchase.price : 'Not Specified',
         purchase.contact_id
           ? contactItems.map((item) => {
               return item.id === purchase.contact_id && item.name;
             })
           : 'Not Specified',
-        purchase.vehicle_name ? purchase.vehicle_name : 'Not Specified',
-        purchase.price ? purchase.price : 'Not Specified',
         purchase.date ? purchase.date : 'Not Specified',
         {
           id: purchase.id,
           company_name: purchase.company_name,
-          contact_id: purchase.contact_id,
           vehicle_name: purchase.vehicle_name,
           price: purchase.price,
+          contact_id: purchase.contact_id,
           date: purchase.date,
         },
       ];
@@ -84,9 +83,9 @@ const ReadPurchase = (props) => {
   const columns = [
     'SNo.',
     'Company Name',
-    'Seller',
     'Vehicle Name',
     'Price',
+    'Seller',
     'Date',
   ];
 

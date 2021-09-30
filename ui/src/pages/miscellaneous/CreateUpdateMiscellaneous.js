@@ -38,6 +38,7 @@ const CreateUpdateMiscellaneous = () => {
         type='date'
         margin='normal'
         fullWidth
+        defaultValue={new Date().toISOString().split('T')[0]}
         InputLabelProps={{
           shrink: true,
         }}

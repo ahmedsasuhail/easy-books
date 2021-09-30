@@ -10,6 +10,17 @@ const CreateUpdateInventory = () => {
   return (
     <>
       <Field
+        component={Select}
+        options={purchaseItems}
+        id='purchase_id'
+        name='purchase_id'
+        label='Purchase Name'
+        margin='normal'
+        hasEmptyOption={true}
+        fullWidth
+        required
+      />
+      <Field
         component={Input}
         id='part_name'
         name='part_name'
@@ -31,17 +42,6 @@ const CreateUpdateInventory = () => {
         required
       />
       <Field
-        component={Select}
-        options={purchaseItems}
-        id='purchase_id'
-        name='purchase_id'
-        label='Purchase Name'
-        margin='normal'
-        hasEmptyOption={true}
-        fullWidth
-        required
-      />
-      <Field
         component={Input}
         id='date'
         name='date'
@@ -49,6 +49,7 @@ const CreateUpdateInventory = () => {
         type='date'
         margin='normal'
         fullWidth
+        defaultValue={new Date().toISOString().split('T')[0]}
         InputLabelProps={{
           shrink: true,
         }}

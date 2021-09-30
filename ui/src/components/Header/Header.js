@@ -105,7 +105,7 @@ export default function Header(props) {
   var [profileMenu, setProfileMenu] = useState(null);
   var [isSearchOpen, setSearchOpen] = useState(false);
 
-  const userObj = localStorage.getItem('quickBookAuth');
+  const userObj = localStorage.getItem('easyBooksAuth');
   const parsedUserObj = JSON.parse(userObj);
 
   return (

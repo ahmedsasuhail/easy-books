@@ -21,17 +21,6 @@ const CreateUpdatePurchase = () => {
         autoFocus
       />
       <Field
-        component={Select}
-        options={contactItems}
-        id='contact_id'
-        name='contact_id'
-        label='Seller'
-        margin='normal'
-        hasEmptyOption={true}
-        fullWidth
-        required
-      />
-      <Field
         component={Input}
         id='vehicle_name'
         name='vehicle_name'
@@ -52,6 +41,17 @@ const CreateUpdatePurchase = () => {
         required
       />
       <Field
+        component={Select}
+        options={contactItems}
+        id='contact_id'
+        name='contact_id'
+        label='Seller'
+        margin='normal'
+        hasEmptyOption={true}
+        fullWidth
+        required
+      />
+      <Field
         component={Input}
         id='date'
         name='date'
@@ -59,6 +59,7 @@ const CreateUpdatePurchase = () => {
         type='date'
         margin='normal'
         fullWidth
+        defaultValue={new Date().toISOString().split('T')[0]}
         InputLabelProps={{
           shrink: true,
         }}

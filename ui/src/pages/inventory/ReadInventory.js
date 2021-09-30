@@ -15,9 +15,8 @@ const ReadInventory = () => {
   }, []);
 
   // Local
-  const [openCreateUpdateInventory, setOpenCreateUpdateInventory] = useState(
-    false,
-  );
+  const [openCreateUpdateInventory, setOpenCreateUpdateInventory] =
+    useState(false);
   const [valueForm, setValueForm] = useState(null);
 
   const handleOpenCreateInventory = () => {
@@ -59,8 +58,6 @@ const ReadInventory = () => {
     tableStructure = inventoryItems.map((inventory, idx) => {
       return [
         inventory.id ? inventory.id : idx + 1,
-        inventory.part_name ? inventory.part_name : 'Not Specified',
-        inventory.quantity ? inventory.quantity : 'Not Specified',
         inventory.purchase_id
           ? purchaseItems.map((item) => {
               return (
@@ -69,20 +66,22 @@ const ReadInventory = () => {
               );
             })
           : 'Not Specified',
+        inventory.part_name ? inventory.part_name : 'Not Specified',
+        inventory.quantity ? inventory.quantity : 'Not Specified',
         inventory.date ? inventory.date : 'Not Specified',
         {
           id: inventory.id,
+          purchase_id: inventory.purchase_id,
           part_name: inventory.part_name,
           quantity: inventory.quantity,
           date: inventory.date,
-          purchase_id: inventory.purchase_id,
         },
       ];
     });
   }
 
   // Columns
-  const columns = ['SNo.', 'Part Name', 'Quantity', 'Purchase Name', 'Date'];
+  const columns = ['SNo.', 'Purchase Name', 'Part Name', 'Quantity', 'Date'];
 
   columns.push({
     name: 'Actions',

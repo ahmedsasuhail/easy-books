@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// QuickBook Axios Instance
+// EasyBook Axios Instance
 const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_SERVER_URL,
   headers: {

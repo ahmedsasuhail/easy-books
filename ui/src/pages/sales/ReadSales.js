@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Grid, Button, IconButton } from '@material-ui/core';
 import { Edit as EditIcon, Delete as DeleteIcon } from '@material-ui/icons';
 import MUIDataTable from 'mui-datatables';
+import Checkbox from '@material-ui/core/Checkbox';
 
 import PageTitle from '../../components/PageTitle/PageTitle';
 import Dialog from '../../components/Dialog/Dialog';
@@ -82,7 +83,7 @@ const ReadSales = () => {
             })
           : 'Not Specified',
         sales.date ? sales.date : 'Not Specified',
-        <input type='checkbox' checked={sales.returned === 'true'} />,
+        <Checkbox color='primary' checked={sales.returned} />,
         sales.returned_date ? sales.returned_date : '-',
         {
           id: sales.id,
@@ -183,7 +184,7 @@ const ReadSales = () => {
       </Grid>
       <Dialog
         fullWidth={true}
-        maxWidth='xs'
+        maxWidth='sm'
         open={openCreateUpdateSales}
         handleClose={handleCloseCreateOrEditSales}
         title={`${valueForm ? 'Edit' : 'Create'} Sales`}

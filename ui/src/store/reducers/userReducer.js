@@ -2,8 +2,8 @@ import * as actionTypes from '../actions/actionTypes';
 import { mergeObjects } from '../../utils/helpers';
 
 // Check localStorage For Data
-let data_store = localStorage.getItem('quickBookAuth')
-  ? JSON.parse(localStorage.getItem('quickBookAuth'))
+let data_store = localStorage.getItem('easyBooksAuth')
+  ? JSON.parse(localStorage.getItem('easyBooksAuth'))
   : '';
 
 // Set Initial State
