@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/ahmedsasuhail/easy-books/auth"
 	"github.com/ahmedsasuhail/easy-books/models"
@@ -30,18 +29,7 @@ func CORSMiddleware() gin.HandlerFunc {
 func ValidateJWT() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Read and parse bearer token.
-		bearerToken := c.GetHeader("Authorization")
-		var token string
-		if strings.HasPrefix(bearerToken, "Bearer") {
-			token = strings.Trim(strings.Replace(bearerToken, "Bearer", "", -1), " ")
-		} else {
-			c.AbortWithStatusJSON(http.StatusNotAcceptable, models.Response{
-				Status:  "fail",
-				Code:    http.StatusNotAcceptable,
-				Message: "Invalid bearer token format.",
-			})
-		}
-
+		token := c.GetHeader("Authorization")
 		// Validate token.
 		err := auth.ValidateToken(token)
 		if err != nil {
