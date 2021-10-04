@@ -9,30 +9,30 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-// CreateOrUpdateRelationships creates or updates an entity in the `eb_relationships`
+// CreateOrUpdateRelationships creates or updates a record in the `eb_relationships`
 // table.
 func CreateOrUpdateRelationships(c *gin.Context) {
 	// Read and parse request body.
-	var entity models.Relationships
-	err := parseRequestBody(c, &entity)
+	var record models.Relationships
+	err := parseRequestBody(c, &record)
 	if err != nil {
 		errorResponse(c, http.StatusBadRequest, err.Error())
 
 		return
 	}
 
-	// Create or update entity in table.
+	// Create or update record in table.
 	err = pgClient.Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "id"}},
 		UpdateAll: true,
-	}).Create(&entity).Error
+	}).Create(&record).Error
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 
 		return
 	} else {
-		pgClient.First(&entity)
-		successResponse(c, http.StatusOK, "", &entity)
+		pgClient.First(&record)
+		successResponse(c, http.StatusOK, "", &record)
 	}
 }
 
@@ -64,23 +64,23 @@ func ReadRelationships(c *gin.Context) {
 	}
 }
 
-// DeleteRelationships deletes an entity from the `eb_relationships` table.
+// DeleteRelationships deletes a record from the `eb_relationships` table.
 func DeleteRelationships(c *gin.Context) {
 	// Read and parse request body.
-	var entity models.Relationships
-	err := parseRequestBody(c, &entity)
+	var record models.Relationships
+	err := parseRequestBody(c, &record)
 	if err != nil {
 		errorResponse(c, http.StatusBadRequest, err.Error())
 
 		return
 	}
 
-	err = pgClient.Where("id = ?", entity.ID).Delete(&entity).Error
+	err = pgClient.Where("id = ?", record.ID).Delete(&record).Error
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 
 		return
 	} else {
-		successResponse(c, http.StatusOK, "Deleted record.", entity)
+		successResponse(c, http.StatusOK, "Deleted record.", record)
 	}
 }
