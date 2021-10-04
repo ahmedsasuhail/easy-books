@@ -30,6 +30,14 @@ func Get() *gin.Engine {
 			miscellaneous.GET("/", controllers.ReadMiscellaneous)
 			miscellaneous.DELETE("/", controllers.DeleteMiscellaneous)
 		}
+
+		relationships := app.Group("/relationships")
+		relationships.Use(middleware.ValidateJWT())
+		{
+			relationships.PUT("/", controllers.CreateOrUpdateRelationships)
+			relationships.GET("/", controllers.ReadRelationships)
+			relationships.DELETE("/", controllers.DeleteRelationships)
+		}
 	}
 
 	return router
