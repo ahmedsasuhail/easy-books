@@ -51,7 +51,7 @@ func ValidateToken(token string) error {
 		},
 	)
 
-	if !parsedToken.Valid {
+	if parsedToken == nil || !parsedToken.Valid {
 		return errors.New("invalid auth token")
 	}
 
