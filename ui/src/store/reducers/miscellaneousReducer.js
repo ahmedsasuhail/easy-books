@@ -4,6 +4,7 @@ import { mergeObjects } from '../../utils/helpers';
 // Set Initial State
 const initialState = {
   miscellaneous: [],
+  pageNo: null,
   loading: false,
 };
 
@@ -13,11 +14,10 @@ const miscellaneousReducer = (state = initialState, action) => {
     // Create or Update
     case actionTypes.MISCELLANEOUS_CREATE_UPDATE_SUCCESS:
       let modifyMiscellaneousForCreateOrUpdate = [...state.miscellaneous];
-
       const miscellaneousIndex = modifyMiscellaneousForCreateOrUpdate.findIndex(
         (miscellaneous) =>
-          parseInt(action.payload.miscellaneous.id) ===
-          parseInt(miscellaneous.id),
+          parseInt(action.payload.miscellaneous.ID) ===
+          parseInt(miscellaneous.ID),
       );
 
       if (miscellaneousIndex >= 0) {
@@ -46,6 +46,7 @@ const miscellaneousReducer = (state = initialState, action) => {
     case actionTypes.MISCELLANEOUS_READ_SUCCESS:
       return mergeObjects(state, {
         miscellaneous: action.payload.miscellaneous,
+        pageNo: action.payload.pageNo,
         loading: false,
       });
 
@@ -57,14 +58,12 @@ const miscellaneousReducer = (state = initialState, action) => {
     // Delete
     case actionTypes.MISCELLANEOUS_DELETE_SUCCESS:
       let modifyMiscellaneousForDelete = [...state.miscellaneous];
-
       const modifiedMiscellaneousAfterDeleted =
         modifyMiscellaneousForDelete.filter(
           (miscellaneous) =>
             parseInt(action.payload.miscellaneousId) !==
-            parseInt(miscellaneous.id),
+            parseInt(miscellaneous.ID),
         );
-
       return mergeObjects(state, {
         miscellaneous: modifiedMiscellaneousAfterDeleted,
         loading: false,
@@ -78,8 +77,6 @@ const miscellaneousReducer = (state = initialState, action) => {
     // Loading API Request
     case actionTypes.LOADING_REQUEST:
       return mergeObjects(state, {
-        message: null,
-        messageType: null,
         loading: true,
       });
 

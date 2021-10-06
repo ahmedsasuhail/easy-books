@@ -11,9 +11,9 @@ const initialState = {
   isAuthenticated: data_store && data_store.token ? true : false,
   token: data_store && data_store.token ? data_store.token : null,
   name: data_store && data_store.name ? data_store.name : null,
+  loading: false,
   message: null,
   messageType: null, // 0 is Success, 1 is Error
-  loading: false,
 };
 
 // Reducer
@@ -53,6 +53,7 @@ const userReducer = (state = initialState, action) => {
         token: null,
         name: null,
         message: 'You have been logged out. Please login to continue.',
+        loading: false,
       });
     // Verify Token
     case actionTypes.USER_LOGIN_TOKEN_VERIFICATION_REQUEST:
@@ -76,9 +77,9 @@ const userReducer = (state = initialState, action) => {
     // Loading name Request
     case actionTypes.LOADING_REQUEST:
       return mergeObjects(state, {
+        loading: true,
         message: null,
         messageType: null,
-        loading: true,
       });
     default:
       return state;

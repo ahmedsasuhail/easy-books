@@ -29,8 +29,8 @@ const Input = (props) => {
       }}
       InputLabelProps={props.InputLabelProps}
       multiline={props.multiline}
-      rows={props.rows}
-      rowsMax={props.rowsMax}
+      minRows={props.rows}
+      maxRows={props.rowsMax}
       error={props.error}
     />
   );

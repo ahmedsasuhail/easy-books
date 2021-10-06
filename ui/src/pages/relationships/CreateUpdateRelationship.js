@@ -4,7 +4,7 @@ import { Field } from 'react-final-form';
 // Components
 import Input from '../../components/Input/Input';
 
-const CreateUpdateContact = () => {
+const CreateUpdateRelationship = () => {
   return (
     <>
       <Field
@@ -40,8 +40,21 @@ const CreateUpdateContact = () => {
         rows={3}
         rowsMax={3}
       />
+      <Field
+        component={Input}
+        id='date'
+        name='date'
+        label='Date'
+        type='date'
+        margin='normal'
+        fullWidth
+        defaultValue={new Date().toISOString().split('T')[0]}
+        InputLabelProps={{
+          shrink: true,
+        }}
+      />
     </>
   );
 };
 
-export default CreateUpdateContact;
+export default CreateUpdateRelationship;

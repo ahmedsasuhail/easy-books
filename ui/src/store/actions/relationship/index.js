@@ -1,15 +1,15 @@
-import { miscellaneousActions } from './miscellaneousActions';
+import { relationshipActions } from './relationshipActions';
 import axios from '../../../utils/axiosInstance';
 import { userActions } from '../user/userActions';
 
 // Action Creators
 // Create or Update
-export const miscellaneousCreateUpdate = (values) => {
+export const relationshipCreateUpdate = (values) => {
   return async (dispatch) => {
-    dispatch(miscellaneousActions.loading());
+    dispatch(relationshipActions.loading());
     try {
       const response = await axios.put(
-        'miscellaneous/',
+        'relationships/',
         {
           date: values.formValues.date,
           description: values.formValues.description,
@@ -24,28 +24,28 @@ export const miscellaneousCreateUpdate = (values) => {
       );
       if (response.data.data) {
         dispatch(
-          miscellaneousActions.miscellaneousCreateUpdateSuccess(
+          relationshipActions.relationshipCreateUpdateSuccess(
             response.data.data,
           ),
         );
       } else {
-        dispatch(miscellaneousActions.miscellaneousCreateUpdateFailure());
+        dispatch(relationshipActions.relationshipCreateUpdateFailure());
         dispatch(userActions.logoutUser());
       }
     } catch (error) {
-      dispatch(miscellaneousActions.miscellaneousCreateUpdateFailure());
+      dispatch(relationshipActions.relationshipCreateUpdateFailure());
       dispatch(userActions.logoutUser());
     }
   };
 };
 
 // Read
-export const miscellaneousRead = (values) => {
+export const relationshipRead = (values) => {
   return async (dispatch) => {
-    dispatch(miscellaneousActions.loading());
+    dispatch(relationshipActions.loading());
     try {
       const response = await axios.get(
-        `miscellaneous/?page=1&page_limit=50&order_by=id&sort_order=asc`,
+        `relationships/?page=1&page_limit=50&order_by=id&sort_order=asc`,
         {
           headers: {
             Authorization: values.token,
@@ -54,25 +54,25 @@ export const miscellaneousRead = (values) => {
       );
       if (response.data.data) {
         dispatch(
-          miscellaneousActions.miscellaneousReadSuccess(response.data.data),
+          relationshipActions.relationshipReadSuccess(response.data.data),
         );
       } else {
-        dispatch(miscellaneousActions.miscellaneousReadFailure());
+        dispatch(relationshipActions.relationshipReadFailure());
         dispatch(userActions.logoutUser());
       }
     } catch (error) {
-      dispatch(miscellaneousActions.miscellaneousReadFailure());
+      dispatch(relationshipActions.relationshipReadFailure());
       dispatch(userActions.logoutUser());
     }
   };
 };
 
 // Delete
-export const miscellaneousDelete = (values) => {
+export const relationshipDelete = (values) => {
   return async (dispatch) => {
-    dispatch(miscellaneousActions.loading());
+    dispatch(relationshipActions.loading());
     try {
-      const response = await axios.delete('miscellaneous/', {
+      const response = await axios.delete('relationships/', {
         headers: {
           Authorization: values.token,
         },
@@ -82,14 +82,14 @@ export const miscellaneousDelete = (values) => {
       });
       if (response.data.data) {
         dispatch(
-          miscellaneousActions.miscellaneousDeleteSuccess(response.data.data),
+          relationshipActions.relationshipDeleteSuccess(response.data.data),
         );
       } else {
-        dispatch(miscellaneousActions.miscellaneousDeleteFailure());
+        dispatch(relationshipActions.relationshipDeleteFailure());
         dispatch(userActions.logoutUser());
       }
     } catch (error) {
-      dispatch(miscellaneousActions.miscellaneousDeleteFailure());
+      dispatch(relationshipActions.relationshipDeleteFailure());
       dispatch(userActions.logoutUser());
     }
   };

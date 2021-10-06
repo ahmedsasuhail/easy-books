@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Grid, Button, IconButton } from '@material-ui/core';
 import { Edit as EditIcon, Delete as DeleteIcon } from '@material-ui/icons';
@@ -18,18 +18,19 @@ const ReadMiscellaneous = () => {
   const dispatch = useDispatch();
   const miscellaneousItems = useSelector(
     (state) => state.miscellaneous.miscellaneous,
-  ).records;
+  );
   const token = useSelector((state) => state.user.token);
+  const isLoading = useSelector((state) => state.miscellaneous.loading);
 
-  const handleReadMiscellaneous = () => {
+  const handleReadMiscellaneous = useCallback(() => {
     dispatch(miscellaneousRead({ token: token }));
-  };
+  }, [dispatch, token]);
 
   // On Load
   useEffect(() => {
     document.title = `Miscellaneous | ${process.env.REACT_APP_NAME}`;
     handleReadMiscellaneous();
-  }, []);
+  }, [handleReadMiscellaneous]);
 
   // Local
   const [openCreateUpdateMiscellaneous, setOpenCreateUpdateMiscellaneous] =
@@ -50,15 +51,15 @@ const ReadMiscellaneous = () => {
     setOpenCreateUpdateMiscellaneous(false);
   };
 
-  const handleSubmitCreateUpdateMiscellaneous = (values) => {
-    values.date = new Date(values.date).toISOString();
-    dispatch(miscellaneousCreateUpdate({ values, token }));
+  const handleSubmitCreateUpdateMiscellaneous = (formValues) => {
+    formValues.date = new Date(formValues.date).toISOString();
+    dispatch(miscellaneousCreateUpdate({ formValues, token }));
     handleCloseCreateOrEditMiscellaneous();
   };
 
   const handleSubmitDeleteMiscellaneous = (id, name) => {
     const result = window.confirm(
-      `Are you sure you want to delete miscellaneous ${name}?`,
+      `Are you sure you want to delete miscellaneous ${id}?`,
     );
     if (result) {
       dispatch(miscellaneousDelete({ id, token }));
@@ -171,6 +172,7 @@ const ReadMiscellaneous = () => {
         title={`${valueForm ? 'Edit' : 'Create'} Miscellaneous`}
         handleSubmit={handleSubmitCreateUpdateMiscellaneous}
         initialValues={valueForm}
+        isLoading={isLoading}
       >
         <CreateUpdateMiscellaneous initialValues={valueForm} />
       </Dialog>

@@ -60,8 +60,8 @@ const structure = [
   },
   {
     id: 5,
-    label: 'Contacts',
-    link: '/app/contacts',
+    label: 'Relationships',
+    link: '/app/relationships',
     icon: <ContactsIcon />,
   },
 ];

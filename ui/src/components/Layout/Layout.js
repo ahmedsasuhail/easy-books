@@ -30,7 +30,7 @@ import Miscellaneous from '../../pages/miscellaneous/ReadMiscellaneous';
 import Purchases from '../../pages/purchases/ReadPurchase';
 import Sales from '../../pages/sales/ReadSales';
 import Inventory from '../../pages/inventory/ReadInventory';
-import Contacts from '../../pages/contacts/ReadContact';
+import Relationships from '../../pages/relationships/ReadRelationships';
 
 // context
 import { useLayoutState } from '../../context/LayoutContext';
@@ -61,7 +61,7 @@ function Layout(props) {
             <Route path='/app/purchases' component={Purchases} />
             <Route path='/app/sales' component={Sales} />
             <Route path='/app/inventory' component={Inventory} />
-            <Route path='/app/contacts' component={Contacts} />
+            <Route path='/app/relationships' component={Relationships} />
             <Route
               exact
               path='/app/ui'

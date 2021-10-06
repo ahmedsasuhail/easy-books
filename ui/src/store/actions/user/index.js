@@ -1,4 +1,4 @@
-import { userActions } from './userAction';
+import { userActions } from './userActions';
 import { usePost, useGet } from '../../../utils/webServices';
 import axios from '../../../utils/axiosInstance';
 
@@ -59,7 +59,6 @@ export const userLogout = (history) => {
   return (dispatch) => {
     localStorage.removeItem('easyBooksAuth');
     dispatch(userActions.logoutUser());
-    history.push('/login');
   };
 };
 

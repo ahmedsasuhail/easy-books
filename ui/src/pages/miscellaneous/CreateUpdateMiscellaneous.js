@@ -16,8 +16,8 @@ const CreateUpdateMiscellaneous = () => {
         margin='normal'
         fullWidth
         multiline={true}
-        rows={3}
-        rowsMax={3}
+        minRows={3}
+        maxRows={3}
         autoFocus
       />
       <Field
