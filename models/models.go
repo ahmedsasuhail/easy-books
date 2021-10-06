@@ -2,6 +2,8 @@
 package models
 
 import (
+	"time"
+
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
@@ -37,7 +39,9 @@ type Tabler interface {
 
 // User represents a table containing user data.
 type Users struct {
-	gorm.Model
+	CreatedAt time.Time      `json:"created_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at"`
 
 	Name     string `json:"name"`
 	Email    string `gorm:"type:varchar(100);unique_index;primaryKey" json:"email"`
@@ -49,7 +53,9 @@ func (Users) TableName() string {
 }
 
 type Sales struct {
-	gorm.Model
+	CreatedAt time.Time      `json:"created_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at"`
 
 	ID             uint64         `gorm:"primaryKey" json:"id"`
 	Price          float64        `sql:"type:decimal(8,2);" json:"price"`
@@ -57,9 +63,9 @@ type Sales struct {
 	RelationshipID uint64         `json:"relationship_id"`
 	PurchaseID     uint64         `json:"purchase_id"`
 	InventoryID    uint64         `json:"inventory_id"`
-	Relationships  Relationships  `gorm:"foreignKey:RelationshipID"`
-	Purchases      Purchases      `gorm:"foreignKey:PurchaseID"`
-	Inventory      Inventory      `gorm:"foreignKey:InventoryID"`
+	Relationships  Relationships  `gorm:"foreignKey:RelationshipID" json:"relationships"`
+	Purchases      Purchases      `gorm:"foreignKey:PurchaseID" json:"purchases"`
+	Inventory      Inventory      `gorm:"foreignKey:InventoryID" json:"inventory"`
 }
 
 func (Sales) TableName() string {
@@ -67,12 +73,14 @@ func (Sales) TableName() string {
 }
 
 type SalesReturns struct {
-	gorm.Model
+	CreatedAt time.Time      `json:"created_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at"`
 
 	ID      uint64         `gorm:"primaryKey" json:"id"`
 	Date    datatypes.Date `json:"date"`
 	SalesID uint64         `json:"sales_id"`
-	Sales   Sales          `gorm:"foreignKey:SalesID"`
+	Sales   Sales          `gorm:"foreignKey:SalesID" json:"sales"`
 }
 
 func (SalesReturns) TableName() string {
@@ -80,7 +88,9 @@ func (SalesReturns) TableName() string {
 }
 
 type Purchases struct {
-	gorm.Model
+	CreatedAt time.Time      `json:"created_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at"`
 
 	ID             uint64         `gorm:"primaryKey" json:"id"`
 	CompanyName    string         `json:"company_name"`
@@ -88,7 +98,7 @@ type Purchases struct {
 	Price          float64        `sql:"type:decimal(8,2);" json:"price"`
 	Date           datatypes.Date `json:"date"`
 	RelationshipID uint64         `json:"relationship_id"`
-	Relationships  Relationships  `gorm:"foreignKey:RelationshipID"`
+	Relationships  Relationships  `gorm:"foreignKey:RelationshipID" json:"relationships"`
 }
 
 func (Purchases) TableName() string {
@@ -96,14 +106,16 @@ func (Purchases) TableName() string {
 }
 
 type Inventory struct {
-	gorm.Model
+	CreatedAt time.Time      `json:"created_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at"`
 
 	ID         uint64         `gorm:"primaryKey" json:"id"`
 	PartName   string         `json:"part_name"`
 	Quantity   uint32         `json:"quantity"`
 	PurchaseID uint64         `json:"purchase_id"`
 	Date       datatypes.Date `json:"date"`
-	Purchases  Purchases      `gorm:"foreignKey:PurchaseID"`
+	Purchases  Purchases      `gorm:"foreignKey:PurchaseID" json:"purchases"`
 }
 
 func (Inventory) TableName() string {
@@ -111,7 +123,9 @@ func (Inventory) TableName() string {
 }
 
 type Relationships struct {
-	gorm.Model
+	CreatedAt time.Time      `json:"created_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at"`
 
 	ID          uint64 `gorm:"primaryKey" json:"id"`
 	Name        string `json:"name"`
@@ -124,7 +138,9 @@ func (Relationships) TableName() string {
 }
 
 type Miscellaneous struct {
-	gorm.Model
+	CreatedAt time.Time      `json:"created_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at"`
 
 	ID          uint64         `gorm:"primaryKey" json:"id"`
 	Description string         `json:"description"`
