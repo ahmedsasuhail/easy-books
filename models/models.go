@@ -20,10 +20,10 @@ type Response struct {
 
 // Pagination represents a pagination request.
 type Pagination struct {
-	Page      int
-	PageLimit int
-	OrderBy   string
-	SortOrder string // Can either be `"asc"` or `"desc"`.
+	Page      int    `json:"page"`
+	PageLimit int    `json:"page_limit"`
+	OrderBy   string `json:"order_by"`
+	SortOrder string `json:"sort_order"` // Can either be `"asc"` or `"desc"`.
 }
 
 // ----------------------------------------------------------------------------
@@ -39,9 +39,9 @@ type Tabler interface {
 type Users struct {
 	gorm.Model
 
-	Name     string
-	Email    string `gorm:"type:varchar(100);unique_index;primaryKey"`
-	Password string `json:"Password"`
+	Name     string `json:"name"`
+	Email    string `gorm:"type:varchar(100);unique_index;primaryKey" json:"email"`
+	Password string `json:"password"`
 }
 
 func (Users) TableName() string {
@@ -51,15 +51,15 @@ func (Users) TableName() string {
 type Sales struct {
 	gorm.Model
 
-	ID             uint64  `gorm:"primaryKey"`
-	Price          float64 `sql:"type:decimal(8,2);"`
-	Data           datatypes.Date
-	RelationshipID uint64
-	PurchaseID     uint64
-	InventoryID    uint64
-	Relationships  Relationships `gorm:"foreignKey:RelationshipID"`
-	Purchases      Purchases     `gorm:"foreignKey:PurchaseID"`
-	Inventory      Inventory     `gorm:"foreignKey:InventoryID"`
+	ID             uint64         `gorm:"primaryKey" json:"id"`
+	Price          float64        `sql:"type:decimal(8,2);" json:"price"`
+	Data           datatypes.Date `json:"date"`
+	RelationshipID uint64         `json:"relationship_id"`
+	PurchaseID     uint64         `json:"purchase_id"`
+	InventoryID    uint64         `json:"inventory_id"`
+	Relationships  Relationships  `gorm:"foreignKey:RelationshipID"`
+	Purchases      Purchases      `gorm:"foreignKey:PurchaseID"`
+	Inventory      Inventory      `gorm:"foreignKey:InventoryID"`
 }
 
 func (Sales) TableName() string {
@@ -69,10 +69,10 @@ func (Sales) TableName() string {
 type SalesReturns struct {
 	gorm.Model
 
-	ID      uint64 `gorm:"primaryKey"`
-	Date    datatypes.Date
-	SalesID uint64
-	Sales   Sales `gorm:"foreignKey:SalesID"`
+	ID      uint64         `gorm:"primaryKey" json:"id"`
+	Date    datatypes.Date `json:"date"`
+	SalesID uint64         `json:"sales_id"`
+	Sales   Sales          `gorm:"foreignKey:SalesID"`
 }
 
 func (SalesReturns) TableName() string {
@@ -82,13 +82,13 @@ func (SalesReturns) TableName() string {
 type Purchases struct {
 	gorm.Model
 
-	ID             uint64 `gorm:"primaryKey"`
-	CompanyName    string
-	VehicleName    string
-	Price          float64 `sql:"type:decimal(8,2);"`
-	Date           datatypes.Date
-	RelationshipID uint64
-	Relationships  Relationships `gorm:"foreignKey:RelationshipID"`
+	ID             uint64         `gorm:"primaryKey" json:"id"`
+	CompanyName    string         `json:"company_name"`
+	VehicleName    string         `json:"vehicle_name"`
+	Price          float64        `sql:"type:decimal(8,2);" json:"price"`
+	Date           datatypes.Date `json:"date"`
+	RelationshipID uint64         `json:"relationship_id"`
+	Relationships  Relationships  `gorm:"foreignKey:RelationshipID"`
 }
 
 func (Purchases) TableName() string {
@@ -98,12 +98,12 @@ func (Purchases) TableName() string {
 type Inventory struct {
 	gorm.Model
 
-	ID         uint64 `gorm:"primaryKey"`
-	PartName   string
-	Quantity   uint32
-	PurchaseID uint64
-	Purchases  Purchases `gorm:"foreignKey:PurchaseID"`
-	Date       datatypes.Date
+	ID         uint64         `gorm:"primaryKey" json:"id"`
+	PartName   string         `json:"part_name"`
+	Quantity   uint32         `json:"quantity"`
+	PurchaseID uint64         `json:"purchase_id"`
+	Date       datatypes.Date `json:"date"`
+	Purchases  Purchases      `gorm:"foreignKey:PurchaseID"`
 }
 
 func (Inventory) TableName() string {
@@ -113,10 +113,10 @@ func (Inventory) TableName() string {
 type Relationships struct {
 	gorm.Model
 
-	ID          uint64 `gorm:"primaryKey"`
-	Name        string
-	PhoneNumber string `gorm:"type:varchar(10);unique_index"`
-	Address     string
+	ID          uint64 `gorm:"primaryKey" json:"id"`
+	Name        string `json:"name"`
+	PhoneNumber string `gorm:"unique_index" json:"phone_number"`
+	Address     string `json:"address"`
 }
 
 func (Relationships) TableName() string {
@@ -126,10 +126,10 @@ func (Relationships) TableName() string {
 type Miscellaneous struct {
 	gorm.Model
 
-	ID          uint64 `gorm:"primaryKey"`
-	Description string
-	Price       float64 `sql:"type:decimal(8,2);"`
-	Date        datatypes.Date
+	ID          uint64         `gorm:"primaryKey" json:"id"`
+	Description string         `json:"description"`
+	Price       float64        `sql:"type:decimal(8,2);" json:"price"`
+	Date        datatypes.Date `json:"date"`
 }
 
 func (Miscellaneous) TableName() string {
