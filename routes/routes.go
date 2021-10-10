@@ -38,6 +38,14 @@ func Get() *gin.Engine {
 			relationships.GET("/", controllers.ReadRelationships)
 			relationships.DELETE("/", controllers.DeleteRelationships)
 		}
+
+		purchases := app.Group("/purchases")
+		purchases.Use(middleware.ValidateJWT())
+		{
+			purchases.PUT("/", controllers.CreateOrUpdatePurchases)
+			purchases.GET("/", controllers.ReadPurchases)
+			purchases.DELETE("/", controllers.DeletePurchases)
+		}
 	}
 
 	return router
