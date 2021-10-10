@@ -56,7 +56,7 @@ func ReadInventory(c *gin.Context) {
 		).Order(
 			fmt.Sprintf("%s %s", pagination.OrderBy, pagination.SortOrder),
 		)
-		result = queryBuilder.Preload("Purchases").Find(&records)
+		result = queryBuilder.Preload("Purchases").Preload("Relationships").Find(&records)
 	}
 
 	if result.Error != nil {
