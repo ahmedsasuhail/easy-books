@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Grid, Button, IconButton } from '@material-ui/core';
 import { Edit as EditIcon, Delete as DeleteIcon } from '@material-ui/icons';
@@ -9,10 +9,11 @@ import Dialog from '../../components/Dialog/Dialog';
 import CreateUpdateMiscellaneous from './CreateUpdateMiscellaneous';
 
 import {
-  miscellaneousRead,
   miscellaneousCreateUpdate,
   miscellaneousDelete,
 } from '../../store/actions/miscellaneous';
+
+import { formattedDate } from '../../utils/helpers';
 
 const ReadMiscellaneous = () => {
   const dispatch = useDispatch();
@@ -20,17 +21,12 @@ const ReadMiscellaneous = () => {
     (state) => state.miscellaneous.miscellaneous,
   );
   const token = useSelector((state) => state.user.token);
-  const isLoading = useSelector((state) => state.miscellaneous.loading);
-
-  const handleReadMiscellaneous = useCallback(() => {
-    dispatch(miscellaneousRead({ token: token }));
-  }, [dispatch, token]);
+  const isLoading = useSelector((state) => state.miscellaneous.formLoading);
 
   // On Load
   useEffect(() => {
     document.title = `Miscellaneous | ${process.env.REACT_APP_NAME}`;
-    handleReadMiscellaneous();
-  }, [handleReadMiscellaneous]);
+  }, []);
 
   // Local
   const [openCreateUpdateMiscellaneous, setOpenCreateUpdateMiscellaneous] =
@@ -70,18 +66,20 @@ const ReadMiscellaneous = () => {
   let tableStructure = [];
   if (miscellaneousItems) {
     tableStructure = miscellaneousItems.map((miscellaneous, idx) => {
-      const miscellaneousDate = new Date(miscellaneous.Date)
+      const miscellaneousDate = new Date(miscellaneous.date)
         .toISOString()
         .split('T')[0];
       return [
         idx + 1,
-        miscellaneous.Description ? miscellaneous.Description : 'Not Specified',
-        miscellaneous.Price ? miscellaneous.Price : 'Not Specified',
-        miscellaneous.Date ? miscellaneousDate : 'Not Specified',
+        miscellaneous.description ? miscellaneous.description : 'Not Specified',
+        miscellaneous.price ? miscellaneous.price : 'Not Specified',
+        miscellaneous.date
+          ? formattedDate(miscellaneous.date)
+          : 'Not Specified',
         {
-          id: miscellaneous.ID,
-          description: miscellaneous.Description,
-          price: miscellaneous.Price,
+          id: miscellaneous.id,
+          description: miscellaneous.description,
+          price: miscellaneous.price,
           date: miscellaneousDate || null,
         },
       ];
@@ -89,7 +87,7 @@ const ReadMiscellaneous = () => {
   }
 
   // Columns
-  const columns = ['SNo.', 'Description', 'Price', 'Date'];
+  const columns = ['SN', 'Description', 'Price', 'Date'];
 
   columns.push({
     name: 'Actions',
@@ -131,7 +129,6 @@ const ReadMiscellaneous = () => {
     selectableRows: 'none',
     rowsPerPage: 5,
     rowsPerPageOptions: [5, 10, 15],
-    jumpToPage: true,
     textLabels: {
       pagination: {
         rowsPerPage: 'Total Items Per Page',

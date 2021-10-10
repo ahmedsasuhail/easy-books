@@ -10,6 +10,7 @@ import {
 import { Form } from 'react-final-form';
 
 const CustomDialog = (props) => {
+  console.log(props.isLoading);
   return (
     <>
       <Dialog
@@ -27,12 +28,12 @@ const CustomDialog = (props) => {
               <DialogContent>{props.children}</DialogContent>
               <DialogActions>
                 <>
-                  <Button onClick={props.handleClose} color='secondary'>
+                  <Button onClick={props.handleClose} color='primary'>
                     {props.closeButtonLabel ? props.closeButtonLabel : 'Cancel'}
                   </Button>
                   <Button
                     type='submit'
-                    color='primary'
+                    color='secondary'
                     disabled={
                       props.isLoading
                       // || (props.isCommentForm ? !values && !values.comment : false)

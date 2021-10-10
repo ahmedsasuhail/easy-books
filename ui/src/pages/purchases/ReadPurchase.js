@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Grid, Button, IconButton } from '@material-ui/core';
 import { Edit as EditIcon, Delete as DeleteIcon } from '@material-ui/icons';
 import MUIDataTable from 'mui-datatables';
@@ -6,9 +7,20 @@ import MUIDataTable from 'mui-datatables';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import Dialog from '../../components/Dialog/Dialog';
 import CreateUpdatePurchase from './CreateUpdatePurchase';
-import { purchaseItems, contactItems } from '../../mocks/tableItems';
+
+import {
+  purchaseCreateUpdate,
+  purchaseDelete,
+} from '../../store/actions/purchase';
+
+import { formattedDate } from '../../utils/helpers';
 
 const ReadPurchase = (props) => {
+  const dispatch = useDispatch();
+  const purchaseItems = useSelector((state) => state.purchase.purchases);
+  const token = useSelector((state) => state.user.token);
+  const isLoading = useSelector((state) => state.relationship.formLoading);
+
   // On Load
   useEffect(() => {
     document.title = `Purchases | ${process.env.REACT_APP_NAME}`;
@@ -33,22 +45,18 @@ const ReadPurchase = (props) => {
     setOpenCreateUpdatePurchase(false);
   };
 
-  const handleSubmitCreateUpdatePurchase = (values) => {
-    const IDExists = values.hasOwnProperty('id');
-    if (IDExists) {
-      console.log('Update');
-    } else {
-      console.log('Create ');
-    }
+  const handleSubmitCreateUpdatePurchase = (formValues) => {
+    formValues.date = new Date(formValues.date).toISOString();
+    dispatch(purchaseCreateUpdate({ formValues, token }));
     handleCloseCreateOrEditPurchase();
   };
 
   const handleSubmitDeletePurchase = (id, name) => {
     const result = window.confirm(
-      `Are you sure you want to delete purchase ${name}?`,
+      `Are you sure you want to delete purchase ${id}?`,
     );
     if (result) {
-      console.log('Delete');
+      dispatch(purchaseDelete({ id, token }));
     }
   };
 
@@ -56,24 +64,23 @@ const ReadPurchase = (props) => {
   let tableStructure = [];
   if (purchaseItems) {
     tableStructure = purchaseItems.map((purchase, idx) => {
+      const purchaseDate = new Date(purchase.date).toISOString().split('T')[0];
       return [
-        purchase.id ? purchase.id : idx + 1,
+        idx + 1,
         purchase.company_name ? purchase.company_name : 'Not Specified',
         purchase.vehicle_name ? purchase.vehicle_name : 'Not Specified',
         purchase.price ? purchase.price : 'Not Specified',
-        purchase.contact_id
-          ? contactItems.map((item) => {
-              return item.id === purchase.contact_id && item.name;
-            })
+        purchase.relationship_id
+          ? purchase.relationships.name
           : 'Not Specified',
-        purchase.date ? purchase.date : 'Not Specified',
+        purchase.date ? formattedDate(purchase.date) : 'Not Specified',
         {
           id: purchase.id,
           company_name: purchase.company_name,
           vehicle_name: purchase.vehicle_name,
           price: purchase.price,
-          contact_id: purchase.contact_id,
-          date: purchase.date,
+          relationship_id: +purchase.relationship_id,
+          date: purchaseDate || null,
         },
       ];
     });
@@ -81,7 +88,7 @@ const ReadPurchase = (props) => {
 
   // Columns
   const columns = [
-    'SNo.',
+    'SN',
     'Company Name',
     'Vehicle Name',
     'Price',
@@ -127,7 +134,6 @@ const ReadPurchase = (props) => {
     selectableRows: 'none',
     rowsPerPage: 5,
     rowsPerPageOptions: [5, 10, 15],
-    jumpToPage: true,
     textLabels: {
       pagination: {
         rowsPerPage: 'Total Items Per Page',
@@ -169,6 +175,7 @@ const ReadPurchase = (props) => {
         title={`${valueForm ? 'Edit' : 'Create'} Purchase`}
         handleSubmit={handleSubmitCreateUpdatePurchase}
         initialValues={valueForm}
+        isLoading={isLoading}
       >
         <CreateUpdatePurchase initialValues={valueForm} />
       </Dialog>

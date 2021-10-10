@@ -1,12 +1,16 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Field } from 'react-final-form';
 
 // Components
 import Input from '../../components/Input/Input';
 import Select from '../../components/Select/Select';
-import { contactItems } from '../../mocks/tableItems';
 
 const CreateUpdatePurchase = () => {
+  const relationshipItems = useSelector(
+    (state) => state.relationship.relationships,
+  );
+
   return (
     <>
       <Field
@@ -42,9 +46,9 @@ const CreateUpdatePurchase = () => {
       />
       <Field
         component={Select}
-        options={contactItems}
-        id='contact_id'
-        name='contact_id'
+        options={relationshipItems}
+        id='relationship_id'
+        name='relationship_id'
         label='Seller'
         margin='normal'
         hasEmptyOption={true}
@@ -63,6 +67,7 @@ const CreateUpdatePurchase = () => {
         InputLabelProps={{
           shrink: true,
         }}
+        required
       />
     </>
   );

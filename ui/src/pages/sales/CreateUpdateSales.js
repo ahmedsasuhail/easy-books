@@ -1,17 +1,13 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Field } from 'react-final-form';
 import Grid from '@material-ui/core/Grid';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 // Components
 import Input from '../../components/Input/Input';
 import Select from '../../components/Select/Select';
-import {
-  contactItems,
-  purchaseItems,
-  inventoryItems,
-} from '../../mocks/tableItems';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 
 const checkBox = (props) => {
   return (
@@ -26,6 +22,12 @@ const checkBox = (props) => {
 };
 
 const CreateUpdateSales = () => {
+  const purchaseItems = useSelector((state) => state.purchase.purchases);
+  const inventoryItems = useSelector((state) => state.inventory.inventory);
+  const relationshipItems = useSelector(
+    (state) => state.relationship.relationships,
+  );
+
   return (
     <Grid container spacing={2}>
       <Grid item sm={6} xs={12}>
@@ -57,7 +59,7 @@ const CreateUpdateSales = () => {
       <Grid item sm={6} xs={12}>
         <Field
           component={Select}
-          options={contactItems}
+          options={relationshipItems}
           id='contact_id'
           name='contact_id'
           label='Buyer'
@@ -80,6 +82,7 @@ const CreateUpdateSales = () => {
           InputLabelProps={{
             shrink: true,
           }}
+          required
         />
       </Grid>
       <Grid item sm={6} xs={12}>
@@ -87,7 +90,8 @@ const CreateUpdateSales = () => {
           component={checkBox}
           id='returned'
           name='returned'
-          label='Returned'
+          label='Returned *'
+          required
         />
       </Grid>
       <Grid item sm={6} xs={12}>
@@ -103,6 +107,7 @@ const CreateUpdateSales = () => {
           InputLabelProps={{
             shrink: true,
           }}
+          required
         />
       </Grid>
     </Grid>

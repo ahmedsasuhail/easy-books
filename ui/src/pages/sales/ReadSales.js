@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Grid, Button, IconButton } from '@material-ui/core';
 import { Edit as EditIcon, Delete as DeleteIcon } from '@material-ui/icons';
 import MUIDataTable from 'mui-datatables';
@@ -7,14 +8,17 @@ import Checkbox from '@material-ui/core/Checkbox';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import Dialog from '../../components/Dialog/Dialog';
 import CreateUpdateSales from './CreateUpdateSales';
-import {
-  salesItems,
-  purchaseItems,
-  inventoryItems,
-  contactItems,
-} from '../../mocks/tableItems';
+
+import { salesCreateUpdate, salesDelete } from '../../store/actions/sales';
+
+import { formattedDate } from '../../utils/helpers';
 
 const ReadSales = () => {
+  const dispatch = useDispatch();
+  const salesItems = useSelector((state) => state.sales.sales);
+  const token = useSelector((state) => state.user.token);
+  const isLoading = useSelector((state) => state.sales.formLoading);
+
   // On Load
   useEffect(() => {
     document.title = `Sales | ${process.env.REACT_APP_NAME}`;
@@ -38,22 +42,18 @@ const ReadSales = () => {
     setOpenCreateUpdateSales(false);
   };
 
-  const handleSubmitCreateUpdateSales = (values) => {
-    const IDExists = values.hasOwnProperty('id');
-    if (IDExists) {
-      console.log('Update');
-    } else {
-      console.log('Create ');
-    }
+  const handleSubmitCreateUpdateSales = (formValues) => {
+    formValues.date = new Date(formValues.date).toISOString();
+    dispatch(salesCreateUpdate({ formValues, token }));
     handleCloseCreateOrEditSales();
   };
 
   const handleSubmitDeleteSales = (id, name) => {
     const result = window.confirm(
-      `Are you sure you want to delete sales ${name}?`,
+      `Are you sure you want to delete sales ${id}?`,
     );
     if (result) {
-      console.log('Delete');
+      dispatch(salesDelete({ id, token }));
     }
   };
 
@@ -61,28 +61,16 @@ const ReadSales = () => {
   let tableStructure = [];
   if (salesItems) {
     tableStructure = salesItems.map((sales, idx) => {
+      const salesDate = new Date(sales.date).toISOString().split('T')[0];
       return [
-        sales.id ? sales.id : idx + 1,
+        idx + 1,
         sales.purchase_id
-          ? purchaseItems.map((item) => {
-              return (
-                item.id === sales.purchase_id &&
-                `${item.company_name} - ${item.vehicle_name}`
-              );
-            })
+          ? `${sales.purchases.company_name} - ${sales.purchases.vehicle_name}`
           : 'Not Specified',
-        sales.inventory_id
-          ? inventoryItems.map((item) => {
-              return item.id === sales.inventory_id && item.part_name;
-            })
-          : 'Not Specified',
+        sales.inventory_id ? sales.inventory.part_name : 'Not Specified',
         sales.price ? sales.price : 'Not Specified',
-        sales.contact_id
-          ? contactItems.map((item) => {
-              return item.id === sales.contact_id && item.name;
-            })
-          : 'Not Specified',
-        sales.date ? sales.date : 'Not Specified',
+        sales.relationship_id ? sales.relationship.name : 'Not Specified',
+        sales.date ? formattedDate(sales.date) : 'Not Specified',
         <Checkbox color='primary' checked={sales.returned} />,
         sales.returned_date ? sales.returned_date : '-',
         {
@@ -91,7 +79,7 @@ const ReadSales = () => {
           inventory_id: sales.inventory_id,
           price: sales.price,
           contact_id: sales.contact_id,
-          date: sales.date,
+          date: salesDate || null,
           returned: sales.returned,
           returned_date: sales.returned_date,
         },
@@ -101,7 +89,7 @@ const ReadSales = () => {
 
   // Columns
   const columns = [
-    'SNo.',
+    'SN',
     'Purchase Name',
     'Part Name',
     'Price',
@@ -149,7 +137,6 @@ const ReadSales = () => {
     selectableRows: 'none',
     rowsPerPage: 5,
     rowsPerPageOptions: [5, 10, 15],
-    jumpToPage: true,
     textLabels: {
       pagination: {
         rowsPerPage: 'Total Items Per Page',
@@ -190,6 +177,7 @@ const ReadSales = () => {
         title={`${valueForm ? 'Edit' : 'Create'} Sales`}
         handleSubmit={handleSubmitCreateUpdateSales}
         initialValues={valueForm}
+        isLoading={isLoading}
       >
         <CreateUpdateSales initialValues={valueForm} />
       </Dialog>

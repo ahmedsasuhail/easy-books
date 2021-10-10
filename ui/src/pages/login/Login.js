@@ -15,7 +15,6 @@ import useStyles from './styles';
 
 // logo
 import logo from './logo.svg';
-import google from '../../images/google.svg';
 
 // redux
 import { userLogin } from '../../store/actions/user';
@@ -42,15 +41,7 @@ function Login(props) {
           <Typography variant='h1' className={classes.greeting}>
             Good Day!
           </Typography>
-          <Button size='large' className={classes.googleButton}>
-            <img src={google} alt='google' className={classes.googleIcon} />
-            &nbsp;Sign in with Google
-          </Button>
-          <div className={classes.formDividerContainer}>
-            <div className={classes.formDivider} />
-            <Typography className={classes.formDividerWord}>or</Typography>
-            <div className={classes.formDivider} />
-          </div>
+          <div className={classes.formDividerContainer}></div>
           <Fade in={error}>
             <Typography color='secondary' className={classes.errorMessage}>
               Something is wrong with your login or password :(
@@ -102,13 +93,6 @@ function Login(props) {
                 Login
               </Button>
             )}
-            <Button
-              color='primary'
-              size='large'
-              className={classes.forgetButton}
-            >
-              Forget Password
-            </Button>
           </div>
         </div>
       </div>

@@ -3,6 +3,12 @@ import * as actionTypes from '../actionTypes';
 // Miscellaneous Actions
 export const miscellaneousActions = {
   // Create or Update
+  miscellaneousCreateUpdateRequest: () => {
+    return {
+      type: actionTypes.MISCELLANEOUS_CREATE_UPDATE_REQUEST,
+    };
+  },
+
   miscellaneousCreateUpdateSuccess: (values) => {
     return {
       type: actionTypes.MISCELLANEOUS_CREATE_UPDATE_SUCCESS,
@@ -19,6 +25,12 @@ export const miscellaneousActions = {
   },
 
   // Read
+  miscellaneousReadRequest: () => {
+    return {
+      type: actionTypes.MISCELLANEOUS_READ_REQUEST,
+    };
+  },
+
   miscellaneousReadSuccess: (values) => {
     return {
       type: actionTypes.MISCELLANEOUS_READ_SUCCESS,
@@ -36,11 +48,17 @@ export const miscellaneousActions = {
   },
 
   // Delete
+  miscellaneousDeleteRequest: () => {
+    return {
+      type: actionTypes.MISCELLANEOUS_DELETE_REQUEST,
+    };
+  },
+
   miscellaneousDeleteSuccess: (value) => {
     return {
       type: actionTypes.MISCELLANEOUS_DELETE_SUCCESS,
       payload: {
-        miscellaneousId: value.ID,
+        miscellaneousId: value.id,
       },
     };
   },
@@ -48,13 +66,6 @@ export const miscellaneousActions = {
   miscellaneousDeleteFailure: () => {
     return {
       type: actionTypes.MISCELLANEOUS_DELETE_FAILURE,
-    };
-  },
-
-  // Loading API Request
-  loading: () => {
-    return {
-      type: actionTypes.LOADING_REQUEST,
     };
   },
 };

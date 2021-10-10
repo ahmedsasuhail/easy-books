@@ -19,6 +19,7 @@ const CreateUpdateMiscellaneous = () => {
         minRows={3}
         maxRows={3}
         autoFocus
+        required
       />
       <Field
         component={Input}
@@ -42,6 +43,7 @@ const CreateUpdateMiscellaneous = () => {
         InputLabelProps={{
           shrink: true,
         }}
+        required
       />
     </>
   );

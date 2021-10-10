@@ -1,12 +1,14 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Field } from 'react-final-form';
 
 // Components
 import Input from '../../components/Input/Input';
 import Select from '../../components/Select/Select';
-import { purchaseItems } from '../../mocks/tableItems';
 
 const CreateUpdateInventory = () => {
+  const purchaseItems = useSelector((state) => state.purchase.purchases);
+
   return (
     <>
       <Field
@@ -53,6 +55,7 @@ const CreateUpdateInventory = () => {
         InputLabelProps={{
           shrink: true,
         }}
+        required
       />
     </>
   );

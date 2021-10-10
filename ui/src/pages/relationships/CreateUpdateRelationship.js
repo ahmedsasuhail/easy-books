@@ -20,8 +20,8 @@ const CreateUpdateRelationship = () => {
       />
       <Field
         component={Input}
-        id='phno'
-        name='phno'
+        id='phone_number'
+        name='phone_number'
         label='Phone No'
         type='tel'
         margin='normal'
@@ -39,19 +39,6 @@ const CreateUpdateRelationship = () => {
         multiline={true}
         rows={3}
         rowsMax={3}
-      />
-      <Field
-        component={Input}
-        id='date'
-        name='date'
-        label='Date'
-        type='date'
-        margin='normal'
-        fullWidth
-        defaultValue={new Date().toISOString().split('T')[0]}
-        InputLabelProps={{
-          shrink: true,
-        }}
       />
     </>
   );

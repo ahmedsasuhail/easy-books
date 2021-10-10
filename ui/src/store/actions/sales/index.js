@@ -1,15 +1,15 @@
-import { miscellaneousActions } from './miscellaneousActions';
+import { salesActions } from './salesActions';
 import axios from '../../../utils/axiosInstance';
 import { userActions } from '../user/userActions';
 
 // Action Creators
 // Create or Update
-export const miscellaneousCreateUpdate = (values) => {
+export const salesCreateUpdate = (values) => {
   return async (dispatch) => {
-    dispatch(miscellaneousActions.miscellaneousCreateUpdateRequest());
+    dispatch(salesActions.salesCreateUpdateRequest());
     try {
       const response = await axios.put(
-        'miscellaneous/',
+        'sales/',
         {
           date: values.formValues.date,
           description: values.formValues.description,
@@ -23,29 +23,25 @@ export const miscellaneousCreateUpdate = (values) => {
         },
       );
       if (response.data.data) {
-        dispatch(
-          miscellaneousActions.miscellaneousCreateUpdateSuccess(
-            response.data.data,
-          ),
-        );
+        dispatch(salesActions.salesCreateUpdateSuccess(response.data.data));
       } else {
-        dispatch(miscellaneousActions.miscellaneousCreateUpdateFailure());
+        dispatch(salesActions.salesCreateUpdateFailure());
         // dispatch(userActions.logoutUser());
       }
     } catch (error) {
-      dispatch(miscellaneousActions.miscellaneousCreateUpdateFailure());
+      dispatch(salesActions.salesCreateUpdateFailure());
       // dispatch(userActions.logoutUser());
     }
   };
 };
 
 // Read
-export const miscellaneousRead = (values) => {
+export const salesRead = (values) => {
   return async (dispatch) => {
-    dispatch(miscellaneousActions.miscellaneousReadRequest());
+    dispatch(salesActions.salesReadRequest());
     try {
       const response = await axios.get(
-        `miscellaneous/?page=1&page_limit=50&order_by=id&sort_order=asc`,
+        `sales/?page=1&page_limit=50&order_by=id&sort_order=asc`,
         {
           headers: {
             Authorization: values.token,
@@ -53,30 +49,28 @@ export const miscellaneousRead = (values) => {
         },
       );
       if (response.data.data) {
-        dispatch(
-          miscellaneousActions.miscellaneousReadSuccess(response.data.data),
-        );
+        dispatch(salesActions.salesReadSuccess(response.data.data));
       } else if (response.status === 401) {
         console.log(response);
-        dispatch(miscellaneousActions.miscellaneousReadFailure());
+        dispatch(salesActions.salesReadFailure());
         dispatch(userActions.logoutUser());
       } else {
         console.log(response);
-        dispatch(miscellaneousActions.miscellaneousReadFailure());
+        dispatch(salesActions.salesReadFailure());
       }
     } catch (error) {
       console.log(error);
-      dispatch(miscellaneousActions.miscellaneousReadFailure());
+      dispatch(salesActions.salesReadFailure());
     }
   };
 };
 
 // Delete
-export const miscellaneousDelete = (values) => {
+export const salesDelete = (values) => {
   return async (dispatch) => {
-    dispatch(miscellaneousActions.miscellaneousDeleteRequest());
+    dispatch(salesActions.salesDeleteRequest());
     try {
-      const response = await axios.delete('miscellaneous/', {
+      const response = await axios.delete('sales/', {
         headers: {
           Authorization: values.token,
         },
@@ -85,15 +79,13 @@ export const miscellaneousDelete = (values) => {
         },
       });
       if (response.data.data) {
-        dispatch(
-          miscellaneousActions.miscellaneousDeleteSuccess(response.data.data),
-        );
+        dispatch(salesActions.salesDeleteSuccess(response.data.data));
       } else {
-        dispatch(miscellaneousActions.miscellaneousDeleteFailure());
+        dispatch(salesActions.salesDeleteFailure());
         // dispatch(userActions.logoutUser());
       }
     } catch (error) {
-      dispatch(miscellaneousActions.miscellaneousDeleteFailure());
+      dispatch(salesActions.salesDeleteFailure());
       // dispatch(userActions.logoutUser());
     }
   };

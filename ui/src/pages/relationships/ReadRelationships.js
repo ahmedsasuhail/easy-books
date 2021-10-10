@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Grid, Button, IconButton } from '@material-ui/core';
 import { Edit as EditIcon, Delete as DeleteIcon } from '@material-ui/icons';
@@ -9,7 +9,6 @@ import Dialog from '../../components/Dialog/Dialog';
 import CreateUpdateRelationship from './CreateUpdateRelationship';
 
 import {
-  relationshipRead,
   relationshipCreateUpdate,
   relationshipDelete,
 } from '../../store/actions/relationship';
@@ -20,17 +19,12 @@ const ReadRelationship = () => {
     (state) => state.relationship.relationships,
   );
   const token = useSelector((state) => state.user.token);
-  const isLoading = useSelector((state) => state.relationship.loading);
-
-  const handleReadRelationship = useCallback(() => {
-    dispatch(relationshipRead({ token: token }));
-  }, [dispatch, token]);
+  const isLoading = useSelector((state) => state.relationship.formLoading);
 
   // On Load
   useEffect(() => {
     document.title = `Relationships | ${process.env.REACT_APP_NAME}`;
-    handleReadRelationship();
-  }, [handleReadRelationship]);
+  }, []);
 
   // Local
   const [openCreateUpdateRelationship, setOpenCreateUpdateRelationship] =
@@ -52,7 +46,6 @@ const ReadRelationship = () => {
   };
 
   const handleSubmitCreateUpdateRelationship = (formValues) => {
-    formValues.date = new Date(formValues.date).toISOString();
     dispatch(relationshipCreateUpdate({ formValues, token }));
     handleCloseCreateOrEditRelationship();
   };
@@ -70,28 +63,23 @@ const ReadRelationship = () => {
   let tableStructure = [];
   if (relationshipItems) {
     tableStructure = relationshipItems.map((relationship, idx) => {
-      const relationshipDate = new Date(relationship.Date)
-        .toISOString()
-        .split('T')[0];
       return [
         idx + 1,
         relationship.name ? relationship.name : 'Not Specified',
-        relationship.phno ? relationship.phno : 'Not Specified',
+        relationship.phone_number ? relationship.phone_number : 'Not Specified',
         relationship.address ? relationship.address : 'Not Specified',
-        relationship.Date ? relationshipDate : 'Not Specified',
         {
           id: relationship.id,
           name: relationship.name,
-          phno: relationship.phno,
+          phone_number: relationship.phone_number,
           address: relationship.address,
-          date: relationshipDate || null,
         },
       ];
     });
   }
 
   // Columns
-  const columns = ['SNo.', 'Name', 'Phno', 'Address', 'Date'];
+  const columns = ['SN', 'Name', 'Phno', 'Address'];
 
   columns.push({
     name: 'Actions',
@@ -133,7 +121,6 @@ const ReadRelationship = () => {
     selectableRows: 'none',
     rowsPerPage: 5,
     rowsPerPageOptions: [5, 10, 15],
-    jumpToPage: true,
     textLabels: {
       pagination: {
         rowsPerPage: 'Total Items Per Page',

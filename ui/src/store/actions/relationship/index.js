@@ -6,14 +6,14 @@ import { userActions } from '../user/userActions';
 // Create or Update
 export const relationshipCreateUpdate = (values) => {
   return async (dispatch) => {
-    dispatch(relationshipActions.loading());
+    dispatch(relationshipActions.relationshipCreateUpdateRequest());
     try {
       const response = await axios.put(
         'relationships/',
         {
-          date: values.formValues.date,
-          description: values.formValues.description,
-          price: +values.formValues.price,
+          name: values.formValues.name,
+          address: values.formValues.address,
+          phone_number: values.formValues.phone_number,
           ...(values.formValues.id && { id: +values.formValues.id }),
         },
         {
@@ -28,13 +28,17 @@ export const relationshipCreateUpdate = (values) => {
             response.data.data,
           ),
         );
-      } else {
-        dispatch(relationshipActions.relationshipCreateUpdateFailure());
+      } else if (response.status === 401) {
+        console.log(response);
         dispatch(userActions.logoutUser());
+        dispatch(relationshipActions.relationshipCreateUpdateFailure());
+      } else {
+        console.log(response);
+        dispatch(relationshipActions.relationshipCreateUpdateFailure());
       }
     } catch (error) {
+      console.log(error);
       dispatch(relationshipActions.relationshipCreateUpdateFailure());
-      dispatch(userActions.logoutUser());
     }
   };
 };
@@ -42,7 +46,7 @@ export const relationshipCreateUpdate = (values) => {
 // Read
 export const relationshipRead = (values) => {
   return async (dispatch) => {
-    dispatch(relationshipActions.loading());
+    dispatch(relationshipActions.relationshipReadRequest());
     try {
       const response = await axios.get(
         `relationships/?page=1&page_limit=50&order_by=id&sort_order=asc`,
@@ -58,11 +62,11 @@ export const relationshipRead = (values) => {
         );
       } else {
         dispatch(relationshipActions.relationshipReadFailure());
-        dispatch(userActions.logoutUser());
+        // dispatch(userActions.logoutUser());
       }
     } catch (error) {
       dispatch(relationshipActions.relationshipReadFailure());
-      dispatch(userActions.logoutUser());
+      // dispatch(userActions.logoutUser());
     }
   };
 };
@@ -70,7 +74,7 @@ export const relationshipRead = (values) => {
 // Delete
 export const relationshipDelete = (values) => {
   return async (dispatch) => {
-    dispatch(relationshipActions.loading());
+    dispatch(relationshipActions.relationshipDeleteRequest());
     try {
       const response = await axios.delete('relationships/', {
         headers: {
@@ -86,11 +90,11 @@ export const relationshipDelete = (values) => {
         );
       } else {
         dispatch(relationshipActions.relationshipDeleteFailure());
-        dispatch(userActions.logoutUser());
+        // dispatch(userActions.logoutUser());
       }
     } catch (error) {
       dispatch(relationshipActions.relationshipDeleteFailure());
-      dispatch(userActions.logoutUser());
+      // dispatch(userActions.logoutUser());
     }
   };
 };

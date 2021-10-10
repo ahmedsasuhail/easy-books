@@ -3,11 +3,17 @@ import * as actionTypes from '../actionTypes';
 // Relationship Actions
 export const relationshipActions = {
   // Create or Update
+  relationshipCreateUpdateRequest: () => {
+    return {
+      type: actionTypes.RELATIONSHIP_CREATE_UPDATE_REQUEST,
+    };
+  },
+
   relationshipCreateUpdateSuccess: (values) => {
     return {
       type: actionTypes.RELATIONSHIP_CREATE_UPDATE_SUCCESS,
       payload: {
-        relationships: values,
+        relationship: values,
       },
     };
   },
@@ -19,6 +25,12 @@ export const relationshipActions = {
   },
 
   // Read
+  relationshipReadRequest: () => {
+    return {
+      type: actionTypes.RELATIONSHIP_READ_REQUEST,
+    };
+  },
+
   relationshipReadSuccess: (values) => {
     return {
       type: actionTypes.RELATIONSHIP_READ_SUCCESS,
@@ -36,11 +48,17 @@ export const relationshipActions = {
   },
 
   // Delete
+  relationshipDeleteRequest: () => {
+    return {
+      type: actionTypes.RELATIONSHIP_DELETE_REQUEST,
+    };
+  },
+
   relationshipDeleteSuccess: (value) => {
     return {
       type: actionTypes.RELATIONSHIP_DELETE_SUCCESS,
       payload: {
-        relationshipId: value.ID,
+        relationshipId: value.id,
       },
     };
   },
@@ -48,13 +66,6 @@ export const relationshipActions = {
   relationshipDeleteFailure: () => {
     return {
       type: actionTypes.RELATIONSHIP_DELETE_FAILURE,
-    };
-  },
-
-  // Loading API Request
-  loading: () => {
-    return {
-      type: actionTypes.LOADING_REQUEST,
     };
   },
 };

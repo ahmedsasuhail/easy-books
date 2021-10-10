@@ -1,19 +1,20 @@
-import { miscellaneousActions } from './miscellaneousActions';
+import { inventoryActions } from './inventoryActions';
 import axios from '../../../utils/axiosInstance';
 import { userActions } from '../user/userActions';
 
 // Action Creators
 // Create or Update
-export const miscellaneousCreateUpdate = (values) => {
+export const inventoryCreateUpdate = (values) => {
   return async (dispatch) => {
-    dispatch(miscellaneousActions.miscellaneousCreateUpdateRequest());
+    dispatch(inventoryActions.inventoryCreateUpdateRequest());
     try {
       const response = await axios.put(
-        'miscellaneous/',
+        'inventory/',
         {
+          part_name: values.formValues.part_name,
+          quantity: +values.formValues.quantity,
+          purchase_id: +values.formValues.purchase_id,
           date: values.formValues.date,
-          description: values.formValues.description,
-          price: +values.formValues.price,
           ...(values.formValues.id && { id: +values.formValues.id }),
         },
         {
@@ -24,28 +25,26 @@ export const miscellaneousCreateUpdate = (values) => {
       );
       if (response.data.data) {
         dispatch(
-          miscellaneousActions.miscellaneousCreateUpdateSuccess(
-            response.data.data,
-          ),
+          inventoryActions.inventoryCreateUpdateSuccess(response.data.data),
         );
       } else {
-        dispatch(miscellaneousActions.miscellaneousCreateUpdateFailure());
+        dispatch(inventoryActions.inventoryCreateUpdateFailure());
         // dispatch(userActions.logoutUser());
       }
     } catch (error) {
-      dispatch(miscellaneousActions.miscellaneousCreateUpdateFailure());
+      dispatch(inventoryActions.inventoryCreateUpdateFailure());
       // dispatch(userActions.logoutUser());
     }
   };
 };
 
 // Read
-export const miscellaneousRead = (values) => {
+export const inventoryRead = (values) => {
   return async (dispatch) => {
-    dispatch(miscellaneousActions.miscellaneousReadRequest());
+    dispatch(inventoryActions.inventoryReadRequest());
     try {
       const response = await axios.get(
-        `miscellaneous/?page=1&page_limit=50&order_by=id&sort_order=asc`,
+        `inventory/?page=1&page_limit=50&order_by=id&sort_order=asc`,
         {
           headers: {
             Authorization: values.token,
@@ -53,30 +52,28 @@ export const miscellaneousRead = (values) => {
         },
       );
       if (response.data.data) {
-        dispatch(
-          miscellaneousActions.miscellaneousReadSuccess(response.data.data),
-        );
+        dispatch(inventoryActions.inventoryReadSuccess(response.data.data));
       } else if (response.status === 401) {
         console.log(response);
-        dispatch(miscellaneousActions.miscellaneousReadFailure());
+        dispatch(inventoryActions.inventoryReadFailure());
         dispatch(userActions.logoutUser());
       } else {
         console.log(response);
-        dispatch(miscellaneousActions.miscellaneousReadFailure());
+        dispatch(inventoryActions.inventoryReadFailure());
       }
     } catch (error) {
       console.log(error);
-      dispatch(miscellaneousActions.miscellaneousReadFailure());
+      dispatch(inventoryActions.inventoryReadFailure());
     }
   };
 };
 
 // Delete
-export const miscellaneousDelete = (values) => {
+export const inventoryDelete = (values) => {
   return async (dispatch) => {
-    dispatch(miscellaneousActions.miscellaneousDeleteRequest());
+    dispatch(inventoryActions.inventoryDeleteRequest());
     try {
-      const response = await axios.delete('miscellaneous/', {
+      const response = await axios.delete('inventory/', {
         headers: {
           Authorization: values.token,
         },
@@ -85,15 +82,13 @@ export const miscellaneousDelete = (values) => {
         },
       });
       if (response.data.data) {
-        dispatch(
-          miscellaneousActions.miscellaneousDeleteSuccess(response.data.data),
-        );
+        dispatch(inventoryActions.inventoryDeleteSuccess(response.data.data));
       } else {
-        dispatch(miscellaneousActions.miscellaneousDeleteFailure());
+        dispatch(inventoryActions.inventoryDeleteFailure());
         // dispatch(userActions.logoutUser());
       }
     } catch (error) {
-      dispatch(miscellaneousActions.miscellaneousDeleteFailure());
+      dispatch(inventoryActions.inventoryDeleteFailure());
       // dispatch(userActions.logoutUser());
     }
   };
