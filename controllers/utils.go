@@ -59,6 +59,7 @@ func parsePaginationRequest(c *gin.Context) models.Pagination {
 	query := c.Request.URL.Query()
 
 	// Pagination parameters.
+	getAll := false
 	page := 1
 	pageLimit := 50
 	orderBy := "id"
@@ -69,6 +70,11 @@ func parsePaginationRequest(c *gin.Context) models.Pagination {
 		var err error
 
 		switch key {
+		case "get_all":
+			if queryValue == "true" {
+				getAll = true
+			}
+
 		case "page":
 			page, err = strconv.Atoi(queryValue)
 			if err != nil {
@@ -102,6 +108,7 @@ func parsePaginationRequest(c *gin.Context) models.Pagination {
 	}
 
 	return models.Pagination{
+		GetAll:    getAll,
 		Page:      page,
 		PageLimit: pageLimit,
 		OrderBy:   orderBy,

@@ -6,6 +6,7 @@ import (
 
 	"github.com/ahmedsasuhail/easy-books/models"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
@@ -42,26 +43,32 @@ func ReadPurchases(c *gin.Context) {
 	pagination := parsePaginationRequest(c)
 
 	var records []models.Purchases
-	offset := (pagination.Page - 1) * pagination.PageLimit
-	queryBuilder := pgClient.DB.Limit(
-		int(pagination.PageLimit),
-	).Offset(
-		int(offset),
-	).Order(
-		fmt.Sprintf("%s %s", pagination.OrderBy, pagination.SortOrder),
-	)
-	result := queryBuilder.Preload("Relationships").Find(&records)
+	var result *gorm.DB
+
+	if pagination.GetAll {
+		result = pgClient.Find(&records)
+	} else {
+		offset := (pagination.Page - 1) * pagination.PageLimit
+		queryBuilder := pgClient.DB.Limit(
+			int(pagination.PageLimit),
+		).Offset(
+			int(offset),
+		).Order(
+			fmt.Sprintf("%s %s", pagination.OrderBy, pagination.SortOrder),
+		)
+		result = queryBuilder.Preload("Relationships").Find(&records)
+	}
 
 	if result.Error != nil {
 		errorResponse(c, http.StatusInternalServerError, result.Error.Error())
 
 		return
-	} else {
-		successResponse(c, http.StatusOK, "", map[string]interface{}{
-			"page":    pagination.Page,
-			"records": records,
-		})
 	}
+
+	successResponse(c, http.StatusOK, "", map[string]interface{}{
+		"page":    pagination.Page,
+		"records": records,
+	})
 }
 
 // DeletePurchases deletes a record from the `eb_purchases` table.

@@ -22,6 +22,7 @@ type Response struct {
 
 // Pagination represents a pagination request.
 type Pagination struct {
+	GetAll    bool   `json:"get_all"`
 	Page      int    `json:"page"`
 	PageLimit int    `json:"page_limit"`
 	OrderBy   string `json:"order_by"`
