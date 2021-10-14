@@ -37,7 +37,13 @@ func CreateOrUpdateSales(c *gin.Context) {
 		).Preload(
 			"Purchases",
 		).Preload(
+			"Purchases.Relationships",
+		).Preload(
 			"Inventory",
+		).Preload(
+			"Inventory.Purchases",
+		).Preload(
+			"Inventory.Purchases.Relationships",
 		).First(&record)
 		successResponse(c, http.StatusOK, "", &record)
 	}

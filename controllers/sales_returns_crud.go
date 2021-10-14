@@ -46,7 +46,7 @@ func ReadSalesReturns(c *gin.Context) {
 	var result *gorm.DB
 
 	if pagination.GetAll {
-		result = pgClient.Find(&records)
+		result = pgClient.Preload("Sales").Find(&records)
 	} else {
 		offset := (pagination.Page - 1) * pagination.PageLimit
 		queryBuilder := pgClient.DB.Limit(
