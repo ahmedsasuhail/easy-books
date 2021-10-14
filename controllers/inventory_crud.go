@@ -32,7 +32,11 @@ func CreateOrUpdateInventory(c *gin.Context) {
 
 		return
 	} else {
-		pgClient.Preload("Purchases").First(&record)
+		pgClient.Preload(
+			"Purchases",
+		).Preload(
+			"Purchases.Relationships",
+		).First(&record)
 		successResponse(c, http.StatusOK, "", &record)
 	}
 }
