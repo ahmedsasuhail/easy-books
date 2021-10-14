@@ -99,3 +99,53 @@ func DeleteInventory(c *gin.Context) {
 		successResponse(c, http.StatusOK, "Deleted record.", record)
 	}
 }
+
+// GetInventoryFromPurchaseID retrieves a list of inventory records matching a
+// specified purchase ID.
+func GetInventoryFromPurchaseID(c *gin.Context) {
+	pagination := parsePaginationRequest(c)
+
+	var record models.Inventory
+	var records []models.Inventory
+	var result *gorm.DB
+
+	err := parseRequestBody(c, &record)
+	if err != nil {
+		errorResponse(c, http.StatusBadRequest, err.Error())
+
+		return
+	}
+
+	if pagination.GetAll {
+		result = pgClient.Preload(
+			"Purchases",
+		).Preload(
+			"Purchases.Relationships",
+		).Find(&records).Where("? = Purchases.ID", record.PurchaseID)
+	} else {
+		offset := (pagination.Page - 1) * pagination.PageLimit
+		queryBuilder := pgClient.DB.Limit(
+			int(pagination.PageLimit),
+		).Offset(
+			int(offset),
+		).Order(
+			fmt.Sprintf("%s %s", pagination.OrderBy, pagination.SortOrder),
+		)
+		result = queryBuilder.Preload(
+			"Purchases",
+		).Preload(
+			"Purchases.Relationships",
+		).Find(&records).Where("? = Purchases.ID", record.PurchaseID)
+	}
+
+	if result.Error != nil {
+		errorResponse(c, http.StatusInternalServerError, result.Error.Error())
+
+		return
+	}
+
+	successResponse(c, http.StatusOK, "", map[string]interface{}{
+		"page":    pagination.Page,
+		"records": records,
+	})
+}

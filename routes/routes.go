@@ -53,6 +53,8 @@ func Get() *gin.Engine {
 			inventory.PUT("/", controllers.CreateOrUpdateInventory)
 			inventory.GET("/", controllers.ReadInventory)
 			inventory.DELETE("/", controllers.DeleteInventory)
+
+			inventory.POST("/get_by_purchase", controllers.GetInventoryFromPurchaseID)
 		}
 
 		sales := app.Group("/sales")
