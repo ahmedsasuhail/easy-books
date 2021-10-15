@@ -60,7 +60,7 @@ type Sales struct {
 
 	ID             uint64         `gorm:"primaryKey" json:"id"`
 	Price          float64        `sql:"type:decimal(8,2);" json:"price"`
-	Data           datatypes.Date `json:"date"`
+	Date           datatypes.Date `json:"date"`
 	RelationshipID uint64         `json:"relationship_id"`
 	PurchaseID     uint64         `json:"purchase_id"`
 	InventoryID    uint64         `json:"inventory_id"`
