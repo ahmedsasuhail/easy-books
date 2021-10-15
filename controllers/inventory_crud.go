@@ -41,6 +41,7 @@ func CreateOrUpdateInventory(c *gin.Context) {
 			"id":        record.ID,
 			"part_name": record.PartName,
 			"quantity":  record.Quantity,
+			"date":      record.Date,
 			"purchases": map[string]interface{}{
 				"id":           record.Purchases.ID,
 				"company_name": record.Purchases.CompanyName,
@@ -93,6 +94,7 @@ func ReadInventory(c *gin.Context) {
 			"id":        record.ID,
 			"part_name": record.PartName,
 			"quantity":  record.Quantity,
+			"date":      record.Date,
 			"purchases": map[string]interface{}{
 				"id":           record.Purchases.ID,
 				"company_name": record.Purchases.CompanyName,
@@ -128,6 +130,7 @@ func DeleteInventory(c *gin.Context) {
 			"id":        record.ID,
 			"part_name": record.PartName,
 			"quantity":  record.Quantity,
+			"date":      record.Date,
 			"purchases": map[string]interface{}{
 				"id":           record.Purchases.ID,
 				"company_name": record.Purchases.CompanyName,
