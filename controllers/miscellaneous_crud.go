@@ -33,7 +33,12 @@ func CreateOrUpdateMiscellaneous(c *gin.Context) {
 		return
 	} else {
 		pgClient.First(&record)
-		successResponse(c, http.StatusOK, "", &record)
+		successResponse(c, http.StatusOK, "", map[string]interface{}{
+			"id":          record.ID,
+			"description": record.Description,
+			"price":       record.Price,
+			"date":        record.Date,
+		})
 	}
 }
 
@@ -65,9 +70,20 @@ func ReadMiscellaneous(c *gin.Context) {
 		return
 	}
 
+	var filteredRecords []map[string]interface{}
+
+	for _, record := range records {
+		filteredRecords = append(filteredRecords, map[string]interface{}{
+			"id":          record.ID,
+			"description": record.Description,
+			"price":       record.Price,
+			"date":        record.Date,
+		})
+	}
+
 	successResponse(c, http.StatusOK, "", map[string]interface{}{
 		"page":    pagination.Page,
-		"records": records,
+		"records": filteredRecords,
 	})
 }
 
@@ -88,6 +104,11 @@ func DeleteMiscellaneous(c *gin.Context) {
 
 		return
 	} else {
-		successResponse(c, http.StatusOK, "Deleted record.", record)
+		successResponse(c, http.StatusOK, "Deleted record.", map[string]interface{}{
+			"id":          record.ID,
+			"description": record.Description,
+			"price":       record.Price,
+			"date":        record.Date,
+		})
 	}
 }

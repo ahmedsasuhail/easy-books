@@ -37,7 +37,16 @@ func CreateOrUpdateInventory(c *gin.Context) {
 		).Preload(
 			"Purchases.Relationships",
 		).First(&record)
-		successResponse(c, http.StatusOK, "", &record)
+		successResponse(c, http.StatusOK, "", map[string]interface{}{
+			"id":        record.ID,
+			"part_name": record.PartName,
+			"quantity":  record.Quantity,
+			"purchases": map[string]interface{}{
+				"id":           record.Purchases.ID,
+				"company_name": record.Purchases.CompanyName,
+				"vehicle_name": record.Purchases.VehicleName,
+			},
+		})
 	}
 }
 
@@ -77,9 +86,24 @@ func ReadInventory(c *gin.Context) {
 		return
 	}
 
+	var filteredRecords []map[string]interface{}
+
+	for _, record := range records {
+		filteredRecords = append(filteredRecords, map[string]interface{}{
+			"id":        record.ID,
+			"part_name": record.PartName,
+			"quantity":  record.Quantity,
+			"purchases": map[string]interface{}{
+				"id":           record.Purchases.ID,
+				"company_name": record.Purchases.CompanyName,
+				"vehicle_name": record.Purchases.VehicleName,
+			},
+		})
+	}
+
 	successResponse(c, http.StatusOK, "", map[string]interface{}{
 		"page":    pagination.Page,
-		"records": records,
+		"records": filteredRecords,
 	})
 }
 
@@ -100,7 +124,16 @@ func DeleteInventory(c *gin.Context) {
 
 		return
 	} else {
-		successResponse(c, http.StatusOK, "Deleted record.", record)
+		successResponse(c, http.StatusOK, "Deleted record.", map[string]interface{}{
+			"id":        record.ID,
+			"part_name": record.PartName,
+			"quantity":  record.Quantity,
+			"purchases": map[string]interface{}{
+				"id":           record.Purchases.ID,
+				"company_name": record.Purchases.CompanyName,
+				"vehicle_name": record.Purchases.VehicleName,
+			},
+		})
 	}
 }
 
@@ -148,8 +181,18 @@ func GetInventoryFromPurchaseID(c *gin.Context) {
 		return
 	}
 
+	var filteredRecords []map[string]interface{}
+
+	for _, record := range records {
+		filteredRecords = append(filteredRecords, map[string]interface{}{
+			"id":        record.ID,
+			"part_name": record.PartName,
+			"quantity":  record.Quantity,
+		})
+	}
+
 	successResponse(c, http.StatusOK, "", map[string]interface{}{
 		"page":    pagination.Page,
-		"records": records,
+		"records": filteredRecords,
 	})
 }

@@ -45,7 +45,26 @@ func CreateOrUpdateSales(c *gin.Context) {
 		).Preload(
 			"Inventory.Purchases.Relationships",
 		).First(&record)
-		successResponse(c, http.StatusOK, "", &record)
+		successResponse(c, http.StatusOK, "", map[string]interface{}{
+			"id":    record.ID,
+			"price": record.Price,
+			"date":  record.Date,
+			"relationships": map[string]interface{}{
+				"id":   record.Relationships.ID,
+				"name": record.Relationships.Name,
+			},
+			"purchases": map[string]interface{}{
+				"id":           record.Purchases.ID,
+				"company_name": record.Purchases.CompanyName,
+				"vehicle_name": record.Purchases.VehicleName,
+				"price":        record.Purchases.Price,
+			},
+			"inventory": map[string]interface{}{
+				"id":        record.Inventory.ID,
+				"part_name": record.Inventory.PartName,
+				"quantity":  record.Inventory.Quantity,
+			},
+		})
 	}
 }
 
@@ -89,9 +108,34 @@ func ReadSales(c *gin.Context) {
 		return
 	}
 
+	var filteredRecords []map[string]interface{}
+
+	for _, record := range records {
+		filteredRecords = append(filteredRecords, map[string]interface{}{
+			"id":    record.ID,
+			"price": record.Price,
+			"date":  record.Date,
+			"relationships": map[string]interface{}{
+				"id":   record.Relationships.ID,
+				"name": record.Relationships.Name,
+			},
+			"purchases": map[string]interface{}{
+				"id":           record.Purchases.ID,
+				"company_name": record.Purchases.CompanyName,
+				"vehicle_name": record.Purchases.VehicleName,
+				"price":        record.Purchases.Price,
+			},
+			"inventory": map[string]interface{}{
+				"id":        record.Inventory.ID,
+				"part_name": record.Inventory.PartName,
+				"quantity":  record.Inventory.Quantity,
+			},
+		})
+	}
+
 	successResponse(c, http.StatusOK, "", map[string]interface{}{
 		"page":    pagination.Page,
-		"records": records,
+		"records": filteredRecords,
 	})
 }
 
@@ -112,6 +156,25 @@ func DeleteSales(c *gin.Context) {
 
 		return
 	} else {
-		successResponse(c, http.StatusOK, "Deleted record.", record)
+		successResponse(c, http.StatusOK, "Deleted record.", map[string]interface{}{
+			"id":    record.ID,
+			"price": record.Price,
+			"date":  record.Date,
+			"relationships": map[string]interface{}{
+				"id":   record.Relationships.ID,
+				"name": record.Relationships.Name,
+			},
+			"purchases": map[string]interface{}{
+				"id":           record.Purchases.ID,
+				"company_name": record.Purchases.CompanyName,
+				"vehicle_name": record.Purchases.VehicleName,
+				"price":        record.Purchases.Price,
+			},
+			"inventory": map[string]interface{}{
+				"id":        record.Inventory.ID,
+				"part_name": record.Inventory.PartName,
+				"quantity":  record.Inventory.Quantity,
+			},
+		})
 	}
 }

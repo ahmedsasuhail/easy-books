@@ -33,7 +33,17 @@ func CreateOrUpdatePurchases(c *gin.Context) {
 		return
 	} else {
 		pgClient.Preload("Relationships").First(&record)
-		successResponse(c, http.StatusOK, "", &record)
+		successResponse(c, http.StatusOK, "", map[string]interface{}{
+			"id":           record.ID,
+			"company_name": record.CompanyName,
+			"vehicle_name": record.VehicleName,
+			"price":        record.Price,
+			"date":         record.Date,
+			"relationships": map[string]interface{}{
+				"id":   record.Relationships.ID,
+				"name": record.Relationships.Name,
+			},
+		})
 	}
 }
 
@@ -65,9 +75,25 @@ func ReadPurchases(c *gin.Context) {
 		return
 	}
 
+	var filteredRecords []map[string]interface{}
+
+	for _, record := range records {
+		filteredRecords = append(filteredRecords, map[string]interface{}{
+			"id":           record.ID,
+			"company_name": record.CompanyName,
+			"vehicle_name": record.VehicleName,
+			"price":        record.Price,
+			"date":         record.Date,
+			"relationships": map[string]interface{}{
+				"id":   record.Relationships.ID,
+				"name": record.Relationships.Name,
+			},
+		})
+	}
+
 	successResponse(c, http.StatusOK, "", map[string]interface{}{
 		"page":    pagination.Page,
-		"records": records,
+		"records": filteredRecords,
 	})
 }
 
@@ -88,6 +114,16 @@ func DeletePurchases(c *gin.Context) {
 
 		return
 	} else {
-		successResponse(c, http.StatusOK, "Deleted record.", record)
+		successResponse(c, http.StatusOK, "Deleted record.", map[string]interface{}{
+			"id":           record.ID,
+			"company_name": record.CompanyName,
+			"vehicle_name": record.VehicleName,
+			"price":        record.Price,
+			"date":         record.Date,
+			"relationships": map[string]interface{}{
+				"id":   record.Relationships.ID,
+				"name": record.Relationships.Name,
+			},
+		})
 	}
 }
