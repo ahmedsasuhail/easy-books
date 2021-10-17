@@ -11,6 +11,8 @@ const CreateUpdatePurchase = () => {
     (state) => state.relationship.relationships,
   );
 
+  const required = (value) => (value ? undefined : 'Required');
+
   return (
     <>
       <Field
@@ -21,8 +23,9 @@ const CreateUpdatePurchase = () => {
         type='text'
         margin='normal'
         fullWidth
-        required
         autoFocus
+        required
+        validate={required}
       />
       <Field
         component={Input}
@@ -33,6 +36,7 @@ const CreateUpdatePurchase = () => {
         margin='normal'
         fullWidth
         required
+        validate={required}
       />
       <Field
         component={Input}
@@ -43,6 +47,7 @@ const CreateUpdatePurchase = () => {
         margin='normal'
         fullWidth
         required
+        validate={required}
       />
       <Field
         component={Select}
@@ -54,6 +59,7 @@ const CreateUpdatePurchase = () => {
         hasEmptyOption={true}
         fullWidth
         required
+        validate={required}
       />
       <Field
         component={Input}
@@ -68,6 +74,7 @@ const CreateUpdatePurchase = () => {
           shrink: true,
         }}
         required
+        validate={required}
       />
     </>
   );

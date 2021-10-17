@@ -60,13 +60,17 @@ export const relationshipRead = (values) => {
         dispatch(
           relationshipActions.relationshipReadSuccess(response.data.data),
         );
-      } else {
+      } else if (response.status === 401) {
+        console.log(response);
+        dispatch(userActions.logoutUser());
         dispatch(relationshipActions.relationshipReadFailure());
-        // dispatch(userActions.logoutUser());
+      } else {
+        console.log(response);
+        dispatch(relationshipActions.relationshipReadFailure());
       }
     } catch (error) {
+      console.log(error);
       dispatch(relationshipActions.relationshipReadFailure());
-      // dispatch(userActions.logoutUser());
     }
   };
 };
@@ -88,13 +92,17 @@ export const relationshipDelete = (values) => {
         dispatch(
           relationshipActions.relationshipDeleteSuccess(response.data.data),
         );
-      } else {
+      } else if (response.status === 401) {
+        console.log(response);
+        dispatch(userActions.logoutUser());
         dispatch(relationshipActions.relationshipDeleteFailure());
-        // dispatch(userActions.logoutUser());
+      } else {
+        console.log(response);
+        dispatch(relationshipActions.relationshipDeleteFailure());
       }
     } catch (error) {
+      console.log(error);
       dispatch(relationshipActions.relationshipDeleteFailure());
-      // dispatch(userActions.logoutUser());
     }
   };
 };

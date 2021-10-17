@@ -23,11 +23,10 @@ import axios from '../../../utils/axiosInstance';
 // };
 
 // Login
-export const userLogin = (login, password, history) => {
+export const userLogin = (login, password) => {
   return async (dispatch) => {
-    dispatch(userActions.loading());
+    dispatch(userActions.loginRequest());
     try {
-      console.log('login empty data issue', login, password);
       const response = await axios.post(
         'auth/login',
         JSON.stringify({
@@ -43,18 +42,19 @@ export const userLogin = (login, password, history) => {
         };
         localStorage.setItem('easyBooksAuth', JSON.stringify(authData));
         dispatch(userActions.loginSuccess(response.data.data));
-        history.push('/app/purchases');
       } else {
+        console.log(response);
         dispatch(userActions.loginFailure(response));
       }
     } catch (error) {
+      console.log(error);
       dispatch(userActions.loginFailure(error));
     }
   };
 };
 
 // Logout
-export const userLogout = (history) => {
+export const userLogout = () => {
   return (dispatch) => {
     localStorage.removeItem('easyBooksAuth');
     dispatch(userActions.logoutUser());

@@ -15,3 +15,6 @@ export { inventoryActions } from './inventory/inventoryActions';
 
 // Sales Actions
 export { salesActions } from './sales/salesActions';
+
+// Inventory Purchase Actions
+export { inventoryPurchaseActions } from './inventory_purchase/inventoryPurchaseActions';

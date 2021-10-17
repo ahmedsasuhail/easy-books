@@ -3,13 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Grid, Button, IconButton } from '@material-ui/core';
 import { Edit as EditIcon, Delete as DeleteIcon } from '@material-ui/icons';
 import MUIDataTable from 'mui-datatables';
-import Checkbox from '@material-ui/core/Checkbox';
 
 import PageTitle from '../../components/PageTitle/PageTitle';
 import Dialog from '../../components/Dialog/Dialog';
 import CreateUpdateSales from './CreateUpdateSales';
 
 import { salesCreateUpdate, salesDelete } from '../../store/actions/sales';
+import { inventoryPurchaseActions } from '../../store/actions/inventory_purchase/inventoryPurchaseActions';
 
 import { formattedDate } from '../../utils/helpers';
 
@@ -19,12 +19,10 @@ const ReadSales = () => {
   const token = useSelector((state) => state.user.token);
   const isLoading = useSelector((state) => state.sales.formLoading);
 
-  // On Load
   useEffect(() => {
     document.title = `Sales | ${process.env.REACT_APP_NAME}`;
   }, []);
 
-  // Local
   const [openCreateUpdateSales, setOpenCreateUpdateSales] = useState(false);
   const [valueForm, setValueForm] = useState(null);
 
@@ -40,6 +38,7 @@ const ReadSales = () => {
   const handleCloseCreateOrEditSales = () => {
     setValueForm(null);
     setOpenCreateUpdateSales(false);
+    dispatch(inventoryPurchaseActions.inventoryPurchaseClear());
   };
 
   const handleSubmitCreateUpdateSales = (formValues) => {
@@ -64,24 +63,20 @@ const ReadSales = () => {
       const salesDate = new Date(sales.date).toISOString().split('T')[0];
       return [
         idx + 1,
-        sales.purchase_id
+        sales.purchases.id
           ? `${sales.purchases.company_name} - ${sales.purchases.vehicle_name}`
           : 'Not Specified',
-        sales.inventory_id ? sales.inventory.part_name : 'Not Specified',
+        sales.inventory.id ? sales.inventory.part_name : 'Not Specified',
         sales.price ? sales.price : 'Not Specified',
-        sales.relationship_id ? sales.relationship.name : 'Not Specified',
+        sales.relationships.id ? sales.relationships.name : 'Not Specified',
         sales.date ? formattedDate(sales.date) : 'Not Specified',
-        <Checkbox color='primary' checked={sales.returned} />,
-        sales.returned_date ? sales.returned_date : '-',
         {
           id: sales.id,
-          purchase_id: sales.purchase_id,
-          inventory_id: sales.inventory_id,
+          purchase_id: sales.purchases.id,
+          inventory_id: sales.inventory.id,
           price: sales.price,
-          contact_id: sales.contact_id,
+          relationship_id: sales.relationships.id,
           date: salesDate || null,
-          returned: sales.returned,
-          returned_date: sales.returned_date,
         },
       ];
     });
@@ -95,8 +90,6 @@ const ReadSales = () => {
     'Price',
     'Buyer',
     'Date',
-    'Returned',
-    'Returned Date',
   ];
 
   columns.push({
@@ -179,7 +172,7 @@ const ReadSales = () => {
         initialValues={valueForm}
         isLoading={isLoading}
       >
-        <CreateUpdateSales initialValues={valueForm} />
+        <CreateUpdateSales />
       </Dialog>
     </>
   );

@@ -1,4 +1,14 @@
-import * as actionTypes from '../actions/actionTypes';
+import {
+  MISCELLANEOUS_CREATE_UPDATE_REQUEST,
+  MISCELLANEOUS_CREATE_UPDATE_SUCCESS,
+  MISCELLANEOUS_CREATE_UPDATE_FAILURE,
+  MISCELLANEOUS_READ_REQUEST,
+  MISCELLANEOUS_READ_SUCCESS,
+  MISCELLANEOUS_READ_FAILURE,
+  MISCELLANEOUS_DELETE_REQUEST,
+  MISCELLANEOUS_DELETE_SUCCESS,
+  MISCELLANEOUS_DELETE_FAILURE,
+} from '../actions/actionTypes';
 import { mergeObjects } from '../../utils/helpers';
 
 // Set Initial State
@@ -13,12 +23,13 @@ const initialState = {
 const miscellaneousReducer = (state = initialState, action) => {
   switch (action.type) {
     // Create or Update
-    case actionTypes.MISCELLANEOUS_CREATE_UPDATE_REQUEST:
+    case MISCELLANEOUS_CREATE_UPDATE_REQUEST:
       return mergeObjects(state, {
         formLoading: true,
+        pageLoading: true,
       });
 
-    case actionTypes.MISCELLANEOUS_CREATE_UPDATE_SUCCESS:
+    case MISCELLANEOUS_CREATE_UPDATE_SUCCESS:
       let modifyMiscellaneousForCreateOrUpdate = [...state.miscellaneous];
       const miscellaneousIndex = modifyMiscellaneousForCreateOrUpdate.findIndex(
         (miscellaneous) =>
@@ -41,38 +52,40 @@ const miscellaneousReducer = (state = initialState, action) => {
       return mergeObjects(state, {
         miscellaneous: modifyMiscellaneousForCreateOrUpdate,
         formLoading: false,
+        pageLoading: false,
       });
 
-    case actionTypes.MISCELLANEOUS_CREATE_UPDATE_FAILURE:
+    case MISCELLANEOUS_CREATE_UPDATE_FAILURE:
       return mergeObjects(state, {
         formLoading: false,
+        pageLoading: false,
       });
 
     // Read
-    case actionTypes.MISCELLANEOUS_READ_REQUEST:
+    case MISCELLANEOUS_READ_REQUEST:
       return mergeObjects(state, {
         pageLoading: true,
       });
 
-    case actionTypes.MISCELLANEOUS_READ_SUCCESS:
+    case MISCELLANEOUS_READ_SUCCESS:
       return mergeObjects(state, {
         miscellaneous: action.payload.miscellaneous,
         pageNo: action.payload.pageNo,
         pageLoading: false,
       });
 
-    case actionTypes.MISCELLANEOUS_READ_FAILURE:
+    case MISCELLANEOUS_READ_FAILURE:
       return mergeObjects(state, {
         pageLoading: false,
       });
 
     // Delete
-    case actionTypes.MISCELLANEOUS_DELETE_REQUEST:
+    case MISCELLANEOUS_DELETE_REQUEST:
       return mergeObjects(state, {
         pageLoading: true,
       });
 
-    case actionTypes.MISCELLANEOUS_DELETE_SUCCESS:
+    case MISCELLANEOUS_DELETE_SUCCESS:
       let modifyMiscellaneousForDelete = [...state.miscellaneous];
       const modifiedMiscellaneousAfterDeleted =
         modifyMiscellaneousForDelete.filter(
@@ -85,7 +98,7 @@ const miscellaneousReducer = (state = initialState, action) => {
         pageLoading: false,
       });
 
-    case actionTypes.MISCELLANEOUS_DELETE_FAILURE:
+    case MISCELLANEOUS_DELETE_FAILURE:
       return mergeObjects(state, {
         pageLoading: false,
       });

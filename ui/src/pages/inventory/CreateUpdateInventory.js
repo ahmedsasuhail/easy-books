@@ -2,12 +2,13 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Field } from 'react-final-form';
 
-// Components
 import Input from '../../components/Input/Input';
 import Select from '../../components/Select/Select';
 
 const CreateUpdateInventory = () => {
   const purchaseItems = useSelector((state) => state.purchase.purchases);
+
+  const required = (value) => (value ? undefined : 'Required');
 
   return (
     <>
@@ -21,6 +22,7 @@ const CreateUpdateInventory = () => {
         hasEmptyOption={true}
         fullWidth
         required
+        validate={required}
       />
       <Field
         component={Input}
@@ -30,8 +32,9 @@ const CreateUpdateInventory = () => {
         type='text'
         margin='normal'
         fullWidth
-        required
         autoFocus
+        required
+        validate={required}
       />
       <Field
         component={Input}
@@ -42,6 +45,7 @@ const CreateUpdateInventory = () => {
         margin='normal'
         fullWidth
         required
+        validate={required}
       />
       <Field
         component={Input}
@@ -56,6 +60,7 @@ const CreateUpdateInventory = () => {
           shrink: true,
         }}
         required
+        validate={required}
       />
     </>
   );

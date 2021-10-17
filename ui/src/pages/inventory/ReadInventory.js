@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
 import { Grid, Button, IconButton } from '@material-ui/core';
 import { Edit as EditIcon, Delete as DeleteIcon } from '@material-ui/icons';
 import MUIDataTable from 'mui-datatables';
 
 import PageTitle from '../../components/PageTitle/PageTitle';
 import Dialog from '../../components/Dialog/Dialog';
+
 import CreateUpdateInventory from './CreateUpdateInventory';
 
 import {
@@ -17,16 +19,15 @@ import { formattedDate } from '../../utils/helpers';
 
 const ReadInventory = () => {
   const dispatch = useDispatch();
-  const inventoryItems = useSelector((state) => state.inventory.inventory);
+
   const token = useSelector((state) => state.user.token);
   const isLoading = useSelector((state) => state.inventory.formLoading);
+  const inventoryItems = useSelector((state) => state.inventory.inventory);
 
-  // On Load
   useEffect(() => {
     document.title = `Inventory | ${process.env.REACT_APP_NAME}`;
   }, []);
 
-  // Local
   const [openCreateUpdateInventory, setOpenCreateUpdateInventory] =
     useState(false);
   const [valueForm, setValueForm] = useState(null);
@@ -69,7 +70,7 @@ const ReadInventory = () => {
         .split('T')[0];
       return [
         idx + 1,
-        inventory.purchase_id
+        inventory.purchases.id
           ? `${inventory.purchases.company_name} - ${inventory.purchases.vehicle_name}`
           : 'Not Specified',
         inventory.part_name ? inventory.part_name : 'Not Specified',
@@ -77,7 +78,7 @@ const ReadInventory = () => {
         inventory.date ? formattedDate(inventory.date) : 'Not Specified',
         {
           id: inventory.id,
-          purchase_id: inventory.purchase_id,
+          purchase_id: inventory.purchases.id,
           part_name: inventory.part_name,
           quantity: inventory.quantity,
           date: inventoryDate || null,

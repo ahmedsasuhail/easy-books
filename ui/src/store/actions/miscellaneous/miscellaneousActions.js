@@ -1,17 +1,27 @@
-import * as actionTypes from '../actionTypes';
+import {
+  MISCELLANEOUS_CREATE_UPDATE_REQUEST,
+  MISCELLANEOUS_CREATE_UPDATE_SUCCESS,
+  MISCELLANEOUS_CREATE_UPDATE_FAILURE,
+  MISCELLANEOUS_READ_REQUEST,
+  MISCELLANEOUS_READ_SUCCESS,
+  MISCELLANEOUS_READ_FAILURE,
+  MISCELLANEOUS_DELETE_REQUEST,
+  MISCELLANEOUS_DELETE_SUCCESS,
+  MISCELLANEOUS_DELETE_FAILURE,
+} from '../actionTypes';
 
 // Miscellaneous Actions
 export const miscellaneousActions = {
   // Create or Update
   miscellaneousCreateUpdateRequest: () => {
     return {
-      type: actionTypes.MISCELLANEOUS_CREATE_UPDATE_REQUEST,
+      type: MISCELLANEOUS_CREATE_UPDATE_REQUEST,
     };
   },
 
   miscellaneousCreateUpdateSuccess: (values) => {
     return {
-      type: actionTypes.MISCELLANEOUS_CREATE_UPDATE_SUCCESS,
+      type: MISCELLANEOUS_CREATE_UPDATE_SUCCESS,
       payload: {
         miscellaneous: values,
       },
@@ -20,20 +30,20 @@ export const miscellaneousActions = {
 
   miscellaneousCreateUpdateFailure: () => {
     return {
-      type: actionTypes.MISCELLANEOUS_CREATE_UPDATE_FAILURE,
+      type: MISCELLANEOUS_CREATE_UPDATE_FAILURE,
     };
   },
 
   // Read
   miscellaneousReadRequest: () => {
     return {
-      type: actionTypes.MISCELLANEOUS_READ_REQUEST,
+      type: MISCELLANEOUS_READ_REQUEST,
     };
   },
 
   miscellaneousReadSuccess: (values) => {
     return {
-      type: actionTypes.MISCELLANEOUS_READ_SUCCESS,
+      type: MISCELLANEOUS_READ_SUCCESS,
       payload: {
         miscellaneous: values.records,
         pageNo: values.page,
@@ -43,20 +53,20 @@ export const miscellaneousActions = {
 
   miscellaneousReadFailure: () => {
     return {
-      type: actionTypes.MISCELLANEOUS_READ_FAILURE,
+      type: MISCELLANEOUS_READ_FAILURE,
     };
   },
 
   // Delete
   miscellaneousDeleteRequest: () => {
     return {
-      type: actionTypes.MISCELLANEOUS_DELETE_REQUEST,
+      type: MISCELLANEOUS_DELETE_REQUEST,
     };
   },
 
   miscellaneousDeleteSuccess: (value) => {
     return {
-      type: actionTypes.MISCELLANEOUS_DELETE_SUCCESS,
+      type: MISCELLANEOUS_DELETE_SUCCESS,
       payload: {
         miscellaneousId: value.id,
       },
@@ -65,7 +75,7 @@ export const miscellaneousActions = {
 
   miscellaneousDeleteFailure: () => {
     return {
-      type: actionTypes.MISCELLANEOUS_DELETE_FAILURE,
+      type: MISCELLANEOUS_DELETE_FAILURE,
     };
   },
 };

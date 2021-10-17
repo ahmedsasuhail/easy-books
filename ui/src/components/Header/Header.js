@@ -4,31 +4,31 @@ import {
   AppBar,
   Toolbar,
   IconButton,
-  InputBase,
+  // InputBase,
   Menu,
-  MenuItem,
-  Fab,
+  // MenuItem,
+  // Fab,
 } from '@material-ui/core';
 import {
   Menu as MenuIcon,
-  MailOutline as MailIcon,
-  NotificationsNone as NotificationsIcon,
+  // MailOutline as MailIcon,
+  // NotificationsNone as NotificationsIcon,
   Person as AccountIcon,
-  Search as SearchIcon,
-  Send as SendIcon,
+  // Search as SearchIcon,
+  // Send as SendIcon,
   ArrowBack as ArrowBackIcon,
 } from '@material-ui/icons';
 import classNames from 'classnames';
 
-// styles
 import useStyles from './styles';
 
-// components
-import { Badge, Typography } from '../Wrappers';
-import Notification from '../Notification/Notification';
-import UserAvatar from '../UserAvatar/UserAvatar';
+import {
+  // Badge,
+  Typography,
+} from '../Wrappers';
+// import Notification from '../Notification/Notification';
+// import UserAvatar from '../UserAvatar/UserAvatar';
 
-// context
 import {
   useLayoutState,
   useLayoutDispatch,
@@ -36,74 +36,72 @@ import {
 } from '../../context/LayoutContext';
 import { userLogout } from '../../store/actions/user';
 
-const messages = [
-  {
-    id: 0,
-    variant: 'warning',
-    name: 'Jane Hew',
-    message: 'Hey! How is it going?',
-    time: '9:32',
-  },
-  {
-    id: 1,
-    variant: 'success',
-    name: 'Lloyd Brown',
-    message: 'Check out my new Dashboard',
-    time: '9:18',
-  },
-  {
-    id: 2,
-    variant: 'primary',
-    name: 'Mark Winstein',
-    message: 'I want rearrange the appointment',
-    time: '9:15',
-  },
-  {
-    id: 3,
-    variant: 'secondary',
-    name: 'Liana Dutti',
-    message: 'Good news from sale department',
-    time: '9:09',
-  },
-];
+// const messages = [
+//   {
+//     id: 0,
+//     variant: 'warning',
+//     name: 'Jane Hew',
+//     message: 'Hey! How is it going?',
+//     time: '9:32',
+//   },
+//   {
+//     id: 1,
+//     variant: 'success',
+//     name: 'Lloyd Brown',
+//     message: 'Check out my new Dashboard',
+//     time: '9:18',
+//   },
+//   {
+//     id: 2,
+//     variant: 'primary',
+//     name: 'Mark Winstein',
+//     message: 'I want rearrange the appointment',
+//     time: '9:15',
+//   },
+//   {
+//     id: 3,
+//     variant: 'secondary',
+//     name: 'Liana Dutti',
+//     message: 'Good news from sale department',
+//     time: '9:09',
+//   },
+// ];
 
-const notifications = [
-  { id: 0, color: 'warning', message: 'Check out this awesome ticket' },
-  {
-    id: 1,
-    color: 'success',
-    type: 'info',
-    message: 'What is the best way to get ...',
-  },
-  {
-    id: 2,
-    color: 'secondary',
-    type: 'notification',
-    message: 'This is just a simple notification',
-  },
-  {
-    id: 3,
-    color: 'primary',
-    type: 'e-commerce',
-    message: '12 new orders has arrived today',
-  },
-];
+// const notifications = [
+//   { id: 0, color: 'warning', message: 'Check out this awesome ticket' },
+//   {
+//     id: 1,
+//     color: 'success',
+//     type: 'info',
+//     message: 'What is the best way to get ...',
+//   },
+//   {
+//     id: 2,
+//     color: 'secondary',
+//     type: 'notification',
+//     message: 'This is just a simple notification',
+//   },
+//   {
+//     id: 3,
+//     color: 'primary',
+//     type: 'e-commerce',
+//     message: '12 new orders has arrived today',
+//   },
+// ];
 
-export default function Header(props) {
+export default function Header() {
   var classes = useStyles();
 
-  // global
   var layoutState = useLayoutState();
   var layoutDispatch = useLayoutDispatch();
   const dispatch = useDispatch();
 
-  // local
-  var [mailMenu, setMailMenu] = useState(null);
-  var [isMailsUnread, setIsMailsUnread] = useState(true);
-  var [notificationsMenu, setNotificationsMenu] = useState(null);
-  var [isNotificationsUnread, setIsNotificationsUnread] = useState(true);
+  // var [mailMenu, setMailMenu] = useState(null);
+  // var [isMailsUnread, setIsMailsUnread] = useState(true);
+  // var [notificationsMenu, setNotificationsMenu] = useState(null);
+  // var [isNotificationsUnread, setIsNotificationsUnread] = useState(true);
   var [profileMenu, setProfileMenu] = useState(null);
-  var [isSearchOpen, setSearchOpen] = useState(false);
+  // var [isSearchOpen, setSearchOpen] = useState(false);
 
   const userObj = localStorage.getItem('easyBooksAuth');
   const parsedUserObj = JSON.parse(userObj);
@@ -143,7 +141,7 @@ export default function Header(props) {
           Easy Books
         </Typography>
         <div className={classes.grow} />
-        <div
+        {/* <div
           className={classNames(classes.search, {
             [classes.searchFocused]: isSearchOpen,
           })}
@@ -163,8 +161,8 @@ export default function Header(props) {
               input: classes.inputInput,
             }}
           />
-        </div>
-        <IconButton
+        </div> */}
+        {/* <IconButton
           color='inherit'
           aria-haspopup='true'
           aria-controls='mail-menu'
@@ -180,8 +178,8 @@ export default function Header(props) {
           >
             <NotificationsIcon classes={{ root: classes.headerIcon }} />
           </Badge>
-        </IconButton>
-        <IconButton
+        </IconButton> */}
+        {/* <IconButton
           color='inherit'
           aria-haspopup='true'
           aria-controls='mail-menu'
@@ -197,7 +195,7 @@ export default function Header(props) {
           >
             <MailIcon classes={{ root: classes.headerIcon }} />
           </Badge>
-        </IconButton>
+        </IconButton> */}
         <IconButton
           aria-haspopup='true'
           color='inherit'
@@ -207,7 +205,7 @@ export default function Header(props) {
         >
           <AccountIcon classes={{ root: classes.headerIcon }} />
         </IconButton>
-        <Menu
+        {/* <Menu
           id='mail-menu'
           open={Boolean(mailMenu)}
           anchorEl={mailMenu}
@@ -261,8 +259,8 @@ export default function Header(props) {
             Send New Message
             <SendIcon className={classes.sendButtonIcon} />
           </Fab>
-        </Menu>
-        <Menu
+        </Menu> */}
+        {/* <Menu
           id='notifications-menu'
           open={Boolean(notificationsMenu)}
           anchorEl={notificationsMenu}
@@ -279,7 +277,7 @@ export default function Header(props) {
               <Notification {...notification} typographyVariant='inherit' />
             </MenuItem>
           ))}
-        </Menu>
+        </Menu> */}
         <Menu
           id='profile-menu'
           open={Boolean(profileMenu)}
@@ -302,7 +300,7 @@ export default function Header(props) {
               {parsedUserObj.email}
             </Typography>
           </div>
-          <MenuItem
+          {/* <MenuItem
             className={classNames(
               classes.profileMenuItem,
               classes.headerMenuItem,
@@ -325,12 +323,12 @@ export default function Header(props) {
             )}
           >
             <AccountIcon className={classes.profileMenuIcon} /> Messages
-          </MenuItem>
+          </MenuItem> */}
           <div className={classes.profileMenuUser}>
             <Typography
               className={classes.profileMenuLink}
               color='primary'
-              onClick={() => dispatch(userLogout(props.history))}
+              onClick={() => dispatch(userLogout())}
             >
               Sign Out
             </Typography>

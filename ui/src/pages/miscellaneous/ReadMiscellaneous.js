@@ -55,6 +55,7 @@ const ReadMiscellaneous = () => {
 
   const handleSubmitDeleteMiscellaneous = (id, name) => {
     const result = window.confirm(
+      // TODO: Remove id below
       `Are you sure you want to delete miscellaneous ${id}?`,
     );
     if (result) {

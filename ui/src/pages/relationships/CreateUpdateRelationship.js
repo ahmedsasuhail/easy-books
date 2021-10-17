@@ -5,6 +5,8 @@ import { Field } from 'react-final-form';
 import Input from '../../components/Input/Input';
 
 const CreateUpdateRelationship = () => {
+  const required = (value) => (value ? undefined : 'Required');
+
   return (
     <>
       <Field
@@ -15,8 +17,9 @@ const CreateUpdateRelationship = () => {
         type='text'
         margin='normal'
         fullWidth
-        required
         autoFocus
+        required
+        validate={required}
       />
       <Field
         component={Input}
@@ -27,6 +30,7 @@ const CreateUpdateRelationship = () => {
         margin='normal'
         fullWidth
         required
+        validate={required}
       />
       <Field
         component={Input}

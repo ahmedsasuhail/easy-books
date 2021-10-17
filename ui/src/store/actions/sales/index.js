@@ -11,9 +11,11 @@ export const salesCreateUpdate = (values) => {
       const response = await axios.put(
         'sales/',
         {
-          date: values.formValues.date,
-          description: values.formValues.description,
+          purchase_id: +values.formValues.purchase_id,
+          inventory_id: +values.formValues.inventory_id,
+          relationship_id: +values.formValues.relationship_id,
           price: +values.formValues.price,
+          date: values.formValues.date,
           ...(values.formValues.id && { id: +values.formValues.id }),
         },
         {
@@ -24,13 +26,17 @@ export const salesCreateUpdate = (values) => {
       );
       if (response.data.data) {
         dispatch(salesActions.salesCreateUpdateSuccess(response.data.data));
-      } else {
+      } else if (response.status === 401) {
+        console.log(response);
         dispatch(salesActions.salesCreateUpdateFailure());
-        // dispatch(userActions.logoutUser());
+        dispatch(userActions.logoutUser());
+      } else {
+        console.log(response);
+        dispatch(salesActions.salesCreateUpdateFailure());
       }
     } catch (error) {
+      console.log(error);
       dispatch(salesActions.salesCreateUpdateFailure());
-      // dispatch(userActions.logoutUser());
     }
   };
 };
@@ -80,13 +86,17 @@ export const salesDelete = (values) => {
       });
       if (response.data.data) {
         dispatch(salesActions.salesDeleteSuccess(response.data.data));
-      } else {
+      } else if (response.status === 401) {
+        console.log(response);
         dispatch(salesActions.salesDeleteFailure());
-        // dispatch(userActions.logoutUser());
+        dispatch(userActions.logoutUser());
+      } else {
+        console.log(response);
+        dispatch(salesActions.salesDeleteFailure());
       }
     } catch (error) {
+      console.log(error);
       dispatch(salesActions.salesDeleteFailure());
-      // dispatch(userActions.logoutUser());
     }
   };
 };

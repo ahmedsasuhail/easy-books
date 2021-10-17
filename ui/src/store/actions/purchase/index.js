@@ -58,13 +58,17 @@ export const purchaseRead = (values) => {
       );
       if (response.data.data) {
         dispatch(purchaseActions.purchaseReadSuccess(response.data.data));
-      } else {
+      } else if (response.status === 401) {
+        console.log(response);
+        dispatch(userActions.logoutUser());
         dispatch(purchaseActions.purchaseReadFailure());
-        // dispatch(userActions.logoutUser());
+      } else {
+        console.log(response);
+        dispatch(purchaseActions.purchaseReadFailure());
       }
     } catch (error) {
+      console.log(error);
       dispatch(purchaseActions.purchaseReadFailure());
-      // dispatch(userActions.logoutUser());
     }
   };
 };
@@ -84,13 +88,17 @@ export const purchaseDelete = (values) => {
       });
       if (response.data.data) {
         dispatch(purchaseActions.purchaseDeleteSuccess(response.data.data));
-      } else {
+      } else if (response.status === 401) {
+        console.log(response);
+        dispatch(userActions.logoutUser());
         dispatch(purchaseActions.purchaseDeleteFailure());
-        // dispatch(userActions.logoutUser());
+      } else {
+        console.log(response);
+        dispatch(purchaseActions.purchaseDeleteFailure());
       }
     } catch (error) {
+      console.log(error);
       dispatch(purchaseActions.purchaseDeleteFailure());
-      // dispatch(userActions.logoutUser());
     }
   };
 };

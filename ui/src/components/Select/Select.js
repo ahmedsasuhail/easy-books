@@ -27,6 +27,10 @@ const Select = (props) => {
         native: true,
       }}
       InputLabelProps={props.InputLabelProps}
+      onChange={(e) => {
+        props.input.onChange(e);
+        props.onChange && props.onChange(e);
+      }}
     >
       {props.hasEmptyOption ? <option value='' /> : ''}
       {props.options

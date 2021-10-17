@@ -70,7 +70,7 @@ const ReadPurchase = (props) => {
         purchase.company_name ? purchase.company_name : 'Not Specified',
         purchase.vehicle_name ? purchase.vehicle_name : 'Not Specified',
         purchase.price ? purchase.price : 'Not Specified',
-        purchase.relationship_id
+        purchase.relationships.id
           ? purchase.relationships.name
           : 'Not Specified',
         purchase.date ? formattedDate(purchase.date) : 'Not Specified',
@@ -79,7 +79,7 @@ const ReadPurchase = (props) => {
           company_name: purchase.company_name,
           vehicle_name: purchase.vehicle_name,
           price: purchase.price,
-          relationship_id: +purchase.relationship_id,
+          relationship_id: +purchase.relationships.id,
           date: purchaseDate || null,
         },
       ];

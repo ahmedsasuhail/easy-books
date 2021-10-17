@@ -28,13 +28,17 @@ export const miscellaneousCreateUpdate = (values) => {
             response.data.data,
           ),
         );
-      } else {
+      } else if (response.status === 401) {
+        console.log(response);
         dispatch(miscellaneousActions.miscellaneousCreateUpdateFailure());
-        // dispatch(userActions.logoutUser());
+        dispatch(userActions.logoutUser());
+      } else {
+        console.log(response);
+        dispatch(miscellaneousActions.miscellaneousCreateUpdateFailure());
       }
     } catch (error) {
+      console.log(error);
       dispatch(miscellaneousActions.miscellaneousCreateUpdateFailure());
-      // dispatch(userActions.logoutUser());
     }
   };
 };
@@ -88,13 +92,17 @@ export const miscellaneousDelete = (values) => {
         dispatch(
           miscellaneousActions.miscellaneousDeleteSuccess(response.data.data),
         );
-      } else {
+      } else if (response.status === 401) {
+        console.log(response);
         dispatch(miscellaneousActions.miscellaneousDeleteFailure());
-        // dispatch(userActions.logoutUser());
+        dispatch(userActions.logoutUser());
+      } else {
+        console.log(response);
+        dispatch(miscellaneousActions.miscellaneousDeleteFailure());
       }
     } catch (error) {
+      console.log(error);
       dispatch(miscellaneousActions.miscellaneousDeleteFailure());
-      // dispatch(userActions.logoutUser());
     }
   };
 };

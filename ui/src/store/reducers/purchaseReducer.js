@@ -1,4 +1,14 @@
-import * as actionTypes from '../actions/actionTypes';
+import {
+  PURCHASE_CREATE_UPDATE_REQUEST,
+  PURCHASE_CREATE_UPDATE_SUCCESS,
+  PURCHASE_CREATE_UPDATE_FAILURE,
+  PURCHASE_READ_REQUEST,
+  PURCHASE_READ_SUCCESS,
+  PURCHASE_READ_FAILURE,
+  PURCHASE_DELETE_REQUEST,
+  PURCHASE_DELETE_SUCCESS,
+  PURCHASE_DELETE_FAILURE,
+} from '../actions/actionTypes';
 import { mergeObjects } from '../../utils/helpers';
 
 // Set Initial State
@@ -13,12 +23,13 @@ const initialState = {
 const purchaseReducer = (state = initialState, action) => {
   switch (action.type) {
     // Create or Update
-    case actionTypes.PURCHASE_CREATE_UPDATE_REQUEST:
+    case PURCHASE_CREATE_UPDATE_REQUEST:
       return mergeObjects(state, {
         formLoading: true,
+        pageLoading: true,
       });
 
-    case actionTypes.PURCHASE_CREATE_UPDATE_SUCCESS:
+    case PURCHASE_CREATE_UPDATE_SUCCESS:
       let modifyPurchaseForCreateOrUpdate = [...state.purchases];
       const purchaseIndex = modifyPurchaseForCreateOrUpdate.findIndex(
         (purchase) =>
@@ -40,38 +51,40 @@ const purchaseReducer = (state = initialState, action) => {
       return mergeObjects(state, {
         purchases: modifyPurchaseForCreateOrUpdate,
         formLoading: false,
+        pageLoading: false,
       });
 
-    case actionTypes.PURCHASE_CREATE_UPDATE_FAILURE:
+    case PURCHASE_CREATE_UPDATE_FAILURE:
       return mergeObjects(state, {
         formLoading: false,
+        pageLoading: false,
       });
 
     // Read
-    case actionTypes.PURCHASE_READ_REQUEST:
+    case PURCHASE_READ_REQUEST:
       return mergeObjects(state, {
         pageLoading: true,
       });
 
-    case actionTypes.PURCHASE_READ_SUCCESS:
+    case PURCHASE_READ_SUCCESS:
       return mergeObjects(state, {
         purchases: action.payload.purchases,
         pageNo: action.payload.pageNo,
         pageLoading: false,
       });
 
-    case actionTypes.PURCHASE_READ_FAILURE:
+    case PURCHASE_READ_FAILURE:
       return mergeObjects(state, {
         pageLoading: false,
       });
 
     // Delete
-    case actionTypes.PURCHASE_DELETE_REQUEST:
+    case PURCHASE_DELETE_REQUEST:
       return mergeObjects(state, {
         pageLoading: true,
       });
 
-    case actionTypes.PURCHASE_DELETE_SUCCESS:
+    case PURCHASE_DELETE_SUCCESS:
       let modifyPurchaseForDelete = [...state.purchases];
       const modifiedPurchaseAfterDeleted = modifyPurchaseForDelete.filter(
         (purchase) =>
@@ -82,7 +95,7 @@ const purchaseReducer = (state = initialState, action) => {
         pageLoading: false,
       });
 
-    case actionTypes.PURCHASE_DELETE_FAILURE:
+    case PURCHASE_DELETE_FAILURE:
       return mergeObjects(state, {
         pageLoading: false,
       });

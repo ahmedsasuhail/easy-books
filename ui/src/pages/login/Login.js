@@ -10,17 +10,19 @@ import {
 } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 
+// redux
+import { userLogin } from '../../store/actions/user';
+
 // styles
 import useStyles from './styles';
 
 // logo
-import logo from './logo.svg';
+import logo from '../../assets/images/logo.svg';
 
-// redux
-import { userLogin } from '../../store/actions/user';
-
-function Login(props) {
+function Login() {
   var classes = useStyles();
+
+  const dispatch = useDispatch();
 
   // local
   var [loginValue, setLoginValue] = useState('john.doe@example.com');
@@ -28,7 +30,6 @@ function Login(props) {
 
   var isLoading = useSelector((state) => state.user.loading);
   var error = useSelector((state) => state.user.messageType);
-  const dispatch = useDispatch();
 
   return (
     <Grid container className={classes.container}>
@@ -39,11 +40,10 @@ function Login(props) {
       <div className={classes.formContainer}>
         <div className={classes.form}>
           <Typography variant='h1' className={classes.greeting}>
-            Good Day!
+            Welcome!
           </Typography>
-          <div className={classes.formDividerContainer}></div>
           <Fade in={error}>
-            <Typography color='secondary' className={classes.errorMessage}>
+            <Typography color='error' className={classes.errorMessage}>
               Something is wrong with your login or password :(
             </Typography>
           </Fade>
@@ -83,9 +83,7 @@ function Login(props) {
             ) : (
               <Button
                 disabled={loginValue.length === 0 || passwordValue.length === 0}
-                onClick={() =>
-                  dispatch(userLogin(loginValue, passwordValue, props.history))
-                }
+                onClick={() => dispatch(userLogin(loginValue, passwordValue))}
                 variant='contained'
                 color='primary'
                 size='large'

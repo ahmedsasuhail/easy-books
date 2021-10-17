@@ -1,4 +1,14 @@
-import * as actionTypes from '../actions/actionTypes';
+import {
+  SALES_CREATE_UPDATE_REQUEST,
+  SALES_CREATE_UPDATE_SUCCESS,
+  SALES_CREATE_UPDATE_FAILURE,
+  SALES_READ_REQUEST,
+  SALES_READ_SUCCESS,
+  SALES_READ_FAILURE,
+  SALES_DELETE_REQUEST,
+  SALES_DELETE_SUCCESS,
+  SALES_DELETE_FAILURE,
+} from '../actions/actionTypes';
 import { mergeObjects } from '../../utils/helpers';
 
 // Set Initial State
@@ -13,12 +23,13 @@ const initialState = {
 const salesReducer = (state = initialState, action) => {
   switch (action.type) {
     // Create or Update
-    case actionTypes.SALES_CREATE_UPDATE_REQUEST:
+    case SALES_CREATE_UPDATE_REQUEST:
       return mergeObjects(state, {
         formLoading: true,
+        pageLoading: true,
       });
 
-    case actionTypes.SALES_CREATE_UPDATE_SUCCESS:
+    case SALES_CREATE_UPDATE_SUCCESS:
       let modifySalesForCreateOrUpdate = [...state.sales];
       const salesIndex = modifySalesForCreateOrUpdate.findIndex(
         (sales) => parseInt(action.payload.sales.id) === parseInt(sales.id),
@@ -36,38 +47,40 @@ const salesReducer = (state = initialState, action) => {
       return mergeObjects(state, {
         sales: modifySalesForCreateOrUpdate,
         formLoading: false,
+        pageLoading: false,
       });
 
-    case actionTypes.SALES_CREATE_UPDATE_FAILURE:
+    case SALES_CREATE_UPDATE_FAILURE:
       return mergeObjects(state, {
         formLoading: false,
+        pageLoading: false,
       });
 
     // Read
-    case actionTypes.SALES_READ_REQUEST:
+    case SALES_READ_REQUEST:
       return mergeObjects(state, {
         pageLoading: true,
       });
 
-    case actionTypes.SALES_READ_SUCCESS:
+    case SALES_READ_SUCCESS:
       return mergeObjects(state, {
         sales: action.payload.sales,
         pageNo: action.payload.pageNo,
         pageLoading: false,
       });
 
-    case actionTypes.SALES_READ_FAILURE:
+    case SALES_READ_FAILURE:
       return mergeObjects(state, {
         pageLoading: false,
       });
 
     // Delete
-    case actionTypes.SALES_DELETE_REQUEST:
+    case SALES_DELETE_REQUEST:
       return mergeObjects(state, {
         pageLoading: true,
       });
 
-    case actionTypes.SALES_DELETE_SUCCESS:
+    case SALES_DELETE_SUCCESS:
       let modifySalesForDelete = [...state.sales];
       const modifiedSalesAfterDeleted = modifySalesForDelete.filter(
         (sales) => parseInt(action.payload.salesId) !== parseInt(sales.id),
@@ -77,7 +90,7 @@ const salesReducer = (state = initialState, action) => {
         pageLoading: false,
       });
 
-    case actionTypes.SALES_DELETE_FAILURE:
+    case SALES_DELETE_FAILURE:
       return mergeObjects(state, {
         pageLoading: false,
       });

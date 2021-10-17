@@ -10,7 +10,6 @@ import {
 import { Form } from 'react-final-form';
 
 const CustomDialog = (props) => {
-  console.log(props.isLoading);
   return (
     <>
       <Dialog
@@ -23,34 +22,31 @@ const CustomDialog = (props) => {
         <Form
           initialValues={props.initialValues}
           onSubmit={props.handleSubmit}
-          render={({ handleSubmit, values }) => (
-            <form onSubmit={handleSubmit}>
-              <DialogContent>{props.children}</DialogContent>
-              <DialogActions>
-                <>
-                  <Button onClick={props.handleClose} color='primary'>
-                    {props.closeButtonLabel ? props.closeButtonLabel : 'Cancel'}
-                  </Button>
-                  <Button
-                    type='submit'
-                    color='secondary'
-                    disabled={
-                      props.isLoading
-                      // || (props.isCommentForm ? !values && !values.comment : false)
-                    }
-                  >
-                    {props.isLoading ? (
-                      <CircularProgress size={16} />
-                    ) : props.saveButtonLabel ? (
-                      props.saveButtonLabel
-                    ) : (
-                      'Submit'
-                    )}
-                  </Button>
-                </>
-              </DialogActions>
-            </form>
-          )}
+          render={({ handleSubmit, invalid }) => {
+            return (
+              <form onSubmit={handleSubmit}>
+                <DialogContent>{props.children}</DialogContent>
+                <DialogActions>
+                  <>
+                    <Button onClick={props.handleClose} color='primary'>
+                      {props.closeButtonLabel
+                        ? props.closeButtonLabel
+                        : 'Cancel'}
+                    </Button>
+                    <Button type='submit' color='secondary' disabled={invalid}>
+                      {props.isLoading ? (
+                        <CircularProgress size={16} />
+                      ) : props.saveButtonLabel ? (
+                        props.saveButtonLabel
+                      ) : (
+                        'Submit'
+                      )}
+                    </Button>
+                  </>
+                </DialogActions>
+              </form>
+            );
+          }}
         />
       </Dialog>
     </>

@@ -1,17 +1,27 @@
-import * as actionTypes from '../actionTypes';
+import {
+  RELATIONSHIP_CREATE_UPDATE_REQUEST,
+  RELATIONSHIP_CREATE_UPDATE_SUCCESS,
+  RELATIONSHIP_CREATE_UPDATE_FAILURE,
+  RELATIONSHIP_READ_REQUEST,
+  RELATIONSHIP_READ_SUCCESS,
+  RELATIONSHIP_READ_FAILURE,
+  RELATIONSHIP_DELETE_REQUEST,
+  RELATIONSHIP_DELETE_SUCCESS,
+  RELATIONSHIP_DELETE_FAILURE,
+} from '../actionTypes';
 
 // Relationship Actions
 export const relationshipActions = {
   // Create or Update
   relationshipCreateUpdateRequest: () => {
     return {
-      type: actionTypes.RELATIONSHIP_CREATE_UPDATE_REQUEST,
+      type: RELATIONSHIP_CREATE_UPDATE_REQUEST,
     };
   },
 
   relationshipCreateUpdateSuccess: (values) => {
     return {
-      type: actionTypes.RELATIONSHIP_CREATE_UPDATE_SUCCESS,
+      type: RELATIONSHIP_CREATE_UPDATE_SUCCESS,
       payload: {
         relationship: values,
       },
@@ -20,20 +30,20 @@ export const relationshipActions = {
 
   relationshipCreateUpdateFailure: () => {
     return {
-      type: actionTypes.RELATIONSHIP_CREATE_UPDATE_FAILURE,
+      type: RELATIONSHIP_CREATE_UPDATE_FAILURE,
     };
   },
 
   // Read
   relationshipReadRequest: () => {
     return {
-      type: actionTypes.RELATIONSHIP_READ_REQUEST,
+      type: RELATIONSHIP_READ_REQUEST,
     };
   },
 
   relationshipReadSuccess: (values) => {
     return {
-      type: actionTypes.RELATIONSHIP_READ_SUCCESS,
+      type: RELATIONSHIP_READ_SUCCESS,
       payload: {
         relationships: values.records,
         pageNo: values.page,
@@ -43,20 +53,20 @@ export const relationshipActions = {
 
   relationshipReadFailure: () => {
     return {
-      type: actionTypes.RELATIONSHIP_READ_FAILURE,
+      type: RELATIONSHIP_READ_FAILURE,
     };
   },
 
   // Delete
   relationshipDeleteRequest: () => {
     return {
-      type: actionTypes.RELATIONSHIP_DELETE_REQUEST,
+      type: RELATIONSHIP_DELETE_REQUEST,
     };
   },
 
   relationshipDeleteSuccess: (value) => {
     return {
-      type: actionTypes.RELATIONSHIP_DELETE_SUCCESS,
+      type: RELATIONSHIP_DELETE_SUCCESS,
       payload: {
         relationshipId: value.id,
       },
@@ -65,7 +75,7 @@ export const relationshipActions = {
 
   relationshipDeleteFailure: () => {
     return {
-      type: actionTypes.RELATIONSHIP_DELETE_FAILURE,
+      type: RELATIONSHIP_DELETE_FAILURE,
     };
   },
 };

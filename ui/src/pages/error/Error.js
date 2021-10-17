@@ -7,7 +7,7 @@ import classnames from 'classnames';
 import useStyles from './styles';
 
 // logo
-import logo from './logo.svg';
+import logo from '../../assets/images/logo.svg';
 
 export default function Error() {
   var classes = useStyles();
@@ -17,7 +17,7 @@ export default function Error() {
       <div className={classes.logotype}>
         <img className={classes.logotypeIcon} src={logo} alt='logo' />
         <Typography variant='h3' color='white' className={classes.logotypeText}>
-          Material Admin
+          Easy Books
         </Typography>
       </div>
       <Paper classes={{ root: classes.paperRoot }}>
@@ -29,15 +29,7 @@ export default function Error() {
           404
         </Typography>
         <Typography variant='h5' color='primary' className={classes.textRow}>
-          Oops. Looks like the page you're looking for no longer exists
-        </Typography>
-        <Typography
-          variant='h6'
-          color='text'
-          colorBrightness='secondary'
-          className={classnames(classes.textRow, classes.safetyText)}
-        >
-          But we're here to bring you back to safety
+          Oops. Looks like the page you're looking for does not exist.
         </Typography>
         <Button
           variant='contained'

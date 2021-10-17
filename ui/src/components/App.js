@@ -2,15 +2,12 @@ import React from 'react';
 import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-// components
 import Layout from './Layout';
 
-// pages
 import Error from '../pages/error';
 import Login from '../pages/login';
 
 export default function App() {
-  // global
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
 
   return (

@@ -27,13 +27,16 @@ export const inventoryCreateUpdate = (values) => {
         dispatch(
           inventoryActions.inventoryCreateUpdateSuccess(response.data.data),
         );
-      } else {
+      } else if (response.status === 401) {
         dispatch(inventoryActions.inventoryCreateUpdateFailure());
-        // dispatch(userActions.logoutUser());
+        dispatch(userActions.logoutUser());
+      } else {
+        console.log(response);
+        dispatch(inventoryActions.inventoryCreateUpdateFailure());
       }
     } catch (error) {
+      console.log(error);
       dispatch(inventoryActions.inventoryCreateUpdateFailure());
-      // dispatch(userActions.logoutUser());
     }
   };
 };
@@ -54,7 +57,6 @@ export const inventoryRead = (values) => {
       if (response.data.data) {
         dispatch(inventoryActions.inventoryReadSuccess(response.data.data));
       } else if (response.status === 401) {
-        console.log(response);
         dispatch(inventoryActions.inventoryReadFailure());
         dispatch(userActions.logoutUser());
       } else {
@@ -83,13 +85,17 @@ export const inventoryDelete = (values) => {
       });
       if (response.data.data) {
         dispatch(inventoryActions.inventoryDeleteSuccess(response.data.data));
-      } else {
+      } else if (response.status === 401) {
+        console.log(response);
         dispatch(inventoryActions.inventoryDeleteFailure());
-        // dispatch(userActions.logoutUser());
+        dispatch(userActions.logoutUser());
+      } else {
+        console.log(response);
+        dispatch(inventoryActions.inventoryDeleteFailure());
       }
     } catch (error) {
+      console.log(error);
       dispatch(inventoryActions.inventoryDeleteFailure());
-      // dispatch(userActions.logoutUser());
     }
   };
 };

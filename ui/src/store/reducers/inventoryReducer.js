@@ -1,4 +1,14 @@
-import * as actionTypes from '../actions/actionTypes';
+import {
+  INVENTORY_CREATE_UPDATE_REQUEST,
+  INVENTORY_CREATE_UPDATE_SUCCESS,
+  INVENTORY_CREATE_UPDATE_FAILURE,
+  INVENTORY_READ_REQUEST,
+  INVENTORY_READ_SUCCESS,
+  INVENTORY_READ_FAILURE,
+  INVENTORY_DELETE_REQUEST,
+  INVENTORY_DELETE_SUCCESS,
+  INVENTORY_DELETE_FAILURE,
+} from '../actions/actionTypes';
 import { mergeObjects } from '../../utils/helpers';
 
 // Set Initial State
@@ -13,12 +23,13 @@ const initialState = {
 const inventoryReducer = (state = initialState, action) => {
   switch (action.type) {
     // Create or Update
-    case actionTypes.INVENTORY_CREATE_UPDATE_REQUEST:
+    case INVENTORY_CREATE_UPDATE_REQUEST:
       return mergeObjects(state, {
         formLoading: true,
+        pageLoading: true,
       });
 
-    case actionTypes.INVENTORY_CREATE_UPDATE_SUCCESS:
+    case INVENTORY_CREATE_UPDATE_SUCCESS:
       let modifyInventoryForCreateOrUpdate = [...state.inventory];
       const inventoryIndex = modifyInventoryForCreateOrUpdate.findIndex(
         (inventory) =>
@@ -40,49 +51,56 @@ const inventoryReducer = (state = initialState, action) => {
       return mergeObjects(state, {
         inventory: modifyInventoryForCreateOrUpdate,
         formLoading: false,
+        pageLoading: false,
       });
 
-    case actionTypes.INVENTORY_CREATE_UPDATE_FAILURE:
+    case INVENTORY_CREATE_UPDATE_FAILURE:
       return mergeObjects(state, {
         formLoading: false,
+        pageLoading: false,
       });
 
     // Read
-    case actionTypes.INVENTORY_READ_REQUEST:
+    case INVENTORY_READ_REQUEST:
       return mergeObjects(state, {
         pageLoading: true,
       });
 
-    case actionTypes.INVENTORY_READ_SUCCESS:
+    case INVENTORY_READ_SUCCESS:
       return mergeObjects(state, {
         inventory: action.payload.inventory,
         pageNo: action.payload.pageNo,
         pageLoading: false,
       });
 
-    case actionTypes.INVENTORY_READ_FAILURE:
+    case INVENTORY_READ_FAILURE:
       return mergeObjects(state, {
         pageLoading: false,
       });
 
     // Delete
-    case actionTypes.INVENTORY_DELETE_REQUEST:
+    case INVENTORY_DELETE_REQUEST:
       return mergeObjects(state, {
         pageLoading: true,
       });
 
-    case actionTypes.INVENTORY_DELETE_SUCCESS:
+    case INVENTORY_DELETE_SUCCESS:
       let modifyInventoryForDelete = [...state.inventory];
+      console.log(modifyInventoryForDelete);
       const modifiedInventoryAfterDeleted = modifyInventoryForDelete.filter(
-        (inventory) =>
-          parseInt(action.payload.inventoryId) !== parseInt(inventory.id),
+        (inventory) => {
+          console.log(inventory);
+          return (
+            parseInt(action.payload.inventoryId) !== parseInt(inventory.id)
+          );
+        },
       );
       return mergeObjects(state, {
         inventory: modifiedInventoryAfterDeleted,
         pageLoading: false,
       });
 
-    case actionTypes.INVENTORY_DELETE_FAILURE:
+    case INVENTORY_DELETE_FAILURE:
       return mergeObjects(state, {
         pageLoading: false,
       });

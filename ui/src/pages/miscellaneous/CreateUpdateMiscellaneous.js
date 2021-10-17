@@ -5,6 +5,8 @@ import { Field } from 'react-final-form';
 import Input from '../../components/Input/Input';
 
 const CreateUpdateMiscellaneous = () => {
+  const required = (value) => (value ? undefined : 'Required');
+
   return (
     <>
       <Field
@@ -20,6 +22,7 @@ const CreateUpdateMiscellaneous = () => {
         maxRows={3}
         autoFocus
         required
+        validate={required}
       />
       <Field
         component={Input}
@@ -30,6 +33,7 @@ const CreateUpdateMiscellaneous = () => {
         margin='normal'
         fullWidth
         required
+        validate={required}
       />
       <Field
         component={Input}
@@ -44,6 +48,7 @@ const CreateUpdateMiscellaneous = () => {
           shrink: true,
         }}
         required
+        validate={required}
       />
     </>
   );

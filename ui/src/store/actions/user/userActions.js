@@ -1,17 +1,25 @@
-import * as actionTypes from '../actionTypes';
+import {
+  // USER_REGISTRATION_REQUEST,
+  // USER_REGISTRATION_SUCCESS,
+  // USER_REGISTRATION_FAILURE,
+  USER_LOGIN_REQUEST,
+  USER_LOGIN_SUCCESS,
+  USER_LOGIN_FAILURE,
+  USER_LOGOUT,
+} from '../actionTypes';
 
 // User Actions
 export const userActions = {
   // Registration
   // registrationRequest: () => {
   //   return {
-  //     type: actionTypes.USER_REGISTRATION_REQUEST,
+  //     type: USER_REGISTRATION_REQUEST,
   //   };
   // },
 
   // registrationSuccess: (values) => {
   //   return {
-  //     type: actionTypes.USER_REGISTRATION_SUCCESS,
+  //     type: USER_REGISTRATION_SUCCESS,
   //     payload: {
   //       message: values.message,
   //     },
@@ -20,7 +28,7 @@ export const userActions = {
 
   // registrationFailure: (values) => {
   //   return {
-  //     type: actionTypes.USER_REGISTRATION_FAILURE,
+  //     type: USER_REGISTRATION_FAILURE,
   //     payload: { message: values.message },
   //   };
   // },
@@ -28,13 +36,13 @@ export const userActions = {
   // Login
   loginRequest: () => {
     return {
-      type: actionTypes.USER_LOGIN_REQUEST,
+      type: USER_LOGIN_REQUEST,
     };
   },
 
   loginSuccess: (values) => {
     return {
-      type: actionTypes.USER_LOGIN_SUCCESS,
+      type: USER_LOGIN_SUCCESS,
       payload: {
         token: values.auth.token,
         name: values.user.name,
@@ -44,7 +52,7 @@ export const userActions = {
 
   loginFailure: (values) => {
     return {
-      type: actionTypes.USER_LOGIN_FAILURE,
+      type: USER_LOGIN_FAILURE,
       payload: {
         message: values.message,
       },
@@ -54,7 +62,7 @@ export const userActions = {
   // Logout
   logoutUser: () => {
     return {
-      type: actionTypes.USER_LOGOUT,
+      type: USER_LOGOUT,
     };
   },
 };

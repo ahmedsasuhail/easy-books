@@ -108,6 +108,7 @@ export default makeStyles((theme) => ({
   },
   errorMessage: {
     textAlign: 'center',
+    marginTop: '10px',
   },
   textFieldUnderline: {
     '&:before': {
