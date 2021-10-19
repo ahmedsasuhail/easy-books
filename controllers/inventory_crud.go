@@ -157,11 +157,10 @@ func GetInventoryFromPurchaseID(c *gin.Context) {
 	}
 
 	if pagination.GetAll {
-		result = pgClient.Preload(
-			"Purchases",
-		).Preload(
-			"Purchases.Relationships",
-		).Where("purchase_id = ?", record.PurchaseID).Find(&records)
+		result = pgClient.Where(
+			"purchase_id = ?",
+			record.PurchaseID,
+		).Find(&records)
 	} else {
 		offset := (pagination.Page - 1) * pagination.PageLimit
 		queryBuilder := pgClient.DB.Limit(
@@ -171,11 +170,10 @@ func GetInventoryFromPurchaseID(c *gin.Context) {
 		).Order(
 			fmt.Sprintf("%s %s", pagination.OrderBy, pagination.SortOrder),
 		)
-		result = queryBuilder.Preload(
-			"Purchases",
-		).Preload(
-			"Purchases.Relationships",
-		).Where("purchase_id = ?", record.PurchaseID).Find(&records)
+		result = queryBuilder.Where(
+			"purchase_id = ?",
+			record.PurchaseID,
+		).Find(&records)
 	}
 
 	if result.Error != nil {
