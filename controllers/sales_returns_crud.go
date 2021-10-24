@@ -66,8 +66,12 @@ func ReadSalesReturns(c *gin.Context) {
 	}
 
 	successResponse(c, http.StatusOK, "", map[string]interface{}{
-		"page":    pagination.Page,
-		"records": records,
+		"page":        pagination.Page,
+		"page_limit":  pagination.PageLimit,
+		"order_by":    pagination.OrderBy,
+		"sort_order":  pagination.SortOrder,
+		"total_count": pgClient.Find(&records).RowsAffected,
+		"records":     records,
 	})
 }
 
