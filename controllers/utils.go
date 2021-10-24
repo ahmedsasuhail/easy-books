@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"strconv"
 
@@ -80,6 +81,12 @@ func parsePaginationRequest(c *gin.Context) (models.Pagination, error) {
 			if err != nil {
 				return models.Pagination{}, errors.New(
 					"invalid type for key `page` (uint32 expected)",
+				)
+			}
+
+			if page <= 0 {
+				return models.Pagination{}, fmt.Errorf(
+					"invalid page number: %d", page,
 				)
 			}
 
