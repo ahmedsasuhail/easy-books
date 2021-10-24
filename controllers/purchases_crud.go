@@ -50,7 +50,16 @@ func CreateOrUpdatePurchases(c *gin.Context) {
 // ReadPurchases returns a paginated list of results from the `eb_purchases`
 // table.
 func ReadPurchases(c *gin.Context) {
-	pagination := parsePaginationRequest(c)
+	pagination, err := parsePaginationRequest(c)
+	if err != nil {
+		errorResponse(
+			c,
+			http.StatusBadRequest,
+			err.Error(),
+		)
+
+		return
+	}
 
 	var records []models.Purchases
 	var result *gorm.DB

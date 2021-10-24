@@ -45,7 +45,16 @@ func CreateOrUpdateRelationships(c *gin.Context) {
 // ReadRelationships returns a paginated list of results from the `eb_relationships`
 // table.
 func ReadRelationships(c *gin.Context) {
-	pagination := parsePaginationRequest(c)
+	pagination, err := parsePaginationRequest(c)
+	if err != nil {
+		errorResponse(
+			c,
+			http.StatusBadRequest,
+			err.Error(),
+		)
+
+		return
+	}
 
 	var records []models.Relationships
 	var result *gorm.DB

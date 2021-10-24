@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
-	"net/http"
 	"strconv"
 
 	"github.com/ahmedsasuhail/easy-books/models"
@@ -55,7 +55,7 @@ func parseRequestBody(c *gin.Context, receiver interface{}) error {
 }
 
 // parsePaginationRequest parses a URL query and maps it onto a `Pagination` structure.
-func parsePaginationRequest(c *gin.Context) models.Pagination {
+func parsePaginationRequest(c *gin.Context) (models.Pagination, error) {
 	query := c.Request.URL.Query()
 
 	// Pagination parameters.
@@ -78,25 +78,17 @@ func parsePaginationRequest(c *gin.Context) models.Pagination {
 		case "page":
 			page, err = strconv.Atoi(queryValue)
 			if err != nil {
-				errorResponse(
-					c,
-					http.StatusBadRequest,
-					"Invalid type for key `page` (uint32 expected).",
+				return models.Pagination{}, errors.New(
+					"invalid type for key `page` (uint32 expected)",
 				)
-
-				return models.Pagination{}
 			}
 
 		case "page_limit":
 			pageLimit, err = strconv.Atoi(queryValue)
 			if err != nil {
-				errorResponse(
-					c,
-					http.StatusBadRequest,
-					"Invalid type for key `page_limit` (uint32 expected).",
+				return models.Pagination{}, errors.New(
+					"invalid type for key `page` (uint32 expected)",
 				)
-
-				return models.Pagination{}
 			}
 
 		case "sort_order":
@@ -113,5 +105,5 @@ func parsePaginationRequest(c *gin.Context) models.Pagination {
 		PageLimit: pageLimit,
 		OrderBy:   orderBy,
 		SortOrder: sortOrder,
-	}
+	}, nil
 }

@@ -40,7 +40,16 @@ func CreateOrUpdateSalesReturns(c *gin.Context) {
 // ReadSalesReturns returns a paginated list of results from the `eb_sales_returns`
 // table.
 func ReadSalesReturns(c *gin.Context) {
-	pagination := parsePaginationRequest(c)
+	pagination, err := parsePaginationRequest(c)
+	if err != nil {
+		errorResponse(
+			c,
+			http.StatusBadRequest,
+			err.Error(),
+		)
+
+		return
+	}
 
 	var records []models.SalesReturns
 	var result *gorm.DB

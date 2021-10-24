@@ -54,7 +54,16 @@ func CreateOrUpdateInventory(c *gin.Context) {
 // ReadInventory returns a paginated list of results from the `eb_inventory`
 // table.
 func ReadInventory(c *gin.Context) {
-	pagination := parsePaginationRequest(c)
+	pagination, err := parsePaginationRequest(c)
+	if err != nil {
+		errorResponse(
+			c,
+			http.StatusBadRequest,
+			err.Error(),
+		)
+
+		return
+	}
 
 	var records []models.Inventory
 	var result *gorm.DB
@@ -147,13 +156,22 @@ func DeleteInventory(c *gin.Context) {
 // GetInventoryFromPurchaseID retrieves a list of inventory records matching a
 // specified purchase ID.
 func GetInventoryFromPurchaseID(c *gin.Context) {
-	pagination := parsePaginationRequest(c)
+	pagination, err := parsePaginationRequest(c)
+	if err != nil {
+		errorResponse(
+			c,
+			http.StatusBadRequest,
+			err.Error(),
+		)
+
+		return
+	}
 
 	var record models.Inventory
 	var records []models.Inventory
 	var result *gorm.DB
 
-	err := parseRequestBody(c, &record)
+	err = parseRequestBody(c, &record)
 	if err != nil {
 		errorResponse(c, http.StatusBadRequest, err.Error())
 

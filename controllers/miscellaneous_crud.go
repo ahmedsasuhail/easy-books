@@ -45,7 +45,16 @@ func CreateOrUpdateMiscellaneous(c *gin.Context) {
 // ReadMiscellaneous returns a paginated list of results from the `eb_miscellaneous`
 // table.
 func ReadMiscellaneous(c *gin.Context) {
-	pagination := parsePaginationRequest(c)
+	pagination, err := parsePaginationRequest(c)
+	if err != nil {
+		errorResponse(
+			c,
+			http.StatusBadRequest,
+			err.Error(),
+		)
+
+		return
+	}
 
 	var records []models.Miscellaneous
 	var result *gorm.DB
