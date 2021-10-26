@@ -69,6 +69,12 @@ func Get() *gin.Engine {
 			sales.GET("/", controllers.ReadSales)
 			sales.DELETE("/", controllers.DeleteSales)
 		}
+
+		reports := app.Group("/reports")
+		reports.Use(middleware.ValidateJWT())
+		{
+			reports.POST("/by_purchase", controllers.ReportByPurchaseID)
+		}
 	}
 
 	return router
