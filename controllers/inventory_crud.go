@@ -185,9 +185,9 @@ func DeleteInventory(c *gin.Context) {
 	}
 }
 
-// GetInventoryFromPurchaseID retrieves a list of inventory records matching a
+// GetInventoryByPurchaseID retrieves a list of inventory records matching a
 // specified purchase ID.
-func GetInventoryFromPurchaseID(c *gin.Context) {
+func GetInventoryByPurchaseID(c *gin.Context) {
 	pagination, err := parsePaginationRequest(c)
 	if err != nil {
 		errorResponse(
