@@ -64,14 +64,6 @@ func Get() *gin.Engine {
 			sales.GET("/", controllers.ReadSales)
 			sales.DELETE("/", controllers.DeleteSales)
 		}
-
-		salesReturns := app.Group("/sales_returns")
-		salesReturns.Use(middleware.ValidateJWT())
-		{
-			salesReturns.PUT("/", controllers.CreateOrUpdateSalesReturns)
-			salesReturns.GET("/", controllers.ReadSalesReturns)
-			salesReturns.DELETE("/", controllers.DeleteSalesReturns)
-		}
 	}
 
 	return router

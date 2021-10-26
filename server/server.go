@@ -49,7 +49,6 @@ func Init() *gin.Engine {
 		models.Purchases{},
 		models.Relationships{},
 		models.Sales{},
-		models.SalesReturns{},
 		models.Miscellaneous{},
 	}
 

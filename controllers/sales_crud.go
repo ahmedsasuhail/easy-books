@@ -46,9 +46,10 @@ func CreateOrUpdateSales(c *gin.Context) {
 			"Inventory.Purchases.Relationships",
 		).First(&record)
 		successResponse(c, http.StatusOK, "", map[string]interface{}{
-			"id":    record.ID,
-			"price": record.Price,
-			"date":  record.Date,
+			"id":       record.ID,
+			"price":    record.Price,
+			"date":     record.Date,
+			"returned": record.Returned,
 			"relationships": map[string]interface{}{
 				"id":   record.Relationships.ID,
 				"name": record.Relationships.Name,
@@ -121,9 +122,10 @@ func ReadSales(c *gin.Context) {
 
 	for _, record := range records {
 		filteredRecords = append(filteredRecords, map[string]interface{}{
-			"id":    record.ID,
-			"price": record.Price,
-			"date":  record.Date,
+			"id":       record.ID,
+			"price":    record.Price,
+			"date":     record.Date,
+			"returned": record.Returned,
 			"relationships": map[string]interface{}{
 				"id":   record.Relationships.ID,
 				"name": record.Relationships.Name,

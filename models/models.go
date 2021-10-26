@@ -64,6 +64,7 @@ type Sales struct {
 	RelationshipID uint64         `json:"relationship_id"`
 	PurchaseID     uint64         `json:"purchase_id"`
 	InventoryID    uint64         `json:"inventory_id"`
+	Returned       bool           `gorm:"default:false" json:"returned"`
 	Relationships  Relationships  `gorm:"foreignKey:RelationshipID" json:"relationships"`
 	Purchases      Purchases      `gorm:"foreignKey:PurchaseID" json:"purchases"`
 	Inventory      Inventory      `gorm:"foreignKey:InventoryID" json:"inventory"`
@@ -71,21 +72,6 @@ type Sales struct {
 
 func (Sales) TableName() string {
 	return "eb_sales"
-}
-
-type SalesReturns struct {
-	CreatedAt time.Time      `json:"created_at"`
-	UpdatedAt time.Time      `json:"updated_at"`
-	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at"`
-
-	ID      uint64         `gorm:"primaryKey" json:"id"`
-	Date    datatypes.Date `json:"date"`
-	SalesID uint64         `json:"sales_id"`
-	Sales   Sales          `gorm:"foreignKey:SalesID" json:"sales"`
-}
-
-func (SalesReturns) TableName() string {
-	return "eb_sales_returns"
 }
 
 type Purchases struct {
