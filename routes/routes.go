@@ -26,7 +26,8 @@ func Get() *gin.Engine {
 		miscellaneous := app.Group("/miscellaneous")
 		miscellaneous.Use(middleware.ValidateJWT())
 		{
-			miscellaneous.PUT("/", controllers.CreateOrUpdateMiscellaneous)
+			miscellaneous.POST("/", controllers.CreateMiscellaneous)
+			miscellaneous.PATCH("/", controllers.UpdateMiscellaneous)
 			miscellaneous.GET("/", controllers.ReadMiscellaneous)
 			miscellaneous.DELETE("/", controllers.DeleteMiscellaneous)
 		}
@@ -34,7 +35,8 @@ func Get() *gin.Engine {
 		relationships := app.Group("/relationships")
 		relationships.Use(middleware.ValidateJWT())
 		{
-			relationships.PUT("/", controllers.CreateOrUpdateRelationships)
+			relationships.POST("/", controllers.CreateRelationships)
+			relationships.PATCH("/", controllers.UpdateRelationships)
 			relationships.GET("/", controllers.ReadRelationships)
 			relationships.DELETE("/", controllers.DeleteRelationships)
 		}
@@ -42,7 +44,8 @@ func Get() *gin.Engine {
 		purchases := app.Group("/purchases")
 		purchases.Use(middleware.ValidateJWT())
 		{
-			purchases.PUT("/", controllers.CreateOrUpdatePurchases)
+			purchases.POST("/", controllers.CreatePurchases)
+			purchases.PATCH("/", controllers.UpdatePurchases)
 			purchases.GET("/", controllers.ReadPurchases)
 			purchases.DELETE("/", controllers.DeletePurchases)
 		}
@@ -50,7 +53,8 @@ func Get() *gin.Engine {
 		inventory := app.Group("/inventory")
 		inventory.Use(middleware.ValidateJWT())
 		{
-			inventory.PUT("/", controllers.CreateOrUpdateInventory)
+			inventory.POST("/", controllers.CreateInventory)
+			inventory.PATCH("/", controllers.UpdateInventory)
 			inventory.GET("/", controllers.ReadInventory)
 			inventory.DELETE("/", controllers.DeleteInventory)
 
@@ -60,7 +64,8 @@ func Get() *gin.Engine {
 		sales := app.Group("/sales")
 		sales.Use(middleware.ValidateJWT())
 		{
-			sales.PUT("/", controllers.CreateOrUpdateSales)
+			sales.POST("/", controllers.CreateSales)
+			sales.PATCH("/", controllers.UpdateSales)
 			sales.GET("/", controllers.ReadSales)
 			sales.DELETE("/", controllers.DeleteSales)
 		}

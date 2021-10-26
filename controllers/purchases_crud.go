@@ -7,12 +7,10 @@ import (
 	"github.com/ahmedsasuhail/easy-books/models"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 )
 
-// CreateOrUpdatePurchases creates or updates a record in the `eb_purchases`
-// table.
-func CreateOrUpdatePurchases(c *gin.Context) {
+// CreatePurchases creates a record in the `eb_purchases` table.
+func CreatePurchases(c *gin.Context) {
 	// Read and parse request body.
 	var record models.Purchases
 	err := parseRequestBody(c, &record)
@@ -22,29 +20,59 @@ func CreateOrUpdatePurchases(c *gin.Context) {
 		return
 	}
 
-	// Create or update record in table.
-	err = pgClient.Clauses(clause.OnConflict{
-		Columns:   []clause.Column{{Name: "id"}},
-		UpdateAll: true,
-	}).Create(&record).Error
+	// Create record in table.
+	err = pgClient.Create(&record).Error
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 
 		return
-	} else {
-		pgClient.Preload("Relationships").First(&record)
-		successResponse(c, http.StatusOK, "", map[string]interface{}{
-			"id":           record.ID,
-			"company_name": record.CompanyName,
-			"vehicle_name": record.VehicleName,
-			"price":        record.Price,
-			"date":         record.Date,
-			"relationships": map[string]interface{}{
-				"id":   record.Relationships.ID,
-				"name": record.Relationships.Name,
-			},
-		})
 	}
+
+	pgClient.Preload("Relationships").First(&record)
+	successResponse(c, http.StatusOK, "", map[string]interface{}{
+		"id":           record.ID,
+		"company_name": record.CompanyName,
+		"vehicle_name": record.VehicleName,
+		"price":        record.Price,
+		"date":         record.Date,
+		"relationships": map[string]interface{}{
+			"id":   record.Relationships.ID,
+			"name": record.Relationships.Name,
+		},
+	})
+}
+
+// UpdatePurchases updates a record in the `eb_purchases` table.
+func UpdatePurchases(c *gin.Context) {
+	// Read and parse request body.
+	var record models.Purchases
+	err := parseRequestBody(c, &record)
+	if err != nil {
+		errorResponse(c, http.StatusBadRequest, err.Error())
+
+		return
+	}
+
+	// Update record in table.
+	err = pgClient.Model(&record).Updates(&record).Error
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+
+	pgClient.Preload("Relationships").First(&record)
+	successResponse(c, http.StatusOK, "", map[string]interface{}{
+		"id":           record.ID,
+		"company_name": record.CompanyName,
+		"vehicle_name": record.VehicleName,
+		"price":        record.Price,
+		"date":         record.Date,
+		"relationships": map[string]interface{}{
+			"id":   record.Relationships.ID,
+			"name": record.Relationships.Name,
+		},
+	})
 }
 
 // ReadPurchases returns a paginated list of results from the `eb_purchases`

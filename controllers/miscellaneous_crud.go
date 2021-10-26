@@ -7,12 +7,10 @@ import (
 	"github.com/ahmedsasuhail/easy-books/models"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 )
 
-// CreateOrUpdateMiscellaneous creates or updates a record in the `eb_miscellaneous`
-// table.
-func CreateOrUpdateMiscellaneous(c *gin.Context) {
+// CreateMiscellaneous creates a record in the `eb_miscellaneous` table.
+func CreateMiscellaneous(c *gin.Context) {
 	// Read and parse request body.
 	var record models.Miscellaneous
 	err := parseRequestBody(c, &record)
@@ -22,24 +20,50 @@ func CreateOrUpdateMiscellaneous(c *gin.Context) {
 		return
 	}
 
-	// Create or update record in table.
-	err = pgClient.Clauses(clause.OnConflict{
-		Columns:   []clause.Column{{Name: "id"}},
-		UpdateAll: true,
-	}).Create(&record).Error
+	// Create record in table.
+	err = pgClient.Create(&record).Error
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 
 		return
-	} else {
-		pgClient.First(&record)
-		successResponse(c, http.StatusOK, "", map[string]interface{}{
-			"id":          record.ID,
-			"description": record.Description,
-			"price":       record.Price,
-			"date":        record.Date,
-		})
 	}
+
+	pgClient.First(&record)
+	successResponse(c, http.StatusOK, "", map[string]interface{}{
+		"id":          record.ID,
+		"description": record.Description,
+		"price":       record.Price,
+		"date":        record.Date,
+	})
+}
+
+// UpdateMiscellaneous creates or updates a record in the `eb_miscellaneous`
+// table.
+func UpdateMiscellaneous(c *gin.Context) {
+	// Read and parse request body.
+	var record models.Miscellaneous
+	err := parseRequestBody(c, &record)
+	if err != nil {
+		errorResponse(c, http.StatusBadRequest, err.Error())
+
+		return
+	}
+
+	// Update record in table.
+	err = pgClient.Model(&record).Updates(&record).Error
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+
+	pgClient.First(&record)
+	successResponse(c, http.StatusOK, "", map[string]interface{}{
+		"id":          record.ID,
+		"description": record.Description,
+		"price":       record.Price,
+		"date":        record.Date,
+	})
 }
 
 // ReadMiscellaneous returns a paginated list of results from the `eb_miscellaneous`

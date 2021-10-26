@@ -7,12 +7,47 @@ import (
 	"github.com/ahmedsasuhail/easy-books/models"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 )
 
-// CreateOrUpdateInventory creates or updates a record in the `eb_inventory`
-// table.
-func CreateOrUpdateInventory(c *gin.Context) {
+// CreateInventory creates a new record in the `eb_inventory` table.
+func CreateInventory(c *gin.Context) {
+	// Read and parse request body.
+	var record models.Inventory
+	err := parseRequestBody(c, &record)
+	if err != nil {
+		errorResponse(c, http.StatusBadRequest, err.Error())
+
+		return
+	}
+
+	// Create record in table.
+	err = pgClient.Create(&record).Error
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+
+	pgClient.Preload(
+		"Purchases",
+	).Preload(
+		"Purchases.Relationships",
+	).First(&record)
+	successResponse(c, http.StatusOK, "", map[string]interface{}{
+		"id":        record.ID,
+		"part_name": record.PartName,
+		"quantity":  record.Quantity,
+		"date":      record.Date,
+		"purchases": map[string]interface{}{
+			"id":           record.Purchases.ID,
+			"company_name": record.Purchases.CompanyName,
+			"vehicle_name": record.Purchases.VehicleName,
+		},
+	})
+}
+
+// UpdateInventory updates a record in the `eb_inventory` table.
+func UpdateInventory(c *gin.Context) {
 	// Read and parse request body.
 	var record models.Inventory
 	err := parseRequestBody(c, &record)
@@ -23,32 +58,29 @@ func CreateOrUpdateInventory(c *gin.Context) {
 	}
 
 	// Create or update record in table.
-	err = pgClient.Clauses(clause.OnConflict{
-		Columns:   []clause.Column{{Name: "id"}},
-		UpdateAll: true,
-	}).Create(&record).Error
+	err = pgClient.Model(&record).Updates(&record).Error
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 
 		return
-	} else {
-		pgClient.Preload(
-			"Purchases",
-		).Preload(
-			"Purchases.Relationships",
-		).First(&record)
-		successResponse(c, http.StatusOK, "", map[string]interface{}{
-			"id":        record.ID,
-			"part_name": record.PartName,
-			"quantity":  record.Quantity,
-			"date":      record.Date,
-			"purchases": map[string]interface{}{
-				"id":           record.Purchases.ID,
-				"company_name": record.Purchases.CompanyName,
-				"vehicle_name": record.Purchases.VehicleName,
-			},
-		})
 	}
+
+	pgClient.Preload(
+		"Purchases",
+	).Preload(
+		"Purchases.Relationships",
+	).First(&record)
+	successResponse(c, http.StatusOK, "", map[string]interface{}{
+		"id":        record.ID,
+		"part_name": record.PartName,
+		"quantity":  record.Quantity,
+		"date":      record.Date,
+		"purchases": map[string]interface{}{
+			"id":           record.Purchases.ID,
+			"company_name": record.Purchases.CompanyName,
+			"vehicle_name": record.Purchases.VehicleName,
+		},
+	})
 }
 
 // ReadInventory returns a paginated list of results from the `eb_inventory`
