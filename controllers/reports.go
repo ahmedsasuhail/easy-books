@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"math"
 	"net/http"
 
 	"github.com/ahmedsasuhail/easy-books/models"
@@ -35,7 +34,17 @@ func ReportByPurchaseID(c *gin.Context) {
 	).First(&record)
 
 	if result.Error != nil {
-		errorResponse(c, http.StatusInternalServerError, result.Error.Error())
+		successResponse(c, http.StatusOK, "", map[string]interface{}{
+			"id":                   record.Purchases.ID,
+			"company_name":         record.Purchases.CompanyName,
+			"vehicle_name":         record.Purchases.VehicleName,
+			"price":                record.Purchases.Price,
+			"sales":                nil,
+			"sales_returned":       nil,
+			"sales_total":          nil,
+			"sales_returned_total": nil,
+			"total":                nil,
+		})
 
 		return
 	}
@@ -91,6 +100,6 @@ func ReportByPurchaseID(c *gin.Context) {
 		"sales_returned":       returned,
 		"sales_total":          totalSales,
 		"sales_returned_total": totalReturned,
-		"total":                math.Abs(totalSales-totalReturned) - record.Purchases.Price,
+		"total":                totalSales - record.Purchases.Price,
 	})
 }
