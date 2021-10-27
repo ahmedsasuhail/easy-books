@@ -81,6 +81,19 @@ func UpdateSales(c *gin.Context) {
 		return
 	}
 
+	// Dirty fix to toggle `Returned` field from true to false.
+	if !record.Returned {
+		err = pgClient.Model(&record).Select("Returned").Updates(
+			models.Sales{Returned: false},
+		).Error
+
+		if err != nil {
+			errorResponse(c, http.StatusInternalServerError, err.Error())
+
+			return
+		}
+	}
+
 	pgClient.Preload(
 		"Relationships",
 	).Preload(
