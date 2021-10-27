@@ -74,6 +74,7 @@ func Get() *gin.Engine {
 		reports.Use(middleware.ValidateJWT())
 		{
 			reports.POST("/by_purchase", controllers.ReportByPurchaseID)
+			reports.POST("/by_relationship", controllers.ReportByRelationshipID)
 		}
 	}
 

@@ -103,3 +103,85 @@ func ReportByPurchaseID(c *gin.Context) {
 		"total":                totalSales - record.Purchases.Price,
 	})
 }
+
+// ReportByRelationshipID retrieves a list of purchase and sales records matching
+// a specified relationship ID.
+func ReportByRelationshipID(c *gin.Context) {
+	var purchases []models.Purchases
+	var sales []models.Sales
+	var request map[string]uint64
+	var relationship models.Relationships
+	var result *gorm.DB
+
+	err := parseRequestBody(c, &request)
+	if err != nil {
+		errorResponse(c, http.StatusBadRequest, err.Error())
+
+		return
+	}
+
+	result = pgClient.Where(
+		"id = ?",
+		request["relationship_id"],
+	).Find(&relationship)
+
+	if result.Error != nil {
+		errorResponse(c, http.StatusInternalServerError, result.Error.Error())
+
+		return
+	}
+
+	result = pgClient.Where(
+		"relationship_id = ?",
+		relationship.ID,
+	).Find(&purchases)
+
+	if result.Error != nil {
+		errorResponse(c, http.StatusInternalServerError, result.Error.Error())
+
+		return
+	}
+
+	result = pgClient.Where(
+		"relationship_id = ?",
+		relationship.ID,
+	).Preload(
+		"Inventory",
+	).Find(&sales)
+
+	if result.Error != nil {
+		errorResponse(c, http.StatusInternalServerError, result.Error.Error())
+
+		return
+	}
+
+	var filteredPurchases []map[string]interface{}
+	var filteredSales []map[string]interface{}
+
+	for _, record := range purchases {
+		filteredPurchases = append(filteredPurchases, map[string]interface{}{
+			"id":           record.ID,
+			"company_name": record.CompanyName,
+			"vehicle_name": record.VehicleName,
+			"price":        record.Price,
+			"date":         record.Date,
+		})
+	}
+
+	for _, record := range sales {
+		filteredSales = append(filteredSales, map[string]interface{}{
+			"id":        record.ID,
+			"price":     record.Price,
+			"date":      record.Date,
+			"returned":  record.Returned,
+			"part_name": record.Inventory.PartName,
+		})
+	}
+
+	successResponse(c, http.StatusOK, "", map[string]interface{}{
+		"id":        relationship.ID,
+		"name":      relationship.Name,
+		"purchases": filteredPurchases,
+		"sales":     filteredSales,
+	})
+}
