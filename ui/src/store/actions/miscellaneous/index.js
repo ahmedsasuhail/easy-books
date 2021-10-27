@@ -3,18 +3,17 @@ import axios from '../../../utils/axiosInstance';
 import { userActions } from '../user/userActions';
 
 // Action Creators
-// Create or Update
-export const miscellaneousCreateUpdate = (values) => {
+// Create
+export const miscellaneousCreate = (values) => {
   return async (dispatch) => {
-    dispatch(miscellaneousActions.miscellaneousCreateUpdateRequest());
+    dispatch(miscellaneousActions.miscellaneousCreateRequest());
     try {
-      const response = await axios.put(
+      const response = await axios.post(
         'miscellaneous/',
         {
           date: values.formValues.date,
           description: values.formValues.description,
           price: +values.formValues.price,
-          ...(values.formValues.id && { id: +values.formValues.id }),
         },
         {
           headers: {
@@ -24,21 +23,53 @@ export const miscellaneousCreateUpdate = (values) => {
       );
       if (response.data.data) {
         dispatch(
-          miscellaneousActions.miscellaneousCreateUpdateSuccess(
-            response.data.data,
-          ),
+          miscellaneousActions.miscellaneousCreateSuccess(response.data.data),
         );
-      } else if (response.status === 401) {
-        console.log(response);
-        dispatch(miscellaneousActions.miscellaneousCreateUpdateFailure());
-        dispatch(userActions.logoutUser());
       } else {
-        console.log(response);
-        dispatch(miscellaneousActions.miscellaneousCreateUpdateFailure());
+        console.log('Error: ', response);
+        dispatch(miscellaneousActions.miscellaneousCreateFailure());
       }
     } catch (error) {
-      console.log(error);
-      dispatch(miscellaneousActions.miscellaneousCreateUpdateFailure());
+      dispatch(miscellaneousActions.miscellaneousCreateFailure());
+      if (error.response && error.response.status === 401) {
+        dispatch(userActions.logoutUser());
+      }
+    }
+  };
+};
+
+// Update
+export const miscellaneousUpdate = (values) => {
+  return async (dispatch) => {
+    dispatch(miscellaneousActions.miscellaneousUpdateRequest());
+    try {
+      const response = await axios.patch(
+        'miscellaneous/',
+        {
+          date: values.formValues.date,
+          description: values.formValues.description,
+          price: +values.formValues.price,
+          id: +values.formValues.id,
+        },
+        {
+          headers: {
+            Authorization: values.token,
+          },
+        },
+      );
+      if (response.data.data) {
+        dispatch(
+          miscellaneousActions.miscellaneousUpdateSuccess(response.data.data),
+        );
+      } else {
+        console.log('Error: ', response);
+        dispatch(miscellaneousActions.miscellaneousUpdateFailure());
+      }
+    } catch (error) {
+      dispatch(miscellaneousActions.miscellaneousUpdateFailure());
+      if (error.response && error.response.status === 401) {
+        dispatch(userActions.logoutUser());
+      }
     }
   };
 };
@@ -49,7 +80,11 @@ export const miscellaneousRead = (values) => {
     dispatch(miscellaneousActions.miscellaneousReadRequest());
     try {
       const response = await axios.get(
-        `miscellaneous/?page=1&page_limit=50&order_by=id&sort_order=asc`,
+        `miscellaneous/?page=${values.pageNo + 1 || '1'}&page_limit=${
+          values.rowsPerPage || '5'
+        }&order_by=${values.orderBy || 'id'}&sort_order=${
+          values.order || 'asc'
+        }`,
         {
           headers: {
             Authorization: values.token,
@@ -60,17 +95,15 @@ export const miscellaneousRead = (values) => {
         dispatch(
           miscellaneousActions.miscellaneousReadSuccess(response.data.data),
         );
-      } else if (response.status === 401) {
-        console.log(response);
-        dispatch(miscellaneousActions.miscellaneousReadFailure());
-        dispatch(userActions.logoutUser());
       } else {
-        console.log(response);
+        console.log('Error: ', response);
         dispatch(miscellaneousActions.miscellaneousReadFailure());
       }
     } catch (error) {
-      console.log(error);
       dispatch(miscellaneousActions.miscellaneousReadFailure());
+      if (error.response && error.response.status === 401) {
+        dispatch(userActions.logoutUser());
+      }
     }
   };
 };
@@ -92,17 +125,15 @@ export const miscellaneousDelete = (values) => {
         dispatch(
           miscellaneousActions.miscellaneousDeleteSuccess(response.data.data),
         );
-      } else if (response.status === 401) {
-        console.log(response);
-        dispatch(miscellaneousActions.miscellaneousDeleteFailure());
-        dispatch(userActions.logoutUser());
       } else {
-        console.log(response);
+        console.log('Error: ', response);
         dispatch(miscellaneousActions.miscellaneousDeleteFailure());
       }
     } catch (error) {
-      console.log(error);
       dispatch(miscellaneousActions.miscellaneousDeleteFailure());
+      if (error.response && error.response.status === 401) {
+        dispatch(userActions.logoutUser());
+      }
     }
   };
 };

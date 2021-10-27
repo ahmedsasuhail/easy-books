@@ -9,7 +9,8 @@ import Dialog from '../../components/Dialog/Dialog';
 import CreateUpdatePurchase from './CreateUpdatePurchase';
 
 import {
-  purchaseCreateUpdate,
+  purchaseCreate,
+  purchaseUpdate,
   purchaseDelete,
 } from '../../store/actions/purchase';
 
@@ -21,15 +22,13 @@ const ReadPurchase = (props) => {
   const token = useSelector((state) => state.user.token);
   const isLoading = useSelector((state) => state.relationship.formLoading);
 
-  // On Load
-  useEffect(() => {
-    document.title = `Purchases | ${process.env.REACT_APP_NAME}`;
-  }, []);
-
-  // Local
   const [openCreateUpdatePurchase, setOpenCreateUpdatePurchase] =
     useState(false);
   const [valueForm, setValueForm] = useState(null);
+
+  useEffect(() => {
+    document.title = `Purchases | ${process.env.REACT_APP_NAME}`;
+  }, []);
 
   const handleOpenCreatePurchase = () => {
     setOpenCreateUpdatePurchase(true);
@@ -47,13 +46,17 @@ const ReadPurchase = (props) => {
 
   const handleSubmitCreateUpdatePurchase = (formValues) => {
     formValues.date = new Date(formValues.date).toISOString();
-    dispatch(purchaseCreateUpdate({ formValues, token }));
+    if (formValues.id) {
+      dispatch(purchaseUpdate({ formValues, token }));
+    } else {
+      dispatch(purchaseCreate({ formValues, token }));
+    }
     handleCloseCreateOrEditPurchase();
   };
 
-  const handleSubmitDeletePurchase = (id, name) => {
+  const handleSubmitDeletePurchase = (id) => {
     const result = window.confirm(
-      `Are you sure you want to delete purchase ${id}?`,
+      `Are you sure you want to delete this purchase item?`,
     );
     if (result) {
       dispatch(purchaseDelete({ id, token }));

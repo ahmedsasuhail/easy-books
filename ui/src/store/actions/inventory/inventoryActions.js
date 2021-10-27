@@ -1,7 +1,10 @@
 import {
-  INVENTORY_CREATE_UPDATE_REQUEST,
-  INVENTORY_CREATE_UPDATE_SUCCESS,
-  INVENTORY_CREATE_UPDATE_FAILURE,
+  INVENTORY_CREATE_REQUEST,
+  INVENTORY_CREATE_SUCCESS,
+  INVENTORY_CREATE_FAILURE,
+  INVENTORY_UPDATE_REQUEST,
+  INVENTORY_UPDATE_SUCCESS,
+  INVENTORY_UPDATE_FAILURE,
   INVENTORY_READ_REQUEST,
   INVENTORY_READ_SUCCESS,
   INVENTORY_READ_FAILURE,
@@ -12,25 +15,47 @@ import {
 
 // Inventory Actions
 export const inventoryActions = {
-  // Create or Update
-  inventoryCreateUpdateRequest: () => {
+  // Create
+  inventoryCreateRequest: () => {
     return {
-      type: INVENTORY_CREATE_UPDATE_REQUEST,
+      type: INVENTORY_CREATE_REQUEST,
     };
   },
 
-  inventoryCreateUpdateSuccess: (values) => {
+  inventoryCreateSuccess: (values) => {
     return {
-      type: INVENTORY_CREATE_UPDATE_SUCCESS,
+      type: INVENTORY_CREATE_SUCCESS,
       payload: {
         inventory: values,
       },
     };
   },
 
-  inventoryCreateUpdateFailure: () => {
+  inventoryCreateFailure: () => {
     return {
-      type: INVENTORY_CREATE_UPDATE_FAILURE,
+      type: INVENTORY_CREATE_FAILURE,
+    };
+  },
+
+  // Update
+  inventoryUpdateRequest: () => {
+    return {
+      type: INVENTORY_UPDATE_REQUEST,
+    };
+  },
+
+  inventoryUpdateSuccess: (values) => {
+    return {
+      type: INVENTORY_UPDATE_SUCCESS,
+      payload: {
+        inventory: values,
+      },
+    };
+  },
+
+  inventoryUpdateFailure: () => {
+    return {
+      type: INVENTORY_UPDATE_FAILURE,
     };
   },
 

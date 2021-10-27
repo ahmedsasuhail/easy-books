@@ -11,6 +11,7 @@ import Loader from '../Loader/Loader';
 
 import Dashboard from '../../pages/dashboard/Dashboard';
 import Miscellaneous from '../../pages/miscellaneous/ReadMiscellaneous';
+// import Miscellaneous from '../../pages/miscellaneous/ReadMiscellaneous2';
 import Purchases from '../../pages/purchases/ReadPurchase';
 import Sales from '../../pages/sales/ReadSales';
 import Inventory from '../../pages/inventory/ReadInventory';

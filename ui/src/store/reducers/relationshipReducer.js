@@ -1,7 +1,10 @@
 import {
-  RELATIONSHIP_CREATE_UPDATE_REQUEST,
-  RELATIONSHIP_CREATE_UPDATE_SUCCESS,
-  RELATIONSHIP_CREATE_UPDATE_FAILURE,
+  RELATIONSHIP_CREATE_REQUEST,
+  RELATIONSHIP_CREATE_SUCCESS,
+  RELATIONSHIP_CREATE_FAILURE,
+  RELATIONSHIP_UPDATE_REQUEST,
+  RELATIONSHIP_UPDATE_SUCCESS,
+  RELATIONSHIP_UPDATE_FAILURE,
   RELATIONSHIP_READ_REQUEST,
   RELATIONSHIP_READ_SUCCESS,
   RELATIONSHIP_READ_FAILURE,
@@ -22,40 +25,57 @@ const initialState = {
 // Reducer
 const relationshipReducer = (state = initialState, action) => {
   switch (action.type) {
-    // Create or Update
-    case RELATIONSHIP_CREATE_UPDATE_REQUEST:
+    // Create
+    case RELATIONSHIP_CREATE_REQUEST:
       return mergeObjects(state, {
         formLoading: true,
         pageLoading: true,
       });
 
-    case RELATIONSHIP_CREATE_UPDATE_SUCCESS:
-      let modifyRelationshipForCreateOrUpdate = [...state.relationships];
-      const relationshipIndex = modifyRelationshipForCreateOrUpdate.findIndex(
-        (relationship) =>
-          parseInt(action.payload.relationship.id) ===
-          parseInt(relationship.id),
-      );
+    case RELATIONSHIP_CREATE_SUCCESS:
+      let modifyRelationshipsForCreate = [
+        ...state.relationships,
+        action.payload.relationship,
+      ];
 
-      if (relationshipIndex >= 0) {
-        modifyRelationshipForCreateOrUpdate.splice(
-          relationshipIndex,
-          1,
-          action.payload.relationship,
-        );
-      } else {
-        modifyRelationshipForCreateOrUpdate = [
-          ...state.relationships,
-          action.payload.relationship,
-        ];
-      }
       return mergeObjects(state, {
-        relationships: modifyRelationshipForCreateOrUpdate,
+        relationships: modifyRelationshipsForCreate,
         formLoading: false,
         pageLoading: false,
       });
 
-    case RELATIONSHIP_CREATE_UPDATE_FAILURE:
+    case RELATIONSHIP_CREATE_FAILURE:
+      return mergeObjects(state, {
+        formLoading: false,
+        pageLoading: false,
+      });
+
+    // Create or Update
+    case RELATIONSHIP_UPDATE_REQUEST:
+      return mergeObjects(state, {
+        formLoading: true,
+        pageLoading: true,
+      });
+
+    case RELATIONSHIP_UPDATE_SUCCESS:
+      let modifyRelationshipsForUpdate = [...state.relationships];
+      const relationshipIndex = modifyRelationshipsForUpdate.findIndex(
+        (relationship) => +action.payload.relationship.id === +relationship.id,
+      );
+
+      modifyRelationshipsForUpdate.splice(
+        relationshipIndex,
+        1,
+        action.payload.relationship,
+      );
+
+      return mergeObjects(state, {
+        relationships: modifyRelationshipsForUpdate,
+        formLoading: false,
+        pageLoading: false,
+      });
+
+    case RELATIONSHIP_UPDATE_FAILURE:
       return mergeObjects(state, {
         formLoading: false,
         pageLoading: false,
@@ -86,12 +106,10 @@ const relationshipReducer = (state = initialState, action) => {
       });
 
     case RELATIONSHIP_DELETE_SUCCESS:
-      let modifyRelationshipForDelete = [...state.relationships];
+      let modifyRelationshipsForDelete = [...state.relationships];
       const modifiedRelationshipAfterDeleted =
-        modifyRelationshipForDelete.filter(
-          (relationship) =>
-            parseInt(action.payload.relationshipId) !==
-            parseInt(relationship.id),
+        modifyRelationshipsForDelete.filter(
+          (relationship) => +action.payload.relationshipId !== +relationship.id,
         );
       return mergeObjects(state, {
         relationships: modifiedRelationshipAfterDeleted,

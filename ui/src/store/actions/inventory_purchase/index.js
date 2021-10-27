@@ -5,11 +5,11 @@ import { userActions } from '../user/userActions';
 export const getInventoryPurchase = (values) => {
   return async (dispatch) => {
     try {
-      dispatch(inventoryPurchaseActions.inventoryPurchaseClear());
+      dispatch(inventoryPurchaseActions.inventoryPurchaseRequest());
       const response = await axios.post(
         'inventory/get_by_purchase?page=1&page_limit=50&order_by=id&sort_order=asc',
         {
-          id: +values.id,
+          purchase_id: +values.id,
         },
         {
           headers: {
@@ -21,17 +21,15 @@ export const getInventoryPurchase = (values) => {
         dispatch(
           inventoryPurchaseActions.inventoryPurchaseSuccess(response.data.data),
         );
-      } else if (response.status === 401) {
-        console.log(response);
-        dispatch(inventoryPurchaseActions.inventoryPurchaseClear());
-        dispatch(userActions.logoutUser());
       } else {
-        console.log(response);
-        dispatch(inventoryPurchaseActions.inventoryPurchaseClear());
+        console.log('Error: ', response);
+        dispatch(inventoryPurchaseActions.inventoryPurchaseFailure());
       }
     } catch (error) {
-      console.log(error);
-      dispatch(inventoryPurchaseActions.inventoryPurchaseClear());
+      dispatch(inventoryPurchaseActions.inventoryPurchaseFailure());
+      if (error.response && error.response.status === 401) {
+        dispatch(userActions.logoutUser());
+      }
     }
   };
 };

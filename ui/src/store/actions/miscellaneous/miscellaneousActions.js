@@ -1,7 +1,10 @@
 import {
-  MISCELLANEOUS_CREATE_UPDATE_REQUEST,
-  MISCELLANEOUS_CREATE_UPDATE_SUCCESS,
-  MISCELLANEOUS_CREATE_UPDATE_FAILURE,
+  MISCELLANEOUS_CREATE_REQUEST,
+  MISCELLANEOUS_CREATE_SUCCESS,
+  MISCELLANEOUS_CREATE_FAILURE,
+  MISCELLANEOUS_UPDATE_REQUEST,
+  MISCELLANEOUS_UPDATE_SUCCESS,
+  MISCELLANEOUS_UPDATE_FAILURE,
   MISCELLANEOUS_READ_REQUEST,
   MISCELLANEOUS_READ_SUCCESS,
   MISCELLANEOUS_READ_FAILURE,
@@ -12,25 +15,47 @@ import {
 
 // Miscellaneous Actions
 export const miscellaneousActions = {
-  // Create or Update
-  miscellaneousCreateUpdateRequest: () => {
+  // Create
+  miscellaneousCreateRequest: () => {
     return {
-      type: MISCELLANEOUS_CREATE_UPDATE_REQUEST,
+      type: MISCELLANEOUS_CREATE_REQUEST,
     };
   },
 
-  miscellaneousCreateUpdateSuccess: (values) => {
+  miscellaneousCreateSuccess: (values) => {
     return {
-      type: MISCELLANEOUS_CREATE_UPDATE_SUCCESS,
+      type: MISCELLANEOUS_CREATE_SUCCESS,
       payload: {
         miscellaneous: values,
       },
     };
   },
 
-  miscellaneousCreateUpdateFailure: () => {
+  miscellaneousCreateFailure: () => {
     return {
-      type: MISCELLANEOUS_CREATE_UPDATE_FAILURE,
+      type: MISCELLANEOUS_CREATE_FAILURE,
+    };
+  },
+
+  // Update
+  miscellaneousUpdateRequest: () => {
+    return {
+      type: MISCELLANEOUS_UPDATE_REQUEST,
+    };
+  },
+
+  miscellaneousUpdateSuccess: (values) => {
+    return {
+      type: MISCELLANEOUS_UPDATE_SUCCESS,
+      payload: {
+        miscellaneous: values,
+      },
+    };
+  },
+
+  miscellaneousUpdateFailure: () => {
+    return {
+      type: MISCELLANEOUS_UPDATE_FAILURE,
     };
   },
 
@@ -46,7 +71,11 @@ export const miscellaneousActions = {
       type: MISCELLANEOUS_READ_SUCCESS,
       payload: {
         miscellaneous: values.records,
-        pageNo: values.page,
+        pageNo: values.page - 1,
+        rowsPerPage: values.page_limit,
+        orderBy: values.order_by,
+        order: values.sort_order,
+        count: values.total_count,
       },
     };
   },
@@ -64,11 +93,11 @@ export const miscellaneousActions = {
     };
   },
 
-  miscellaneousDeleteSuccess: (value) => {
+  miscellaneousDeleteSuccess: (values) => {
     return {
       type: MISCELLANEOUS_DELETE_SUCCESS,
       payload: {
-        miscellaneousId: value.id,
+        miscellaneousId: values.id,
       },
     };
   },

@@ -3,10 +3,10 @@ import axios from '../../../utils/axiosInstance';
 import { userActions } from '../user/userActions';
 
 // Action Creators
-// Create or Update
-export const inventoryCreateUpdate = (values) => {
+// Create
+export const inventoryCreate = (values) => {
   return async (dispatch) => {
-    dispatch(inventoryActions.inventoryCreateUpdateRequest());
+    dispatch(inventoryActions.inventoryCreateRequest());
     try {
       const response = await axios.put(
         'inventory/',
@@ -15,7 +15,6 @@ export const inventoryCreateUpdate = (values) => {
           quantity: +values.formValues.quantity,
           purchase_id: +values.formValues.purchase_id,
           date: values.formValues.date,
-          ...(values.formValues.id && { id: +values.formValues.id }),
         },
         {
           headers: {
@@ -24,19 +23,51 @@ export const inventoryCreateUpdate = (values) => {
         },
       );
       if (response.data.data) {
-        dispatch(
-          inventoryActions.inventoryCreateUpdateSuccess(response.data.data),
-        );
-      } else if (response.status === 401) {
-        dispatch(inventoryActions.inventoryCreateUpdateFailure());
-        dispatch(userActions.logoutUser());
+        dispatch(inventoryActions.inventoryCreateSuccess(response.data.data));
       } else {
-        console.log(response);
-        dispatch(inventoryActions.inventoryCreateUpdateFailure());
+        console.log('Error: ', response);
+        dispatch(inventoryActions.inventoryCreateFailure());
       }
     } catch (error) {
-      console.log(error);
-      dispatch(inventoryActions.inventoryCreateUpdateFailure());
+      dispatch(inventoryActions.inventoryCreateFailure());
+      if (error.response && error.response.status === 401) {
+        dispatch(userActions.logoutUser());
+      }
+    }
+  };
+};
+
+// Update
+export const inventoryUpdate = (values) => {
+  return async (dispatch) => {
+    dispatch(inventoryActions.inventoryUpdateRequest());
+    try {
+      const response = await axios.put(
+        'inventory/',
+        {
+          part_name: values.formValues.part_name,
+          quantity: +values.formValues.quantity,
+          purchase_id: +values.formValues.purchase_id,
+          date: values.formValues.date,
+          id: +values.formValues.id,
+        },
+        {
+          headers: {
+            Authorization: values.token,
+          },
+        },
+      );
+      if (response.data.data) {
+        dispatch(inventoryActions.inventoryUpdateSuccess(response.data.data));
+      } else {
+        console.log('Error: ', response);
+        dispatch(inventoryActions.inventoryUpdateFailure());
+      }
+    } catch (error) {
+      dispatch(inventoryActions.inventoryUpdateFailure());
+      if (error.response && error.response.status === 401) {
+        dispatch(userActions.logoutUser());
+      }
     }
   };
 };
@@ -56,16 +87,15 @@ export const inventoryRead = (values) => {
       );
       if (response.data.data) {
         dispatch(inventoryActions.inventoryReadSuccess(response.data.data));
-      } else if (response.status === 401) {
-        dispatch(inventoryActions.inventoryReadFailure());
-        dispatch(userActions.logoutUser());
       } else {
-        console.log(response);
+        console.log('Error: ', response);
         dispatch(inventoryActions.inventoryReadFailure());
       }
     } catch (error) {
-      console.log(error);
       dispatch(inventoryActions.inventoryReadFailure());
+      if (error.response && error.response.status === 401) {
+        dispatch(userActions.logoutUser());
+      }
     }
   };
 };
@@ -85,17 +115,15 @@ export const inventoryDelete = (values) => {
       });
       if (response.data.data) {
         dispatch(inventoryActions.inventoryDeleteSuccess(response.data.data));
-      } else if (response.status === 401) {
-        console.log(response);
-        dispatch(inventoryActions.inventoryDeleteFailure());
-        dispatch(userActions.logoutUser());
       } else {
-        console.log(response);
+        console.log('Error: ', response);
         dispatch(inventoryActions.inventoryDeleteFailure());
       }
     } catch (error) {
-      console.log(error);
       dispatch(inventoryActions.inventoryDeleteFailure());
+      if (error.response && error.response.status === 401) {
+        dispatch(userActions.logoutUser());
+      }
     }
   };
 };

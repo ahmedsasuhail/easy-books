@@ -9,7 +9,7 @@ import axios from '../../../utils/axiosInstance';
 //     try {
 //       const response = await axios.post(
 //         'auth/register',
-//         JSON.stringify({ ...values }),
+//         { ...values },
 //       );
 //       if (response.data && response.data.userName) {
 //         dispatch(userActions.registrationSuccess(response));
@@ -27,28 +27,24 @@ export const userLogin = (login, password) => {
   return async (dispatch) => {
     dispatch(userActions.loginRequest());
     try {
-      const response = await axios.post(
-        'auth/login',
-        JSON.stringify({
-          email: login,
-          password: password,
-        }),
-      );
-      if (response.data && response.data.data.auth.token) {
+      const response = await axios.post('auth/login', {
+        email: login,
+        password: password,
+      });
+      if (response.data.data) {
         let authData = {
-          email: response.data.data.user.email,
           token: response.data.data.auth.token,
           name: response.data.data.user.name,
+          email: response.data.data.user.email,
         };
         localStorage.setItem('easyBooksAuth', JSON.stringify(authData));
-        dispatch(userActions.loginSuccess(response.data.data));
+        dispatch(userActions.loginSuccess(authData));
       } else {
-        console.log(response);
-        dispatch(userActions.loginFailure(response));
+        console.log('Error: ', response);
+        dispatch(userActions.loginFailure());
       }
     } catch (error) {
-      console.log(error);
-      dispatch(userActions.loginFailure(error));
+      dispatch(userActions.loginFailure());
     }
   };
 };

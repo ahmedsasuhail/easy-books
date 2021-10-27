@@ -6,15 +6,14 @@ import { Grid, Button } from '@material-ui/core';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import Dialog from '../../components/Dialog/Dialog';
 
-import CustomTable from '../../components/Table/Table.js';
+import CustomTable from '../../components/Table/Table2';
 
 import { formattedDate } from '../../utils/helpers';
 
 import CreateUpdateMiscellaneous from './CreateUpdateMiscellaneous';
 import {
   miscellaneousRead,
-  miscellaneousCreate,
-  miscellaneousUpdate,
+  miscellaneousCreateUpdate,
   miscellaneousDelete,
 } from '../../store/actions/miscellaneous';
 
@@ -56,13 +55,9 @@ const ReadMiscellaneous = () => {
   const miscellaneousItems = useSelector(
     (state) => state.miscellaneous.miscellaneous,
   );
-  const pageNo = useSelector((state) => state.miscellaneous.pageNo);
-  const rowsPerPage = useSelector((state) => state.miscellaneous.rowsPerPage);
-  const orderBy = useSelector((state) => state.miscellaneous.orderBy);
-  const order = useSelector((state) => state.miscellaneous.order);
-  const token = useSelector((state) => state.user.token);
   const isLoading = useSelector((state) => state.miscellaneous.formLoading);
   const totalCount = useSelector((state) => state.miscellaneous.count);
+  const token = useSelector((state) => state.user.token);
 
   if (miscellaneousItems) {
     rows = miscellaneousItems.map((miscellaneous, idx) => {
@@ -83,50 +78,6 @@ const ReadMiscellaneous = () => {
     document.title = `Miscellaneous | ${process.env.REACT_APP_NAME}`;
   }, []);
 
-  const handleRequestSort = (property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    const direction = isAsc ? 'desc' : 'asc';
-    dispatch(
-      miscellaneousRead({
-        token,
-        pageNo,
-        rowsPerPage,
-        order: direction,
-        orderBy: property,
-      }),
-    );
-  };
-
-  const handleChangePage = (_event, newPage) => {
-    dispatch(
-      miscellaneousRead({
-        token,
-        pageNo: newPage,
-        rowsPerPage,
-        orderBy,
-        order,
-      }),
-    );
-  };
-
-  useEffect(() => {
-    if (miscellaneousItems.length === 0 && pageNo >= 0) {
-      handleChangePage.call(null, +pageNo);
-    }
-  }, [pageNo, miscellaneousItems]);
-
-  const handleChangeRowsPerPage = (event) => {
-    dispatch(
-      miscellaneousRead({
-        token,
-        pageNo,
-        rowsPerPage: parseInt(event.target.value, 10),
-        orderBy,
-        order,
-      }),
-    );
-  };
-
   const handleOpenCreateMiscellaneous = () => {
     setOpenCreateUpdateMiscellaneous(true);
   };
@@ -143,21 +94,12 @@ const ReadMiscellaneous = () => {
 
   const handleSubmitCreateUpdateMiscellaneous = (formValues) => {
     formValues.date = new Date(formValues.date).toISOString();
-    if (formValues.id) {
-      dispatch(
-        miscellaneousUpdate({
-          formValues,
-          token,
-        }),
-      );
-    } else {
-      dispatch(
-        miscellaneousCreate({
-          formValues,
-          token,
-        }),
-      );
-    }
+    dispatch(
+      miscellaneousCreateUpdate({
+        formValues,
+        token,
+      }),
+    );
     handleCloseCreateOrEditMiscellaneous();
   };
 
@@ -170,11 +112,6 @@ const ReadMiscellaneous = () => {
         miscellaneousDelete({
           id,
           token,
-          // pageNo,
-          // rowsPerPage,
-          // orderBy,
-          // order,
-          // totalCount,
         }),
       );
     }
@@ -199,18 +136,13 @@ const ReadMiscellaneous = () => {
         <Grid item xs={12}>
           <CustomTable
             tableTitle='All Miscellaneous'
-            order={order}
-            orderBy={orderBy}
-            requestSort={handleRequestSort}
+            miscellaneousRead={miscellaneousRead}
             headCells={headCells}
             rows={rows}
+            totalCount={totalCount}
+            token={token}
             openEditMiscellaneous={handleOpenEditMiscellaneous}
             submitDeleteMiscellaneous={handleSubmitDeleteMiscellaneous}
-            totalCount={totalCount}
-            pageNo={pageNo}
-            rowsPerPage={rowsPerPage}
-            changePage={handleChangePage}
-            changeRowsPerPage={handleChangeRowsPerPage}
           />
         </Grid>
       </Grid>

@@ -1,7 +1,10 @@
 import {
-  RELATIONSHIP_CREATE_UPDATE_REQUEST,
-  RELATIONSHIP_CREATE_UPDATE_SUCCESS,
-  RELATIONSHIP_CREATE_UPDATE_FAILURE,
+  RELATIONSHIP_CREATE_REQUEST,
+  RELATIONSHIP_CREATE_SUCCESS,
+  RELATIONSHIP_CREATE_FAILURE,
+  RELATIONSHIP_UPDATE_REQUEST,
+  RELATIONSHIP_UPDATE_SUCCESS,
+  RELATIONSHIP_UPDATE_FAILURE,
   RELATIONSHIP_READ_REQUEST,
   RELATIONSHIP_READ_SUCCESS,
   RELATIONSHIP_READ_FAILURE,
@@ -12,25 +15,47 @@ import {
 
 // Relationship Actions
 export const relationshipActions = {
-  // Create or Update
-  relationshipCreateUpdateRequest: () => {
+  // Create
+  relationshipCreateRequest: () => {
     return {
-      type: RELATIONSHIP_CREATE_UPDATE_REQUEST,
+      type: RELATIONSHIP_CREATE_REQUEST,
     };
   },
 
-  relationshipCreateUpdateSuccess: (values) => {
+  relationshipCreateSuccess: (values) => {
     return {
-      type: RELATIONSHIP_CREATE_UPDATE_SUCCESS,
+      type: RELATIONSHIP_CREATE_SUCCESS,
       payload: {
         relationship: values,
       },
     };
   },
 
-  relationshipCreateUpdateFailure: () => {
+  relationshipCreateFailure: () => {
     return {
-      type: RELATIONSHIP_CREATE_UPDATE_FAILURE,
+      type: RELATIONSHIP_CREATE_FAILURE,
+    };
+  },
+
+  // Update
+  relationshipUpdateRequest: () => {
+    return {
+      type: RELATIONSHIP_UPDATE_REQUEST,
+    };
+  },
+
+  relationshipUpdateSuccess: (values) => {
+    return {
+      type: RELATIONSHIP_UPDATE_SUCCESS,
+      payload: {
+        relationship: values,
+      },
+    };
+  },
+
+  relationshipUpdateFailure: () => {
+    return {
+      type: RELATIONSHIP_UPDATE_FAILURE,
     };
   },
 

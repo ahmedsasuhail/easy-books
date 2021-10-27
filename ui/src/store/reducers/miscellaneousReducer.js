@@ -1,7 +1,10 @@
 import {
-  MISCELLANEOUS_CREATE_UPDATE_REQUEST,
-  MISCELLANEOUS_CREATE_UPDATE_SUCCESS,
-  MISCELLANEOUS_CREATE_UPDATE_FAILURE,
+  MISCELLANEOUS_CREATE_REQUEST,
+  MISCELLANEOUS_CREATE_SUCCESS,
+  MISCELLANEOUS_CREATE_FAILURE,
+  MISCELLANEOUS_UPDATE_REQUEST,
+  MISCELLANEOUS_UPDATE_SUCCESS,
+  MISCELLANEOUS_UPDATE_FAILURE,
   MISCELLANEOUS_READ_REQUEST,
   MISCELLANEOUS_READ_SUCCESS,
   MISCELLANEOUS_READ_FAILURE,
@@ -14,7 +17,11 @@ import { mergeObjects } from '../../utils/helpers';
 // Set Initial State
 const initialState = {
   miscellaneous: [],
-  pageNo: null,
+  pageNo: 0,
+  rowsPerPage: 5,
+  orderBy: 'id',
+  order: 'asc',
+  count: 5,
   formLoading: false,
   pageLoading: false,
 };
@@ -22,40 +29,74 @@ const initialState = {
 // Reducer
 const miscellaneousReducer = (state = initialState, action) => {
   switch (action.type) {
-    // Create or Update
-    case MISCELLANEOUS_CREATE_UPDATE_REQUEST:
+    // Create
+    case MISCELLANEOUS_CREATE_REQUEST:
       return mergeObjects(state, {
         formLoading: true,
         pageLoading: true,
       });
 
-    case MISCELLANEOUS_CREATE_UPDATE_SUCCESS:
-      let modifyMiscellaneousForCreateOrUpdate = [...state.miscellaneous];
-      const miscellaneousIndex = modifyMiscellaneousForCreateOrUpdate.findIndex(
-        (miscellaneous) =>
-          parseInt(action.payload.miscellaneous.id) ===
-          parseInt(miscellaneous.id),
-      );
+    case MISCELLANEOUS_CREATE_SUCCESS:
+      let modifyMiscellaneousForCreate;
 
-      if (miscellaneousIndex >= 0) {
-        modifyMiscellaneousForCreateOrUpdate.splice(
-          miscellaneousIndex,
-          1,
-          action.payload.miscellaneous,
-        );
+      if (state.miscellaneous.length % state.rowsPerPage === 0) {
+        modifyMiscellaneousForCreate = [action.payload.miscellaneous];
       } else {
-        modifyMiscellaneousForCreateOrUpdate = [
+        modifyMiscellaneousForCreate = [
           ...state.miscellaneous,
           action.payload.miscellaneous,
         ];
       }
+
+      const createNextPageNo =
+        state.count % state.rowsPerPage === 0 ? state.pageNo + 1 : state.pageNo;
+
       return mergeObjects(state, {
-        miscellaneous: modifyMiscellaneousForCreateOrUpdate,
+        miscellaneous: modifyMiscellaneousForCreate,
+        formLoading: false,
+        pageLoading: false,
+        pageNo: createNextPageNo,
+        count: state.count + 1,
+      });
+
+    case MISCELLANEOUS_CREATE_FAILURE:
+      return mergeObjects(state, {
         formLoading: false,
         pageLoading: false,
       });
 
-    case MISCELLANEOUS_CREATE_UPDATE_FAILURE:
+    // Update
+    case MISCELLANEOUS_UPDATE_REQUEST:
+      return mergeObjects(state, {
+        formLoading: true,
+        pageLoading: true,
+      });
+
+    case MISCELLANEOUS_UPDATE_SUCCESS:
+      let modifyMiscellaneousForUpdate = [...state.miscellaneous];
+      const miscellaneousIndex = modifyMiscellaneousForUpdate.findIndex(
+        (miscellaneous) =>
+          +action.payload.miscellaneous.id === +miscellaneous.id,
+      );
+
+      modifyMiscellaneousForUpdate.splice(
+        miscellaneousIndex,
+        1,
+        action.payload.miscellaneous,
+      );
+
+      const nextPageNo =
+        state.count % state.rowsPerPage === 0 ? state.pageNo + 1 : state.pageNo;
+
+      return mergeObjects(state, {
+        miscellaneous: modifyMiscellaneousForUpdate,
+        formLoading: false,
+        pageLoading: false,
+        pageNo: nextPageNo,
+        count: state.count + 1,
+      });
+
+    case MISCELLANEOUS_UPDATE_FAILURE:
       return mergeObjects(state, {
         formLoading: false,
         pageLoading: false,
@@ -71,6 +112,10 @@ const miscellaneousReducer = (state = initialState, action) => {
       return mergeObjects(state, {
         miscellaneous: action.payload.miscellaneous,
         pageNo: action.payload.pageNo,
+        rowsPerPage: action.payload.rowsPerPage,
+        orderBy: action.payload.orderBy,
+        order: action.payload.order,
+        count: action.payload.count,
         pageLoading: false,
       });
 
@@ -90,12 +135,18 @@ const miscellaneousReducer = (state = initialState, action) => {
       const modifiedMiscellaneousAfterDeleted =
         modifyMiscellaneousForDelete.filter(
           (miscellaneous) =>
-            parseInt(action.payload.miscellaneousId) !==
-            parseInt(miscellaneous.id),
+            +action.payload.miscellaneousId !== +miscellaneous.id,
         );
+      const prevPageNo =
+        state.count % state.rowsPerPage === 1 && state.count > state.rowsPerPage
+          ? state.pageNo - 1
+          : state.pageNo;
+
       return mergeObjects(state, {
         miscellaneous: modifiedMiscellaneousAfterDeleted,
         pageLoading: false,
+        pageNo: prevPageNo,
+        count: state.count - 1,
       });
 
     case MISCELLANEOUS_DELETE_FAILURE:

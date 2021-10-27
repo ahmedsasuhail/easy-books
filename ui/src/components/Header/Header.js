@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   AppBar,
   Toolbar,
@@ -103,8 +103,8 @@ export default function Header() {
   var [profileMenu, setProfileMenu] = useState(null);
   // var [isSearchOpen, setSearchOpen] = useState(false);
 
-  const userObj = localStorage.getItem('easyBooksAuth');
-  const parsedUserObj = JSON.parse(userObj);
+  const userName = useSelector((state) => state.user.name);
+  const userEmail = useSelector((state) => state.user.email);
 
   return (
     <AppBar position='fixed' className={classes.appBar}>
@@ -289,15 +289,15 @@ export default function Header() {
         >
           <div className={classes.profileMenuUser}>
             <Typography variant='h4' weight='medium'>
-              {parsedUserObj.name}
+              {userName}
             </Typography>
             <Typography
               className={classes.profileMenuLink}
               component='a'
               color='primary'
-              href={`mailto:${parsedUserObj.email}`}
+              href={`mailto:${userEmail}`}
             >
-              {parsedUserObj.email}
+              {userEmail}
             </Typography>
           </div>
           {/* <MenuItem

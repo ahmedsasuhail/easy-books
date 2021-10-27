@@ -11,7 +11,8 @@ import Dialog from '../../components/Dialog/Dialog';
 import CreateUpdateInventory from './CreateUpdateInventory';
 
 import {
-  inventoryCreateUpdate,
+  inventoryCreate,
+  inventoryUpdate,
   inventoryDelete,
 } from '../../store/actions/inventory';
 
@@ -24,13 +25,13 @@ const ReadInventory = () => {
   const isLoading = useSelector((state) => state.inventory.formLoading);
   const inventoryItems = useSelector((state) => state.inventory.inventory);
 
-  useEffect(() => {
-    document.title = `Inventory | ${process.env.REACT_APP_NAME}`;
-  }, []);
-
   const [openCreateUpdateInventory, setOpenCreateUpdateInventory] =
     useState(false);
   const [valueForm, setValueForm] = useState(null);
+
+  useEffect(() => {
+    document.title = `Inventory | ${process.env.REACT_APP_NAME}`;
+  }, []);
 
   const handleOpenCreateInventory = () => {
     setOpenCreateUpdateInventory(true);
@@ -48,13 +49,17 @@ const ReadInventory = () => {
 
   const handleSubmitCreateUpdateInventory = (formValues) => {
     formValues.date = new Date(formValues.date).toISOString();
-    dispatch(inventoryCreateUpdate({ formValues, token }));
+    if (formValues.id) {
+      dispatch(inventoryUpdate({ formValues, token }));
+    } else {
+      dispatch(inventoryCreate({ formValues, token }));
+    }
     handleCloseCreateOrEditInventory();
   };
 
-  const handleSubmitDeleteInventory = (id, name) => {
+  const handleSubmitDeleteInventory = (id) => {
     const result = window.confirm(
-      `Are you sure you want to delete inventory ${id}?`,
+      `Are you sure you want to delete this inventory item?`,
     );
     if (result) {
       dispatch(inventoryDelete({ id, token }));

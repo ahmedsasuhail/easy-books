@@ -3,10 +3,10 @@ import axios from '../../../utils/axiosInstance';
 import { userActions } from '../user/userActions';
 
 // Action Creators
-// Create or Update
-export const relationshipCreateUpdate = (values) => {
+// Create
+export const relationshipCreate = (values) => {
   return async (dispatch) => {
-    dispatch(relationshipActions.relationshipCreateUpdateRequest());
+    dispatch(relationshipActions.relationshipCreateRequest());
     try {
       const response = await axios.put(
         'relationships/',
@@ -14,7 +14,6 @@ export const relationshipCreateUpdate = (values) => {
           name: values.formValues.name,
           address: values.formValues.address,
           phone_number: values.formValues.phone_number,
-          ...(values.formValues.id && { id: +values.formValues.id }),
         },
         {
           headers: {
@@ -24,21 +23,53 @@ export const relationshipCreateUpdate = (values) => {
       );
       if (response.data.data) {
         dispatch(
-          relationshipActions.relationshipCreateUpdateSuccess(
-            response.data.data,
-          ),
+          relationshipActions.relationshipCreateSuccess(response.data.data),
         );
-      } else if (response.status === 401) {
-        console.log(response);
-        dispatch(userActions.logoutUser());
-        dispatch(relationshipActions.relationshipCreateUpdateFailure());
       } else {
-        console.log(response);
-        dispatch(relationshipActions.relationshipCreateUpdateFailure());
+        console.log('Error: ', response);
+        dispatch(relationshipActions.relationshipCreateFailure());
       }
     } catch (error) {
-      console.log(error);
-      dispatch(relationshipActions.relationshipCreateUpdateFailure());
+      dispatch(relationshipActions.relationshipCreateFailure());
+      if (error.response && error.response.status === 401) {
+        dispatch(userActions.logoutUser());
+      }
+    }
+  };
+};
+
+// Update
+export const relationshipUpdate = (values) => {
+  return async (dispatch) => {
+    dispatch(relationshipActions.relationshipUpdateRequest());
+    try {
+      const response = await axios.put(
+        'relationships/',
+        {
+          name: values.formValues.name,
+          address: values.formValues.address,
+          phone_number: values.formValues.phone_number,
+          id: +values.formValues.id,
+        },
+        {
+          headers: {
+            Authorization: values.token,
+          },
+        },
+      );
+      if (response.data.data) {
+        dispatch(
+          relationshipActions.relationshipUpdateSuccess(response.data.data),
+        );
+      } else {
+        console.log('Error: ', response);
+        dispatch(relationshipActions.relationshipUpdateFailure());
+      }
+    } catch (error) {
+      dispatch(relationshipActions.relationshipUpdateFailure());
+      if (error.response && error.response.status === 401) {
+        dispatch(userActions.logoutUser());
+      }
     }
   };
 };
@@ -60,17 +91,15 @@ export const relationshipRead = (values) => {
         dispatch(
           relationshipActions.relationshipReadSuccess(response.data.data),
         );
-      } else if (response.status === 401) {
-        console.log(response);
-        dispatch(userActions.logoutUser());
-        dispatch(relationshipActions.relationshipReadFailure());
       } else {
-        console.log(response);
+        console.log('Error: ', response);
         dispatch(relationshipActions.relationshipReadFailure());
       }
     } catch (error) {
-      console.log(error);
       dispatch(relationshipActions.relationshipReadFailure());
+      if (error.response && error.response.status === 401) {
+        dispatch(userActions.logoutUser());
+      }
     }
   };
 };
@@ -92,17 +121,15 @@ export const relationshipDelete = (values) => {
         dispatch(
           relationshipActions.relationshipDeleteSuccess(response.data.data),
         );
-      } else if (response.status === 401) {
-        console.log(response);
-        dispatch(userActions.logoutUser());
-        dispatch(relationshipActions.relationshipDeleteFailure());
       } else {
-        console.log(response);
+        console.log('Error: ', response);
         dispatch(relationshipActions.relationshipDeleteFailure());
       }
     } catch (error) {
-      console.log(error);
       dispatch(relationshipActions.relationshipDeleteFailure());
+      if (error.response && error.response.status === 401) {
+        dispatch(userActions.logoutUser());
+      }
     }
   };
 };

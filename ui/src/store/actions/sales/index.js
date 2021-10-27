@@ -3,12 +3,12 @@ import axios from '../../../utils/axiosInstance';
 import { userActions } from '../user/userActions';
 
 // Action Creators
-// Create or Update
-export const salesCreateUpdate = (values) => {
+// Create
+export const salesCreate = (values) => {
   return async (dispatch) => {
-    dispatch(salesActions.salesCreateUpdateRequest());
+    dispatch(salesActions.salesCreateRequest());
     try {
-      const response = await axios.put(
+      const response = await axios.post(
         'sales/',
         {
           purchase_id: +values.formValues.purchase_id,
@@ -16,7 +16,7 @@ export const salesCreateUpdate = (values) => {
           relationship_id: +values.formValues.relationship_id,
           price: +values.formValues.price,
           date: values.formValues.date,
-          ...(values.formValues.id && { id: +values.formValues.id }),
+          returned: values.formValues.returned,
         },
         {
           headers: {
@@ -25,18 +25,53 @@ export const salesCreateUpdate = (values) => {
         },
       );
       if (response.data.data) {
-        dispatch(salesActions.salesCreateUpdateSuccess(response.data.data));
-      } else if (response.status === 401) {
-        console.log(response);
-        dispatch(salesActions.salesCreateUpdateFailure());
-        dispatch(userActions.logoutUser());
+        dispatch(salesActions.salesCreateSuccess(response.data.data));
       } else {
-        console.log(response);
-        dispatch(salesActions.salesCreateUpdateFailure());
+        console.log('Error: ', response);
+        dispatch(salesActions.salesCreateFailure());
       }
     } catch (error) {
-      console.log(error);
-      dispatch(salesActions.salesCreateUpdateFailure());
+      dispatch(salesActions.salesCreateFailure());
+      if (error.response && error.response.status === 401) {
+        dispatch(userActions.logoutUser());
+      }
+    }
+  };
+};
+
+// Update
+export const salesUpdate = (values) => {
+  return async (dispatch) => {
+    dispatch(salesActions.salesUpdateRequest());
+    try {
+      const response = await axios.patch(
+        'sales/',
+        {
+          purchase_id: +values.formValues.purchase_id,
+          inventory_id: +values.formValues.inventory_id,
+          relationship_id: +values.formValues.relationship_id,
+          price: +values.formValues.price,
+          date: values.formValues.date,
+          returned: values.formValues.returned,
+          id: +values.formValues.id,
+        },
+        {
+          headers: {
+            Authorization: values.token,
+          },
+        },
+      );
+      if (response.data.data) {
+        dispatch(salesActions.salesUpdateSuccess(response.data.data));
+      } else {
+        console.log('Error: ', response);
+        dispatch(salesActions.salesUpdateFailure());
+      }
+    } catch (error) {
+      dispatch(salesActions.salesUpdateFailure());
+      if (error.response && error.response.status === 401) {
+        dispatch(userActions.logoutUser());
+      }
     }
   };
 };
@@ -56,17 +91,15 @@ export const salesRead = (values) => {
       );
       if (response.data.data) {
         dispatch(salesActions.salesReadSuccess(response.data.data));
-      } else if (response.status === 401) {
-        console.log(response);
-        dispatch(salesActions.salesReadFailure());
-        dispatch(userActions.logoutUser());
       } else {
-        console.log(response);
+        console.log('Error: ', response);
         dispatch(salesActions.salesReadFailure());
       }
     } catch (error) {
-      console.log(error);
       dispatch(salesActions.salesReadFailure());
+      if (error.response && error.response.status === 401) {
+        dispatch(userActions.logoutUser());
+      }
     }
   };
 };
@@ -86,17 +119,15 @@ export const salesDelete = (values) => {
       });
       if (response.data.data) {
         dispatch(salesActions.salesDeleteSuccess(response.data.data));
-      } else if (response.status === 401) {
-        console.log(response);
-        dispatch(salesActions.salesDeleteFailure());
-        dispatch(userActions.logoutUser());
       } else {
-        console.log(response);
+        console.log('Error: ', response);
         dispatch(salesActions.salesDeleteFailure());
       }
     } catch (error) {
-      console.log(error);
       dispatch(salesActions.salesDeleteFailure());
+      if (error.response && error.response.status === 401) {
+        dispatch(userActions.logoutUser());
+      }
     }
   };
 };

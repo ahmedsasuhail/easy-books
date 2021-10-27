@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Field } from 'react-final-form';
 
@@ -13,16 +13,23 @@ const CreateUpdateSales = (props) => {
   const relationshipItems = useSelector(
     (state) => state.relationship.relationships,
   );
-  const invId = useSelector((state) => state.inventoryPurchase.id);
+  const inventoryPurchaseData = useSelector(
+    (state) => state.inventoryPurchase.data,
+  );
 
   const dispatch = useDispatch();
 
   const required = (value) => (value ? undefined : 'Required');
 
-  const something = (e) => {
-    dispatch(getInventoryPurchase({ id: e.target.value, token: token }));
+  const inventoryPurchaseHandler = (idValue) => {
+    dispatch(getInventoryPurchase({ id: idValue, token: token }));
   };
 
+  useEffect(() => {
+    if (props.initialValues && props.initialValues.purchase_id) {
+      inventoryPurchaseHandler(props.initialValues.purchase_id);
+    }
+  }, []);
   return (
     <>
       <Field
@@ -36,11 +43,11 @@ const CreateUpdateSales = (props) => {
         fullWidth
         required
         validate={required}
-        onChange={something}
+        onChange={(e) => inventoryPurchaseHandler(e.target.value)}
       />
       <Field
         component={Select}
-        options={invId.records}
+        options={inventoryPurchaseData.records}
         id='inventory_id'
         name='inventory_id'
         label='Part Name'
@@ -49,7 +56,10 @@ const CreateUpdateSales = (props) => {
         fullWidth
         required
         validate={required}
-        disabled={!invId.records}
+        disabled={!inventoryPurchaseData.records}
+        InputLabelProps={{
+          shrink: !inventoryPurchaseData.records ? false : true,
+        }}
       />
       <Field
         component={Select}

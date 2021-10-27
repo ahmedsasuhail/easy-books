@@ -1,22 +1,27 @@
 import {
+  INVENTORY_PURCHASE_REQUEST,
   INVENTORY_PURCHASE_SUCCESS,
-  INVENTORY_PURCHASE_CLEAR,
+  INVENTORY_PURCHASE_FAILURE,
 } from '../actions/actionTypes';
 import { mergeObjects } from '../../utils/helpers';
 
 const initialState = {
-  id: '',
+  data: '',
 };
 
 const inventoryPurchaseReducer = (state = initialState, action) => {
   switch (action.type) {
+    case INVENTORY_PURCHASE_REQUEST:
+      return mergeObjects(state, {
+        data: '',
+      });
     case INVENTORY_PURCHASE_SUCCESS:
       return mergeObjects(state, {
-        id: action.payload.id,
+        data: action.payload.data,
       });
-    case INVENTORY_PURCHASE_CLEAR:
+    case INVENTORY_PURCHASE_FAILURE:
       return mergeObjects(state, {
-        id: '',
+        data: '',
       });
     default:
       return state;

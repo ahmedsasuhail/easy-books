@@ -30,6 +30,7 @@ function Login() {
 
   var isLoading = useSelector((state) => state.user.loading);
   var error = useSelector((state) => state.user.messageType);
+  var message = useSelector((state) => state.user.message);
 
   return (
     <Grid container className={classes.container}>
@@ -44,7 +45,7 @@ function Login() {
           </Typography>
           <Fade in={error}>
             <Typography color='error' className={classes.errorMessage}>
-              Something is wrong with your login or password :(
+              {message}
             </Typography>
           </Fade>
           <TextField

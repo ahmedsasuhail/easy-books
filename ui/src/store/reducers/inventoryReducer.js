@@ -1,7 +1,10 @@
 import {
-  INVENTORY_CREATE_UPDATE_REQUEST,
-  INVENTORY_CREATE_UPDATE_SUCCESS,
-  INVENTORY_CREATE_UPDATE_FAILURE,
+  INVENTORY_CREATE_REQUEST,
+  INVENTORY_CREATE_SUCCESS,
+  INVENTORY_CREATE_FAILURE,
+  INVENTORY_UPDATE_REQUEST,
+  INVENTORY_UPDATE_SUCCESS,
+  INVENTORY_UPDATE_FAILURE,
   INVENTORY_READ_REQUEST,
   INVENTORY_READ_SUCCESS,
   INVENTORY_READ_FAILURE,
@@ -22,39 +25,56 @@ const initialState = {
 // Reducer
 const inventoryReducer = (state = initialState, action) => {
   switch (action.type) {
-    // Create or Update
-    case INVENTORY_CREATE_UPDATE_REQUEST:
+    // Create
+    case INVENTORY_CREATE_REQUEST:
       return mergeObjects(state, {
         formLoading: true,
         pageLoading: true,
       });
 
-    case INVENTORY_CREATE_UPDATE_SUCCESS:
-      let modifyInventoryForCreateOrUpdate = [...state.inventory];
-      const inventoryIndex = modifyInventoryForCreateOrUpdate.findIndex(
-        (inventory) =>
-          parseInt(action.payload.inventory.id) === parseInt(inventory.id),
-      );
+    case INVENTORY_CREATE_SUCCESS:
+      let modifyInventoryForCreate = [
+        ...state.inventory,
+        action.payload.inventory,
+      ];
 
-      if (inventoryIndex >= 0) {
-        modifyInventoryForCreateOrUpdate.splice(
-          inventoryIndex,
-          1,
-          action.payload.inventory,
-        );
-      } else {
-        modifyInventoryForCreateOrUpdate = [
-          ...state.inventory,
-          action.payload.inventory,
-        ];
-      }
       return mergeObjects(state, {
-        inventory: modifyInventoryForCreateOrUpdate,
+        inventory: modifyInventoryForCreate,
         formLoading: false,
         pageLoading: false,
       });
 
-    case INVENTORY_CREATE_UPDATE_FAILURE:
+    case INVENTORY_CREATE_FAILURE:
+      return mergeObjects(state, {
+        formLoading: false,
+        pageLoading: false,
+      });
+
+    // Create
+    case INVENTORY_UPDATE_REQUEST:
+      return mergeObjects(state, {
+        formLoading: true,
+        pageLoading: true,
+      });
+
+    case INVENTORY_UPDATE_SUCCESS:
+      let modifyInventoryForUpdate = [...state.inventory];
+      const inventoryIndex = modifyInventoryForUpdate.findIndex(
+        (inventory) => +action.payload.inventory.id === +inventory.id,
+      );
+
+      modifyInventoryForUpdate.splice(
+        inventoryIndex,
+        1,
+        action.payload.inventory,
+      );
+      return mergeObjects(state, {
+        inventory: modifyInventoryForUpdate,
+        formLoading: false,
+        pageLoading: false,
+      });
+
+    case INVENTORY_UPDATE_FAILURE:
       return mergeObjects(state, {
         formLoading: false,
         pageLoading: false,
@@ -86,13 +106,9 @@ const inventoryReducer = (state = initialState, action) => {
 
     case INVENTORY_DELETE_SUCCESS:
       let modifyInventoryForDelete = [...state.inventory];
-      console.log(modifyInventoryForDelete);
       const modifiedInventoryAfterDeleted = modifyInventoryForDelete.filter(
         (inventory) => {
-          console.log(inventory);
-          return (
-            parseInt(action.payload.inventoryId) !== parseInt(inventory.id)
-          );
+          return +action.payload.inventoryId !== +inventory.id;
         },
       );
       return mergeObjects(state, {

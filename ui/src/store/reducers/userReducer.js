@@ -19,6 +19,7 @@ const initialState = {
   isAuthenticated: data_store && data_store.token ? true : false,
   token: data_store && data_store.token ? data_store.token : null,
   name: data_store && data_store.name ? data_store.name : null,
+  email: data_store && data_store.email ? data_store.email : null,
   loading: false,
   message: null,
   messageType: null,
@@ -53,11 +54,12 @@ const userReducer = (state = initialState, action) => {
         isAuthenticated: true,
         token: action.payload.token,
         name: action.payload.name,
+        email: action.payload.email,
         loading: false,
       });
     case USER_LOGIN_FAILURE:
       return mergeObjects(state, {
-        message: action.payload.message,
+        message: 'Something is wrong with your login or password :(',
         messageType: true,
         loading: false,
       });
@@ -68,8 +70,7 @@ const userReducer = (state = initialState, action) => {
         isAuthenticated: false,
         token: null,
         name: null,
-        message: 'You have been logged out. Please login to continue.',
-        loading: false,
+        email: null,
       });
 
     default:

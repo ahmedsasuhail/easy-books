@@ -1,7 +1,10 @@
 import {
-  SALES_CREATE_UPDATE_REQUEST,
-  SALES_CREATE_UPDATE_SUCCESS,
-  SALES_CREATE_UPDATE_FAILURE,
+  SALES_CREATE_REQUEST,
+  SALES_CREATE_SUCCESS,
+  SALES_CREATE_FAILURE,
+  SALES_UPDATE_REQUEST,
+  SALES_UPDATE_SUCCESS,
+  SALES_UPDATE_FAILURE,
   SALES_READ_REQUEST,
   SALES_READ_SUCCESS,
   SALES_READ_FAILURE,
@@ -22,35 +25,55 @@ const initialState = {
 // Reducer
 const salesReducer = (state = initialState, action) => {
   switch (action.type) {
-    // Create or Update
-    case SALES_CREATE_UPDATE_REQUEST:
+    // Create
+    case SALES_CREATE_REQUEST:
       return mergeObjects(state, {
         formLoading: true,
         pageLoading: true,
       });
 
-    case SALES_CREATE_UPDATE_SUCCESS:
-      let modifySalesForCreateOrUpdate = [...state.sales];
-      const salesIndex = modifySalesForCreateOrUpdate.findIndex(
-        (sales) => parseInt(action.payload.sales.id) === parseInt(sales.id),
-      );
+    case SALES_CREATE_SUCCESS:
+      // let modifySalesForCreateOrUpdate = [...state.sales];
+      // const salesIndex = modifySalesForCreateOrUpdate.findIndex(
+      //   (sales) => +action.payload.sales.id === +sales.id,
+      // );
 
-      if (salesIndex >= 0) {
-        modifySalesForCreateOrUpdate.splice(
-          salesIndex,
-          1,
-          action.payload.sales,
-        );
-      } else {
-        modifySalesForCreateOrUpdate = [...state.sales, action.payload.sales];
-      }
+      let modifySalesForCreate = [...state.sales, action.payload.sales];
+
       return mergeObjects(state, {
-        sales: modifySalesForCreateOrUpdate,
+        sales: modifySalesForCreate,
         formLoading: false,
         pageLoading: false,
       });
 
-    case SALES_CREATE_UPDATE_FAILURE:
+    case SALES_CREATE_FAILURE:
+      return mergeObjects(state, {
+        formLoading: false,
+        pageLoading: false,
+      });
+
+    // Update
+    case SALES_UPDATE_REQUEST:
+      return mergeObjects(state, {
+        formLoading: true,
+        pageLoading: true,
+      });
+
+    case SALES_UPDATE_SUCCESS:
+      let modifySalesForUpdate = [...state.sales];
+      const salesIndex = modifySalesForUpdate.findIndex(
+        (sales) => +action.payload.sales.id === +sales.id,
+      );
+
+      modifySalesForUpdate.splice(salesIndex, 1, action.payload.sales);
+
+      return mergeObjects(state, {
+        sales: modifySalesForUpdate,
+        formLoading: false,
+        pageLoading: false,
+      });
+
+    case SALES_UPDATE_FAILURE:
       return mergeObjects(state, {
         formLoading: false,
         pageLoading: false,
@@ -83,7 +106,7 @@ const salesReducer = (state = initialState, action) => {
     case SALES_DELETE_SUCCESS:
       let modifySalesForDelete = [...state.sales];
       const modifiedSalesAfterDeleted = modifySalesForDelete.filter(
-        (sales) => parseInt(action.payload.salesId) !== parseInt(sales.id),
+        (sales) => +action.payload.salesId !== +sales.id,
       );
       return mergeObjects(state, {
         sales: modifiedSalesAfterDeleted,

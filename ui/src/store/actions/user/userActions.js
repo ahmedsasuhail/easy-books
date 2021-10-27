@@ -44,18 +44,16 @@ export const userActions = {
     return {
       type: USER_LOGIN_SUCCESS,
       payload: {
-        token: values.auth.token,
-        name: values.user.name,
+        token: values.token,
+        name: values.name,
+        email: values.email,
       },
     };
   },
 
-  loginFailure: (values) => {
+  loginFailure: () => {
     return {
       type: USER_LOGIN_FAILURE,
-      payload: {
-        message: values.message,
-      },
     };
   },
 

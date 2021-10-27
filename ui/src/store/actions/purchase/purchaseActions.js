@@ -1,7 +1,10 @@
 import {
-  PURCHASE_CREATE_UPDATE_REQUEST,
-  PURCHASE_CREATE_UPDATE_SUCCESS,
-  PURCHASE_CREATE_UPDATE_FAILURE,
+  PURCHASE_CREATE_REQUEST,
+  PURCHASE_CREATE_SUCCESS,
+  PURCHASE_CREATE_FAILURE,
+  PURCHASE_UPDATE_REQUEST,
+  PURCHASE_UPDATE_SUCCESS,
+  PURCHASE_UPDATE_FAILURE,
   PURCHASE_READ_REQUEST,
   PURCHASE_READ_SUCCESS,
   PURCHASE_READ_FAILURE,
@@ -12,25 +15,47 @@ import {
 
 // Purchase Actions
 export const purchaseActions = {
-  // Create or Update
-  purchaseCreateUpdateRequest: () => {
+  // Create
+  purchaseCreateRequest: () => {
     return {
-      type: PURCHASE_CREATE_UPDATE_REQUEST,
+      type: PURCHASE_CREATE_REQUEST,
     };
   },
 
-  purchaseCreateUpdateSuccess: (values) => {
+  purchaseCreateSuccess: (values) => {
     return {
-      type: PURCHASE_CREATE_UPDATE_SUCCESS,
+      type: PURCHASE_CREATE_SUCCESS,
       payload: {
         purchase: values,
       },
     };
   },
 
-  purchaseCreateUpdateFailure: () => {
+  purchaseCreateFailure: () => {
     return {
-      type: PURCHASE_CREATE_UPDATE_FAILURE,
+      type: PURCHASE_CREATE_FAILURE,
+    };
+  },
+
+  // Update
+  purchaseUpdateRequest: () => {
+    return {
+      type: PURCHASE_UPDATE_REQUEST,
+    };
+  },
+
+  purchaseUpdateSuccess: (values) => {
+    return {
+      type: PURCHASE_UPDATE_SUCCESS,
+      payload: {
+        purchase: values,
+      },
+    };
+  },
+
+  purchaseUpdateFailure: () => {
+    return {
+      type: PURCHASE_UPDATE_FAILURE,
     };
   },
 

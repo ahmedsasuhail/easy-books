@@ -10,7 +10,7 @@ import store from './store/Store.js';
 import { LayoutProvider } from './context/LayoutContext';
 import { unregister } from './serviceWorker';
 
-import App from './components/App';
+import App from './App';
 
 ReactDOM.render(
   <LayoutProvider>

@@ -1,7 +1,10 @@
 import {
-  SALES_CREATE_UPDATE_REQUEST,
-  SALES_CREATE_UPDATE_SUCCESS,
-  SALES_CREATE_UPDATE_FAILURE,
+  SALES_CREATE_REQUEST,
+  SALES_CREATE_SUCCESS,
+  SALES_CREATE_FAILURE,
+  SALES_UPDATE_REQUEST,
+  SALES_UPDATE_SUCCESS,
+  SALES_UPDATE_FAILURE,
   SALES_READ_REQUEST,
   SALES_READ_SUCCESS,
   SALES_READ_FAILURE,
@@ -12,25 +15,47 @@ import {
 
 // sales Actions
 export const salesActions = {
-  // Create or Update
-  salesCreateUpdateRequest: () => {
+  // Create
+  salesCreateRequest: () => {
     return {
-      type: SALES_CREATE_UPDATE_REQUEST,
+      type: SALES_CREATE_REQUEST,
     };
   },
 
-  salesCreateUpdateSuccess: (values) => {
+  salesCreateSuccess: (values) => {
     return {
-      type: SALES_CREATE_UPDATE_SUCCESS,
+      type: SALES_CREATE_SUCCESS,
       payload: {
         sales: values,
       },
     };
   },
 
-  salesCreateUpdateFailure: () => {
+  salesCreateFailure: () => {
     return {
-      type: SALES_CREATE_UPDATE_FAILURE,
+      type: SALES_CREATE_FAILURE,
+    };
+  },
+
+  // Update
+  salesUpdateRequest: () => {
+    return {
+      type: SALES_UPDATE_REQUEST,
+    };
+  },
+
+  salesUpdateSuccess: (values) => {
+    return {
+      type: SALES_UPDATE_SUCCESS,
+      payload: {
+        sales: values,
+      },
+    };
+  },
+
+  salesUpdateFailure: () => {
+    return {
+      type: SALES_UPDATE_FAILURE,
     };
   },
 

@@ -9,7 +9,8 @@ import Dialog from '../../components/Dialog/Dialog';
 import CreateUpdateRelationship from './CreateUpdateRelationship';
 
 import {
-  relationshipCreateUpdate,
+  relationshipCreate,
+  relationshipUpdate,
   relationshipDelete,
 } from '../../store/actions/relationship';
 
@@ -21,15 +22,13 @@ const ReadRelationship = () => {
   const token = useSelector((state) => state.user.token);
   const isLoading = useSelector((state) => state.relationship.formLoading);
 
-  // On Load
-  useEffect(() => {
-    document.title = `Relationships | ${process.env.REACT_APP_NAME}`;
-  }, []);
-
-  // Local
   const [openCreateUpdateRelationship, setOpenCreateUpdateRelationship] =
     useState(false);
   const [valueForm, setValueForm] = useState(null);
+
+  useEffect(() => {
+    document.title = `Relationships | ${process.env.REACT_APP_NAME}`;
+  }, []);
 
   const handleOpenCreateRelationship = () => {
     setOpenCreateUpdateRelationship(true);
@@ -46,13 +45,17 @@ const ReadRelationship = () => {
   };
 
   const handleSubmitCreateUpdateRelationship = (formValues) => {
-    dispatch(relationshipCreateUpdate({ formValues, token }));
+    if (formValues.id) {
+      dispatch(relationshipUpdate({ formValues, token }));
+    } else {
+      dispatch(relationshipCreate({ formValues, token }));
+    }
     handleCloseCreateOrEditRelationship();
   };
 
-  const handleSubmitDeleteRelationship = (id, name) => {
+  const handleSubmitDeleteRelationship = (id) => {
     const result = window.confirm(
-      `Are you sure you want to delete relationship ${id}?`,
+      `Are you sure you want to delete this relationship item?`,
     );
     if (result) {
       dispatch(relationshipDelete({ id, token }));
