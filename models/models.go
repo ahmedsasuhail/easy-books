@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"gorm.io/datatypes"
-	"gorm.io/gorm"
 )
 
 // ----------------------------------------------------------------------------
@@ -40,9 +39,8 @@ type Tabler interface {
 
 // User represents a table containing user data.
 type Users struct {
-	CreatedAt time.Time      `json:"created_at"`
-	UpdatedAt time.Time      `json:"updated_at"`
-	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 
 	Name     string `json:"name"`
 	Email    string `gorm:"type:varchar(100);unique_index;primaryKey" json:"email"`
@@ -54,9 +52,8 @@ func (Users) TableName() string {
 }
 
 type Sales struct {
-	CreatedAt time.Time      `json:"created_at"`
-	UpdatedAt time.Time      `json:"updated_at"`
-	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 
 	ID             uint64         `gorm:"primaryKey" json:"id"`
 	Price          float64        `sql:"type:decimal(8,2);" json:"price"`
@@ -75,9 +72,8 @@ func (Sales) TableName() string {
 }
 
 type Purchases struct {
-	CreatedAt time.Time      `json:"created_at"`
-	UpdatedAt time.Time      `json:"updated_at"`
-	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 
 	ID             uint64         `gorm:"primaryKey" json:"id"`
 	CompanyName    string         `json:"company_name"`
@@ -93,9 +89,8 @@ func (Purchases) TableName() string {
 }
 
 type Inventory struct {
-	CreatedAt time.Time      `json:"created_at"`
-	UpdatedAt time.Time      `json:"updated_at"`
-	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 
 	ID         uint64         `gorm:"primaryKey" json:"id"`
 	PartName   string         `json:"part_name"`
@@ -110,9 +105,8 @@ func (Inventory) TableName() string {
 }
 
 type Relationships struct {
-	CreatedAt time.Time      `json:"created_at"`
-	UpdatedAt time.Time      `json:"updated_at"`
-	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 
 	ID          uint64 `gorm:"primaryKey" json:"id"`
 	Name        string `json:"name"`
@@ -125,9 +119,8 @@ func (Relationships) TableName() string {
 }
 
 type Miscellaneous struct {
-	CreatedAt time.Time      `json:"created_at"`
-	UpdatedAt time.Time      `json:"updated_at"`
-	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 
 	ID          uint64         `gorm:"primaryKey" json:"id"`
 	Description string         `json:"description"`
