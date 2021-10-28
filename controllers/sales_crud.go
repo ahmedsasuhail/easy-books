@@ -107,6 +107,7 @@ func UpdateSales(c *gin.Context) {
 	).Preload(
 		"Inventory.Purchases.Relationships",
 	).First(&record)
+
 	successResponse(c, http.StatusOK, "", map[string]interface{}{
 		"id":       record.ID,
 		"price":    record.Price,
