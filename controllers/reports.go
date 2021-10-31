@@ -159,6 +159,7 @@ func ReportByRelationshipID(c *gin.Context) {
 
 	var filteredPurchases []map[string]interface{}
 	var filteredSales []map[string]interface{}
+	var filteredReturned []map[string]interface{}
 
 	for _, record := range purchases {
 		totalPurchased += record.Price
@@ -173,17 +174,23 @@ func ReportByRelationshipID(c *gin.Context) {
 	}
 
 	for _, record := range sales {
-		if !record.Returned {
+		if record.Returned {
+			filteredReturned = append(filteredReturned, map[string]interface{}{
+				"id":        record.ID,
+				"price":     record.Price,
+				"date":      record.Date,
+				"part_name": record.Inventory.PartName,
+			})
+		} else {
 			totalSales += record.Price
-		}
 
-		filteredSales = append(filteredSales, map[string]interface{}{
-			"id":        record.ID,
-			"price":     record.Price,
-			"date":      record.Date,
-			"returned":  record.Returned,
-			"part_name": record.Inventory.PartName,
-		})
+			filteredSales = append(filteredSales, map[string]interface{}{
+				"id":        record.ID,
+				"price":     record.Price,
+				"date":      record.Date,
+				"part_name": record.Inventory.PartName,
+			})
+		}
 	}
 
 	successResponse(c, http.StatusOK, "", map[string]interface{}{
@@ -192,6 +199,7 @@ func ReportByRelationshipID(c *gin.Context) {
 		"purchases":       filteredPurchases,
 		"purchased_total": totalPurchased,
 		"sales":           filteredSales,
+		"sales_returned":  filteredReturned,
 		"sales_total":     totalSales,
 	})
 }
