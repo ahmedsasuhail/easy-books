@@ -112,6 +112,8 @@ func ReportByRelationshipID(c *gin.Context) {
 	var request map[string]uint64
 	var relationship models.Relationships
 	var result *gorm.DB
+	var totalSales float64
+	var totalPurchased float64
 
 	err := parseRequestBody(c, &request)
 	if err != nil {
@@ -159,6 +161,8 @@ func ReportByRelationshipID(c *gin.Context) {
 	var filteredSales []map[string]interface{}
 
 	for _, record := range purchases {
+		totalPurchased += record.Price
+
 		filteredPurchases = append(filteredPurchases, map[string]interface{}{
 			"id":           record.ID,
 			"company_name": record.CompanyName,
@@ -169,6 +173,10 @@ func ReportByRelationshipID(c *gin.Context) {
 	}
 
 	for _, record := range sales {
+		if !record.Returned {
+			totalSales += record.Price
+		}
+
 		filteredSales = append(filteredSales, map[string]interface{}{
 			"id":        record.ID,
 			"price":     record.Price,
@@ -179,9 +187,11 @@ func ReportByRelationshipID(c *gin.Context) {
 	}
 
 	successResponse(c, http.StatusOK, "", map[string]interface{}{
-		"id":        relationship.ID,
-		"name":      relationship.Name,
-		"purchases": filteredPurchases,
-		"sales":     filteredSales,
+		"id":              relationship.ID,
+		"name":            relationship.Name,
+		"purchases":       filteredPurchases,
+		"purchased_total": totalPurchased,
+		"sales":           filteredSales,
+		"sales_total":     totalSales,
 	})
 }
