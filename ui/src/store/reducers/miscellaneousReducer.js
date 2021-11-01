@@ -17,11 +17,11 @@ import { mergeObjects } from '../../utils/helpers';
 // Set Initial State
 const initialState = {
   miscellaneous: [],
+  orderBy: 'date',
+  order: 'desc',
   pageNo: 0,
   rowsPerPage: 5,
-  orderBy: 'id',
-  order: 'asc',
-  count: 5,
+  count: 0,
   formLoading: false,
   pageLoading: false,
 };
@@ -38,24 +38,27 @@ const miscellaneousReducer = (state = initialState, action) => {
 
     case MISCELLANEOUS_CREATE_SUCCESS:
       let modifyMiscellaneousForCreate;
+      let nextPageNo = state.pageNo;
 
-      if (state.miscellaneous.length % state.rowsPerPage === 0) {
-        modifyMiscellaneousForCreate = [action.payload.miscellaneous];
-      } else {
-        modifyMiscellaneousForCreate = [
-          ...state.miscellaneous,
-          action.payload.miscellaneous,
-        ];
+      modifyMiscellaneousForCreate =
+        state.miscellaneous.length === 0
+          ? [action.payload.miscellaneous]
+          : state.miscellaneous.length === 5
+          ? []
+          : [...state.miscellaneous, action.payload.miscellaneous];
+
+      if (
+        state.miscellaneous.length !== 0 &&
+        state.miscellaneous.length % state.rowsPerPage === 0
+      ) {
+        nextPageNo = Math.floor(state.count / state.rowsPerPage);
       }
-
-      const createNextPageNo =
-        state.count % state.rowsPerPage === 0 ? state.pageNo + 1 : state.pageNo;
 
       return mergeObjects(state, {
         miscellaneous: modifyMiscellaneousForCreate,
         formLoading: false,
         pageLoading: false,
-        pageNo: createNextPageNo,
+        pageNo: nextPageNo,
         count: state.count + 1,
       });
 
@@ -74,6 +77,7 @@ const miscellaneousReducer = (state = initialState, action) => {
 
     case MISCELLANEOUS_UPDATE_SUCCESS:
       let modifyMiscellaneousForUpdate = [...state.miscellaneous];
+
       const miscellaneousIndex = modifyMiscellaneousForUpdate.findIndex(
         (miscellaneous) =>
           +action.payload.miscellaneous.id === +miscellaneous.id,
@@ -85,15 +89,12 @@ const miscellaneousReducer = (state = initialState, action) => {
         action.payload.miscellaneous,
       );
 
-      const nextPageNo =
-        state.count % state.rowsPerPage === 0 ? state.pageNo + 1 : state.pageNo;
-
       return mergeObjects(state, {
         miscellaneous: modifyMiscellaneousForUpdate,
         formLoading: false,
         pageLoading: false,
-        pageNo: nextPageNo,
-        count: state.count + 1,
+        pageNo: state.pageNo,
+        count: state.count,
       });
 
     case MISCELLANEOUS_UPDATE_FAILURE:
@@ -110,7 +111,7 @@ const miscellaneousReducer = (state = initialState, action) => {
 
     case MISCELLANEOUS_READ_SUCCESS:
       return mergeObjects(state, {
-        miscellaneous: action.payload.miscellaneous,
+        miscellaneous: action.payload.miscellaneous || [],
         pageNo: action.payload.pageNo,
         rowsPerPage: action.payload.rowsPerPage,
         orderBy: action.payload.orderBy,
@@ -132,13 +133,17 @@ const miscellaneousReducer = (state = initialState, action) => {
 
     case MISCELLANEOUS_DELETE_SUCCESS:
       let modifyMiscellaneousForDelete = [...state.miscellaneous];
+
       const modifiedMiscellaneousAfterDeleted =
         modifyMiscellaneousForDelete.filter(
           (miscellaneous) =>
             +action.payload.miscellaneousId !== +miscellaneous.id,
         );
-      const prevPageNo =
-        state.count % state.rowsPerPage === 1 && state.count > state.rowsPerPage
+
+      let prevPageNo =
+        state.count % state.rowsPerPage === 1 &&
+        state.count > state.rowsPerPage &&
+        state.pageNo === Math.floor(state.count / state.rowsPerPage)
           ? state.pageNo - 1
           : state.pageNo;
 

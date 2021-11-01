@@ -1,25 +1,59 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Grid, Button, IconButton } from '@material-ui/core';
-import { Edit as EditIcon, Delete as DeleteIcon } from '@material-ui/icons';
-import MUIDataTable from 'mui-datatables';
+import { Grid, Button } from '@material-ui/core';
 
 import PageTitle from '../../components/PageTitle/PageTitle';
 import Dialog from '../../components/Dialog/Dialog';
+import CustomTable from '../../components/Table/CustomTable.js';
 import CreateUpdateRelationship from './CreateUpdateRelationship';
 
 import {
+  relationshipRead,
   relationshipCreate,
   relationshipUpdate,
   relationshipDelete,
 } from '../../store/actions/relationship';
 
 const ReadRelationship = () => {
+  let rows = [];
+  const headCells = [
+    {
+      id: 'sn',
+      numeric: false,
+      disablePadding: false,
+      label: 'SN',
+    },
+    {
+      id: 'name',
+      numeric: false,
+      disablePadding: false,
+      label: 'Name',
+    },
+    {
+      id: 'phno',
+      numeric: false,
+      disablePadding: false,
+      label: 'Phno',
+    },
+    {
+      id: 'address',
+      numeric: false,
+      disablePadding: false,
+      label: 'Address',
+    },
+  ];
+
   const dispatch = useDispatch();
+
+  const token = useSelector((state) => state.user.token);
   const relationshipItems = useSelector(
     (state) => state.relationship.relationships,
   );
-  const token = useSelector((state) => state.user.token);
+  const pageNo = useSelector((state) => state.relationship.pageNo);
+  const rowsPerPage = useSelector((state) => state.relationship.rowsPerPage);
+  const orderBy = useSelector((state) => state.relationship.orderBy);
+  const order = useSelector((state) => state.relationship.order);
+  const totalCount = useSelector((state) => state.relationship.count);
   const isLoading = useSelector((state) => state.relationship.formLoading);
 
   const [openCreateUpdateRelationship, setOpenCreateUpdateRelationship] =
@@ -29,6 +63,49 @@ const ReadRelationship = () => {
   useEffect(() => {
     document.title = `Relationships | ${process.env.REACT_APP_NAME}`;
   }, []);
+
+  const handleRequestSort = (property) => {
+    const isAsc = orderBy === property && order === 'asc';
+    const direction = isAsc ? 'desc' : 'asc';
+    dispatch(
+      relationshipRead({
+        token,
+        pageNo,
+        rowsPerPage,
+        order: direction,
+        orderBy: property,
+      }),
+    );
+  };
+
+  const handleChangePage = (_event, newPage) => {
+    dispatch(
+      relationshipRead({
+        token,
+        pageNo: newPage,
+        rowsPerPage,
+        orderBy,
+        order,
+      }),
+    );
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    dispatch(
+      relationshipRead({
+        token,
+        pageNo,
+        rowsPerPage: parseInt(event.target.value, 10),
+        orderBy,
+        order,
+      }),
+    );
+  };
+
+  useEffect(() => {
+    handleChangePage(null, pageNo);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageNo]);
 
   const handleOpenCreateRelationship = () => {
     setOpenCreateUpdateRelationship(true);
@@ -62,74 +139,19 @@ const ReadRelationship = () => {
     }
   };
 
-  // Rows
-  let tableStructure = [];
   if (relationshipItems) {
-    tableStructure = relationshipItems.map((relationship, idx) => {
-      return [
-        idx + 1,
-        relationship.name ? relationship.name : 'Not Specified',
-        relationship.phone_number ? relationship.phone_number : 'Not Specified',
-        relationship.address ? relationship.address : 'Not Specified',
-        {
-          id: relationship.id,
-          name: relationship.name,
-          phone_number: relationship.phone_number,
-          address: relationship.address,
-        },
-      ];
+    rows = relationshipItems.map((relationship, idx) => {
+      return {
+        sn: pageNo === 0 ? idx + 1 : rowsPerPage * pageNo + (idx + 1),
+        id: relationship.id && relationship.id,
+        name: relationship.name ? relationship.name : 'Not Specified',
+        phone_number: relationship.phone_number
+          ? relationship.phone_number
+          : 'Not Specified',
+        address: relationship.address ? relationship.address : 'Not Specified',
+      };
     });
   }
-
-  // Columns
-  const columns = ['SN', 'Name', 'Phno', 'Address'];
-
-  columns.push({
-    name: 'Actions',
-    options: {
-      customBodyRender: (value) => {
-        return (
-          <>
-            <IconButton
-              onClick={() => handleOpenEditRelationship(value)}
-              color='primary'
-              aria-label='create-edit-relationship'
-              component='span'
-              size='small'
-            >
-              <EditIcon fontSize='small' />
-            </IconButton>
-            <IconButton
-              onClick={() =>
-                handleSubmitDeleteRelationship(value.id, value.name)
-              }
-              color='primary'
-              aria-label='delete-relationship'
-              component='span'
-              size='small'
-            >
-              <DeleteIcon fontSize='small' />
-            </IconButton>
-          </>
-        );
-      },
-    },
-  });
-
-  // Config
-  const options = {
-    filter: true,
-    filterType: 'dropdown',
-    responsive: 'standard',
-    selectableRows: 'none',
-    rowsPerPage: 5,
-    rowsPerPageOptions: [5, 10, 15],
-    textLabels: {
-      pagination: {
-        rowsPerPage: 'Total Items Per Page',
-      },
-    },
-  };
 
   return (
     <>
@@ -146,25 +168,36 @@ const ReadRelationship = () => {
           </Button>
         }
       />
+      {console.log(rows)}
       <Grid container spacing={4}>
         <Grid item xs={12}>
-          <MUIDataTable
-            title='All Relationships'
-            data={tableStructure}
-            columns={columns}
-            options={options}
+          <CustomTable
+            tableTitle='All Relationships'
+            order={order}
+            orderBy={orderBy}
+            requestSort={handleRequestSort}
+            headCells={headCells}
+            rows={rows}
+            openEditMiscellaneous={handleOpenEditRelationship}
+            submitDeleteMiscellaneous={handleSubmitDeleteRelationship}
+            totalCount={totalCount}
+            pageNo={pageNo}
+            rowsPerPage={rowsPerPage}
+            changePage={handleChangePage}
+            changeRowsPerPage={handleChangeRowsPerPage}
+            size='medium'
           />
         </Grid>
       </Grid>
       <Dialog
+        title={`${valueForm ? 'Edit' : 'Create'} Relationship`}
         fullWidth={true}
         maxWidth='xs'
-        open={openCreateUpdateRelationship}
-        handleClose={handleCloseCreateOrEditRelationship}
-        title={`${valueForm ? 'Edit' : 'Create'} Relationship`}
-        handleSubmit={handleSubmitCreateUpdateRelationship}
         initialValues={valueForm}
         isLoading={isLoading}
+        open={openCreateUpdateRelationship}
+        handleClose={handleCloseCreateOrEditRelationship}
+        handleSubmit={handleSubmitCreateUpdateRelationship}
       >
         <CreateUpdateRelationship initialValues={valueForm} />
       </Dialog>

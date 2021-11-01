@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { Grid, Button } from '@material-ui/core';
+import { Grid, Button, makeStyles } from '@material-ui/core';
 
 import PageTitle from '../../components/PageTitle/PageTitle';
 import Dialog from '../../components/Dialog/Dialog';
-
-import CustomTable from '../../components/Table/Table.js';
-
-import { formattedDate } from '../../utils/helpers';
+import CustomTable from '../../components/Table/CustomTable.js';
 
 import CreateUpdateMiscellaneous from './CreateUpdateMiscellaneous';
+
 import {
   miscellaneousRead,
   miscellaneousCreate,
@@ -18,41 +16,55 @@ import {
   miscellaneousDelete,
 } from '../../store/actions/miscellaneous';
 
-const headCells = [
-  {
-    id: 'id',
-    numeric: false,
-    disablePadding: false,
-    label: 'SN',
+import { formattedDate } from '../../utils/helpers';
+
+const useStyles = makeStyles((theme) => ({
+  pageContainer: {
+    [theme.breakpoints.up('lg')]: {
+      width: '80%',
+      margin: 'auto',
+    },
   },
-  {
-    id: 'description',
-    numeric: false,
-    disablePadding: false,
-    label: 'Description',
-  },
-  {
-    id: 'price',
-    numeric: false,
-    disablePadding: false,
-    label: 'Price',
-  },
-  {
-    id: 'date',
-    numeric: false,
-    disablePadding: false,
-    label: 'Date',
-  },
-];
+}));
 
 const ReadMiscellaneous = () => {
   let rows = [];
+  const headCells = [
+    {
+      id: 'sn',
+      numeric: false,
+      disablePadding: false,
+      label: 'SN',
+    },
+    {
+      id: 'description',
+      numeric: false,
+      disablePadding: false,
+      label: 'Description',
+    },
+    {
+      id: 'price',
+      numeric: false,
+      disablePadding: false,
+      label: 'Price',
+    },
+    {
+      id: 'date',
+      numeric: false,
+      disablePadding: false,
+      label: 'Date',
+    },
+  ];
+
   const dispatch = useDispatch();
+
+  const classes = useStyles();
 
   const [openCreateUpdateMiscellaneous, setOpenCreateUpdateMiscellaneous] =
     useState(false);
   const [valueForm, setValueForm] = useState(null);
 
+  const token = useSelector((state) => state.user.token);
   const miscellaneousItems = useSelector(
     (state) => state.miscellaneous.miscellaneous,
   );
@@ -60,14 +72,24 @@ const ReadMiscellaneous = () => {
   const rowsPerPage = useSelector((state) => state.miscellaneous.rowsPerPage);
   const orderBy = useSelector((state) => state.miscellaneous.orderBy);
   const order = useSelector((state) => state.miscellaneous.order);
-  const token = useSelector((state) => state.user.token);
-  const isLoading = useSelector((state) => state.miscellaneous.formLoading);
   const totalCount = useSelector((state) => state.miscellaneous.count);
+  const isLoading = useSelector((state) => state.miscellaneous.formLoading);
+
+  console.log(
+    'INIT',
+    miscellaneousItems ? miscellaneousItems.length : miscellaneousItems,
+    pageNo,
+    rowsPerPage,
+    orderBy,
+    order,
+    totalCount,
+  );
 
   if (miscellaneousItems) {
     rows = miscellaneousItems.map((miscellaneous, idx) => {
       return {
-        id: miscellaneous.id ? miscellaneous.id : idx + 1,
+        sn: pageNo === 0 ? idx + 1 : rowsPerPage * pageNo + (idx + 1),
+        id: miscellaneous.id && miscellaneous.id,
         description: miscellaneous.description
           ? miscellaneous.description
           : 'Not Specified',
@@ -109,12 +131,6 @@ const ReadMiscellaneous = () => {
     );
   };
 
-  useEffect(() => {
-    if (miscellaneousItems.length === 0 && pageNo >= 0) {
-      handleChangePage.call(null, +pageNo);
-    }
-  }, [pageNo, miscellaneousItems]);
-
   const handleChangeRowsPerPage = (event) => {
     dispatch(
       miscellaneousRead({
@@ -126,6 +142,11 @@ const ReadMiscellaneous = () => {
       }),
     );
   };
+
+  useEffect(() => {
+    handleChangePage(null, pageNo);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageNo]);
 
   const handleOpenCreateMiscellaneous = () => {
     setOpenCreateUpdateMiscellaneous(true);
@@ -170,11 +191,6 @@ const ReadMiscellaneous = () => {
         miscellaneousDelete({
           id,
           token,
-          // pageNo,
-          // rowsPerPage,
-          // orderBy,
-          // order,
-          // totalCount,
         }),
       );
     }
@@ -182,49 +198,52 @@ const ReadMiscellaneous = () => {
 
   return (
     <>
-      <PageTitle
-        title={'Miscellaneous'}
-        button={
-          <Button
-            variant='outlined'
-            size='medium'
-            color='secondary'
-            onClick={handleOpenCreateMiscellaneous}
-          >
-            Add Miscellaneous
-          </Button>
-        }
-      />
-      <Grid container spacing={4}>
-        <Grid item xs={12}>
-          <CustomTable
-            tableTitle='All Miscellaneous'
-            order={order}
-            orderBy={orderBy}
-            requestSort={handleRequestSort}
-            headCells={headCells}
-            rows={rows}
-            openEditMiscellaneous={handleOpenEditMiscellaneous}
-            submitDeleteMiscellaneous={handleSubmitDeleteMiscellaneous}
-            totalCount={totalCount}
-            pageNo={pageNo}
-            rowsPerPage={rowsPerPage}
-            changePage={handleChangePage}
-            changeRowsPerPage={handleChangeRowsPerPage}
-          />
+      <div className={classes.pageContainer}>
+        <PageTitle
+          title={'Miscellaneous'}
+          button={
+            <Button
+              variant='outlined'
+              size='medium'
+              color='secondary'
+              onClick={handleOpenCreateMiscellaneous}
+            >
+              Add Miscellaneous
+            </Button>
+          }
+        />
+        <Grid container spacing={4}>
+          <Grid item xs={12}>
+            <CustomTable
+              tableTitle='All Miscellaneous'
+              order={order}
+              orderBy={orderBy}
+              requestSort={handleRequestSort}
+              headCells={headCells}
+              rows={rows}
+              openEditMiscellaneous={handleOpenEditMiscellaneous}
+              submitDeleteMiscellaneous={handleSubmitDeleteMiscellaneous}
+              totalCount={totalCount}
+              pageNo={pageNo}
+              rowsPerPage={rowsPerPage}
+              changePage={handleChangePage}
+              changeRowsPerPage={handleChangeRowsPerPage}
+              size='medium'
+            />
+          </Grid>
         </Grid>
-      </Grid>
+      </div>
       <Dialog
+        title={`${valueForm ? 'Edit' : 'Create'} Miscellaneous`}
         fullWidth={true}
         maxWidth='xs'
-        open={openCreateUpdateMiscellaneous}
-        handleClose={handleCloseCreateOrEditMiscellaneous}
-        title={`${valueForm ? 'Edit' : 'Create'} Miscellaneous`}
-        handleSubmit={handleSubmitCreateUpdateMiscellaneous}
         initialValues={valueForm}
         isLoading={isLoading}
+        open={openCreateUpdateMiscellaneous}
+        handleClose={handleCloseCreateOrEditMiscellaneous}
+        handleSubmit={handleSubmitCreateUpdateMiscellaneous}
       >
-        <CreateUpdateMiscellaneous initialValues={valueForm} />
+        <CreateUpdateMiscellaneous />
       </Dialog>
     </>
   );

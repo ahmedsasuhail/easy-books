@@ -71,7 +71,11 @@ export const relationshipActions = {
       type: RELATIONSHIP_READ_SUCCESS,
       payload: {
         relationships: values.records,
-        pageNo: values.page,
+        pageNo: values.page - 1,
+        rowsPerPage: values.page_limit,
+        orderBy: values.order_by,
+        order: values.sort_order,
+        count: values.total_count,
       },
     };
   },

@@ -33,10 +33,15 @@ const inventoryReducer = (state = initialState, action) => {
       });
 
     case INVENTORY_CREATE_SUCCESS:
-      let modifyInventoryForCreate = [
-        ...state.inventory,
-        action.payload.inventory,
-      ];
+      let modifyInventoryForCreate;
+      if (state.inventory) {
+        modifyInventoryForCreate = [
+          ...state.inventory,
+          action.payload.inventory,
+        ];
+      } else {
+        modifyInventoryForCreate = [action.payload.inventory];
+      }
 
       return mergeObjects(state, {
         inventory: modifyInventoryForCreate,

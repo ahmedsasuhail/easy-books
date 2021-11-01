@@ -22,7 +22,7 @@ const CustomDialog = (props) => {
         <Form
           initialValues={props.initialValues}
           onSubmit={props.handleSubmit}
-          render={({ handleSubmit, invalid }) => {
+          render={({ handleSubmit, invalid, form, values }) => {
             return (
               <form onSubmit={handleSubmit}>
                 <DialogContent>{props.children}</DialogContent>

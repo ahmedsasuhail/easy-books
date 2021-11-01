@@ -41,7 +41,8 @@ const Select = (props) => {
                   ? item.name
                   : item.part_name
                   ? item.part_name
-                  : `${item.company_name} - ${item.vehicle_name}`}
+                  : // TODO: Remove below line if unused
+                    `${item.company_name} - ${item.vehicle_name}`}
               </option>
             );
           })

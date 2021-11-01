@@ -1,7 +1,6 @@
 import React from 'react';
 import { Field } from 'react-final-form';
 
-// Components
 import Input from '../../components/Input/Input';
 
 const CreateUpdateRelationship = () => {

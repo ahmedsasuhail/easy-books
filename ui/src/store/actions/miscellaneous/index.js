@@ -26,10 +26,11 @@ export const miscellaneousCreate = (values) => {
           miscellaneousActions.miscellaneousCreateSuccess(response.data.data),
         );
       } else {
-        console.log('Error: ', response);
+        console.log('Response Error: ', response);
         dispatch(miscellaneousActions.miscellaneousCreateFailure());
       }
     } catch (error) {
+      console.log('Catch Error: ', error);
       dispatch(miscellaneousActions.miscellaneousCreateFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
@@ -66,6 +67,7 @@ export const miscellaneousUpdate = (values) => {
         dispatch(miscellaneousActions.miscellaneousUpdateFailure());
       }
     } catch (error) {
+      console.log('Catch Error: ', error);
       dispatch(miscellaneousActions.miscellaneousUpdateFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
@@ -80,11 +82,9 @@ export const miscellaneousRead = (values) => {
     dispatch(miscellaneousActions.miscellaneousReadRequest());
     try {
       const response = await axios.get(
-        `miscellaneous/?page=${values.pageNo + 1 || '1'}&page_limit=${
-          values.rowsPerPage || '5'
-        }&order_by=${values.orderBy || 'id'}&sort_order=${
-          values.order || 'asc'
-        }`,
+        `miscellaneous/?page=${values.pageNo + 1}&page_limit=${
+          values.rowsPerPage
+        }&order_by=${values.orderBy}&sort_order=${values.order}`,
         {
           headers: {
             Authorization: values.token,
@@ -100,6 +100,7 @@ export const miscellaneousRead = (values) => {
         dispatch(miscellaneousActions.miscellaneousReadFailure());
       }
     } catch (error) {
+      console.log('Catch Error: ', error);
       dispatch(miscellaneousActions.miscellaneousReadFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
@@ -130,6 +131,7 @@ export const miscellaneousDelete = (values) => {
         dispatch(miscellaneousActions.miscellaneousDeleteFailure());
       }
     } catch (error) {
+      console.log('Catch Error: ', error);
       dispatch(miscellaneousActions.miscellaneousDeleteFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());

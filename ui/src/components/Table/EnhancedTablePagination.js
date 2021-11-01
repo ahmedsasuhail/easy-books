@@ -1,8 +1,8 @@
 import React from 'react';
 
+import { IconButton } from '@material-ui/core';
 import TablePagination from '@mui/material/TablePagination';
 import Box from '@mui/material/Box';
-import { IconButton } from '@material-ui/core';
 import FirstPageIcon from '@mui/icons-material/FirstPage';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';

@@ -19,17 +19,21 @@ const EnhancedTableContent = (props) => {
   if (rows.length > 0) {
     listContent = rows.map((row, index) => {
       const labelId = `enhanced-table-checkbox-${index}`;
+
       const value = {};
       headCells.forEach((head) => {
-        value[head.id] = row[head.id];
-        if (head.id === 'date') {
+        if (head.id === 'sn') {
+          value['id'] = row['id'];
+        } else if (head.id === 'date') {
           value['date'] = row.date.split('/').reverse().join('-');
+        } else {
+          value[head.id] = row[head.id];
         }
       });
 
       const list = headCells.map((cell, idx) => {
         const opts = {};
-        if (cell.id === 'id') {
+        if (cell.id === 'sn') {
           opts.id = labelId;
         }
         return (
@@ -40,28 +44,32 @@ const EnhancedTableContent = (props) => {
       });
 
       return (
-        <TableRow hover role='checkbox' tabIndex={-1} key={row.id}>
+        <TableRow hover role='checkbox' tabIndex={-1} key={index}>
           {list}
           {actions && (
             <TableCell align='center'>
-              <IconButton
-                onClick={() => openEditMiscellaneous(value)}
-                color='primary'
-                aria-label='create-edit-miscellaneous'
-                component='span'
-                size='small'
-              >
-                <EditIcon fontSize='small' />
-              </IconButton>
-              <IconButton
-                onClick={() => submitDeleteMiscellaneous(row.id)}
-                color='primary'
-                aria-label='delete-miscellaneous'
-                component='span'
-                size='small'
-              >
-                <DeleteIcon fontSize='small' />
-              </IconButton>
+              {openEditMiscellaneous && (
+                <IconButton
+                  onClick={() => openEditMiscellaneous(value)}
+                  color='primary'
+                  aria-label='create-edit-miscellaneous'
+                  component='span'
+                  size='small'
+                >
+                  <EditIcon fontSize='small' />
+                </IconButton>
+              )}
+              {submitDeleteMiscellaneous && (
+                <IconButton
+                  onClick={() => submitDeleteMiscellaneous(row.id)}
+                  color='primary'
+                  aria-label='delete-miscellaneous'
+                  component='span'
+                  size='small'
+                >
+                  <DeleteIcon fontSize='small' />
+                </IconButton>
+              )}
             </TableCell>
           )}
         </TableRow>
@@ -70,7 +78,7 @@ const EnhancedTableContent = (props) => {
   } else {
     listContent = (
       <TableRow>
-        <TableCell align='center' colSpan={5}>
+        <TableCell align='center' colSpan={headCells.length + 1}>
           No records found in this page!
         </TableCell>
       </TableRow>

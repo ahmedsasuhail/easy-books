@@ -8,7 +8,7 @@ export const inventoryCreate = (values) => {
   return async (dispatch) => {
     dispatch(inventoryActions.inventoryCreateRequest());
     try {
-      const response = await axios.put(
+      const response = await axios.post(
         'inventory/',
         {
           part_name: values.formValues.part_name,
@@ -42,7 +42,7 @@ export const inventoryUpdate = (values) => {
   return async (dispatch) => {
     dispatch(inventoryActions.inventoryUpdateRequest());
     try {
-      const response = await axios.put(
+      const response = await axios.patch(
         'inventory/',
         {
           part_name: values.formValues.part_name,

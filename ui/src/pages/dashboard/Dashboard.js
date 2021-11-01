@@ -7,7 +7,6 @@ import {
   Contacts as ContactsIcon,
 } from '@material-ui/icons';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import FormControl from '@mui/material/FormControl';
 import NativeSelect from '@mui/material/NativeSelect';
 import InputLabel from '@mui/material/InputLabel';
@@ -32,7 +31,8 @@ function TabPanel(props) {
     >
       {value === index && (
         <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
+          {/* <Typography>{children}</Typography> */}
+          {children}
         </Box>
       )}
     </div>
@@ -68,6 +68,11 @@ const Dashboard = () => {
         return mergeObjects(state, {
           relationshipRows: action.payload,
         });
+      case 'CLEAR':
+        return {
+          purchaseRows: {},
+          relationshipRows: {},
+        };
       default:
         return state;
     }
@@ -85,6 +90,7 @@ const Dashboard = () => {
 
   const handleTabChange = (event, newValue) => {
     setValue(newValue);
+    dispatch({ type: 'CLEAR' });
   };
 
   const handlePurchasesChange = async (event, actionType) => {
@@ -164,13 +170,15 @@ const Dashboard = () => {
             onChange={(e) => handlePurchasesChange(e, 'PURCHASES')}
           >
             <option value=''></option>
-            {purchaseItems.map((item) => {
-              return (
-                <option
-                  value={item.id}
-                >{`${item.company_name} - ${item.vehicle_name}`}</option>
-              );
-            })}
+            {purchaseItems &&
+              purchaseItems.map((item) => {
+                return (
+                  <option
+                    key={item.id}
+                    value={item.id}
+                  >{`${item.company_name} - ${item.vehicle_name}`}</option>
+                );
+              })}
           </NativeSelect>
         </FormControl>
         <SpanningTable rows={state.purchaseRows} />
@@ -188,9 +196,14 @@ const Dashboard = () => {
             onChange={(e) => handleRelationshipsChange(e, 'RELATIONSHIPS')}
           >
             <option value=''></option>
-            {relationshipItems.map((item) => {
-              return <option value={item.id}>{item.name}</option>;
-            })}
+            {relationshipItems &&
+              relationshipItems.map((item) => {
+                return (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                );
+              })}
           </NativeSelect>
         </FormControl>
         <br />

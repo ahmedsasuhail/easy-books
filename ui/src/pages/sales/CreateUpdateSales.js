@@ -29,7 +29,9 @@ const CreateUpdateSales = (props) => {
     if (props.initialValues && props.initialValues.purchase_id) {
       inventoryPurchaseHandler(props.initialValues.purchase_id);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   return (
     <>
       <Field

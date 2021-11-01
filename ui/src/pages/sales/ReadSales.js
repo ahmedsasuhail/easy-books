@@ -23,7 +23,6 @@ const ReadSales = () => {
   const salesItems = useSelector((state) => state.sales.sales);
   const token = useSelector((state) => state.user.token);
   const isLoading = useSelector((state) => state.sales.formLoading);
-  const [check, setCheck] = useState(false);
 
   const [openCreateUpdateSales, setOpenCreateUpdateSales] = useState(false);
   const [valueForm, setValueForm] = useState(null);
@@ -64,7 +63,6 @@ const ReadSales = () => {
     if (result) {
       dispatch(salesDelete({ id, token }));
     }
-    setCheck(false);
   };
 
   const handleSubmitReturn = (value) => {
@@ -73,14 +71,13 @@ const ReadSales = () => {
     );
     if (result) {
       value['returned'] = true;
-      setCheck(true);
+
       handleSubmitCreateUpdateSales(value);
     } else {
-      setCheck(false);
       return false;
     }
   };
-  console.log(1, check);
+
   // Rows
   let tableStructure = [];
   if (salesItems) {
@@ -95,7 +92,7 @@ const ReadSales = () => {
         date: sales.date,
         returned: sales.returned,
       };
-      console.log(2, check);
+
       return [
         idx + 1,
         sales.purchases.id
@@ -111,7 +108,6 @@ const ReadSales = () => {
           <Checkbox
             size='small'
             color='primary'
-            checked={check}
             onChange={() => handleSubmitReturn(values)}
           />
         ),

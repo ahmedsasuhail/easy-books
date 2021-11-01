@@ -8,7 +8,7 @@ export const relationshipCreate = (values) => {
   return async (dispatch) => {
     dispatch(relationshipActions.relationshipCreateRequest());
     try {
-      const response = await axios.put(
+      const response = await axios.post(
         'relationships/',
         {
           name: values.formValues.name,
@@ -30,6 +30,7 @@ export const relationshipCreate = (values) => {
         dispatch(relationshipActions.relationshipCreateFailure());
       }
     } catch (error) {
+      console.log('Catch Error: ', error);
       dispatch(relationshipActions.relationshipCreateFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
@@ -43,7 +44,7 @@ export const relationshipUpdate = (values) => {
   return async (dispatch) => {
     dispatch(relationshipActions.relationshipUpdateRequest());
     try {
-      const response = await axios.put(
+      const response = await axios.patch(
         'relationships/',
         {
           name: values.formValues.name,
@@ -66,6 +67,7 @@ export const relationshipUpdate = (values) => {
         dispatch(relationshipActions.relationshipUpdateFailure());
       }
     } catch (error) {
+      console.log('Catch Error: ', error);
       dispatch(relationshipActions.relationshipUpdateFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
@@ -80,7 +82,9 @@ export const relationshipRead = (values) => {
     dispatch(relationshipActions.relationshipReadRequest());
     try {
       const response = await axios.get(
-        `relationships/?page=1&page_limit=50&order_by=id&sort_order=asc`,
+        `relationships/?page=${values.pageNo + 1}&page_limit=${
+          values.rowsPerPage
+        }&order_by=${values.orderBy}&sort_order=${values.order}`,
         {
           headers: {
             Authorization: values.token,
@@ -96,6 +100,7 @@ export const relationshipRead = (values) => {
         dispatch(relationshipActions.relationshipReadFailure());
       }
     } catch (error) {
+      console.log('Catch Error: ', error);
       dispatch(relationshipActions.relationshipReadFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
@@ -126,6 +131,7 @@ export const relationshipDelete = (values) => {
         dispatch(relationshipActions.relationshipDeleteFailure());
       }
     } catch (error) {
+      console.log('Catch Error: ', error);
       dispatch(relationshipActions.relationshipDeleteFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());

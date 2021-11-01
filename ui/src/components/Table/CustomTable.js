@@ -25,6 +25,7 @@ const Table = (props) => {
     rowsPerPage,
     changePage,
     changeRowsPerPage,
+    size,
   } = props;
 
   return (
@@ -34,7 +35,7 @@ const Table = (props) => {
         <MuiTable
           sx={{ minWidth: 750 }}
           aria-labelledby='tableTitle'
-          size='medium'
+          size={size}
         >
           <EnhancedTableHead
             order={order}

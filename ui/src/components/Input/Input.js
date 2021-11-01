@@ -6,10 +6,10 @@ import useStyles from './inputStyles';
 
 const Input = (props) => {
   var classes = useStyles();
-
   return (
     <TextField
       {...props.input}
+      value={props.input.value}
       type={props.input.type}
       variant={props.variant}
       className={props.className}

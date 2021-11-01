@@ -11,7 +11,6 @@ import Loader from '../Loader/Loader';
 
 import Dashboard from '../../pages/dashboard/Dashboard';
 import Miscellaneous from '../../pages/miscellaneous/ReadMiscellaneous';
-// import Miscellaneous from '../../pages/miscellaneous/ReadMiscellaneous2';
 import Purchases from '../../pages/purchases/ReadPurchase';
 import Sales from '../../pages/sales/ReadSales';
 import Inventory from '../../pages/inventory/ReadInventory';
@@ -19,7 +18,6 @@ import Relationships from '../../pages/relationships/ReadRelationships';
 
 import { useLayoutState } from '../../context/LayoutContext';
 
-import { miscellaneousRead } from '../../store/actions/miscellaneous';
 import { relationshipRead } from '../../store/actions/relationship';
 import { purchaseRead } from '../../store/actions/purchase';
 import { inventoryRead } from '../../store/actions/inventory';
@@ -47,8 +45,15 @@ function Layout() {
   const isSalesLoading = useSelector((state) => state.sales.pageLoading);
 
   useEffect(() => {
-    dispatch(miscellaneousRead({ token: token }));
-    dispatch(relationshipRead({ token: token }));
+    dispatch(
+      relationshipRead({
+        token: token,
+        pageNo: 0,
+        rowsPerPage: 5,
+        order: 'asc',
+        orderBy: 'name',
+      }),
+    );
     dispatch(purchaseRead({ token: token }));
     dispatch(inventoryRead({ token: token }));
     dispatch(salesRead({ token: token }));

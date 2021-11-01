@@ -28,13 +28,16 @@ export default function SpanningTable(props) {
           <TableRow>
             <TableCell />
             <TableCell style={{ color: 'white', fontWeight: 'bold' }}>
-              {props.rows.company_name} - {props.rows.vehicle_name}
+              {props.rows.name && props.rows.name}
+              {props.rows.company_name &&
+                props.rows.vehicle_name &&
+                `${props.rows.company_name} - ${props.rows.vehicle_name}`}
             </TableCell>
             <TableCell
               style={{ color: 'white', fontWeight: 'bold' }}
               align='right'
             >
-              {props.rows.price}
+              {props.rows.price && props.rows.price}
             </TableCell>
           </TableRow>
         </TableHead>
@@ -50,12 +53,20 @@ export default function SpanningTable(props) {
               </IconButton>
             </TableCell>
             <TableCell style={{ fontWeight: 'bold' }}>Sales</TableCell>
-            <TableCell
-              style={{ fontWeight: 900, color: '#4BB543' }}
-              align='right'
-            >
-              {props.rows.sales_total + props.rows.sales_returned_total}
-            </TableCell>
+            {!props.rows.purchased_total && (
+              <TableCell
+                style={{ fontWeight: 900, color: '#4BB543' }}
+                align='right'
+              >
+                {!props.rows.purchased_total &&
+                  props.rows.sales_total + props.rows.sales_returned_total}
+              </TableCell>
+            )}
+            {props.rows.purchased_total && (
+              <TableCell style={{ fontWeight: 900 }} align='right'>
+                {props.rows.sales_total}
+              </TableCell>
+            )}
           </TableRow>
           <TableRow>
             <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={2}>
@@ -67,36 +78,49 @@ export default function SpanningTable(props) {
                   <Table size='small' aria-label='purchases'>
                     <TableHead>
                       <TableRow>
-                        <TableCell>Part Name</TableCell>
-                        <TableCell align='right'>Price</TableCell>
+                        <TableCell style={{ fontWeight: '900' }}>
+                          Part Name
+                        </TableCell>
+                        <TableCell style={{ fontWeight: '900' }} align='right'>
+                          Date
+                        </TableCell>
+                        {props.rows.purchased_total && (
+                          <TableCell style={{ fontWeight: '900' }}>
+                            Returned
+                          </TableCell>
+                        )}
+                        <TableCell style={{ fontWeight: '900' }} align='right'>
+                          Price
+                        </TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       {props.rows.sales &&
-                        props.rows.sales.map((item) => (
-                          <TableRow>
+                        props.rows.sales.map((item, idx) => (
+                          <TableRow key={idx}>
                             <TableCell>{item.part_name}</TableCell>
+                            <TableCell align='right'>
+                              {new Date(item.date).toISOString().split('T')[0]}
+                            </TableCell>
+                            {props.rows.purchased_total && (
+                              <TableCell>No</TableCell>
+                            )}
                             <TableCell align='right'>{item.price}</TableCell>
                           </TableRow>
                         ))}
-                      {props.rows.sales_returned.map((item) => (
-                        <TableRow>
-                          <TableCell>{item.part_name}</TableCell>
-                          <TableCell align='right'>{item.price}</TableCell>
-                        </TableRow>
-                      ))}
-                      {/* <TableRow>
-                        <TableCell>Item name 1</TableCell>
-                        <TableCell align='right'>100</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>Item name 2</TableCell>
-                        <TableCell align='right'>200</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>Item name 3</TableCell>
-                        <TableCell align='right'>300</TableCell>
-                      </TableRow> */}
+                      {props.rows.sales_returned &&
+                        props.rows.sales_returned.map((item, idx) => (
+                          <TableRow key={idx}>
+                            <TableCell>{item.part_name}</TableCell>
+                            <TableCell align='right'>
+                              {new Date(item.date).toISOString().split('T')[0]}
+                            </TableCell>
+                            {props.rows.purchased_total && (
+                              <TableCell>Yes</TableCell>
+                            )}
+                            <TableCell align='right'>{item.price}</TableCell>
+                          </TableRow>
+                        ))}
                     </TableBody>
                   </Table>
                 </Box>
@@ -113,13 +137,24 @@ export default function SpanningTable(props) {
                 {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
               </IconButton>
             </TableCell>
-            <TableCell style={{ fontWeight: 'bold' }}>Returned</TableCell>
-            <TableCell
-              style={{ fontWeight: 900, color: '#ff0000' }}
-              align='right'
-            >
-              -{props.rows.sales_returned_total}
+            <TableCell style={{ fontWeight: 'bold' }}>
+              {props.rows.sales_returned ? 'Returned' : 'Purchased'}
             </TableCell>
+            {!props.rows.purchased_total && (
+              <TableCell
+                style={{ fontWeight: 900, color: '#ff0000' }}
+                align='right'
+              >
+                -
+                {props.rows.sales_returned_total &&
+                  props.rows.sales_returned_total}
+              </TableCell>
+            )}
+            {props.rows.purchased_total && (
+              <TableCell style={{ fontWeight: 900 }} align='right'>
+                {props.rows.purchased_total}
+              </TableCell>
+            )}
           </TableRow>
           <TableRow>
             <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={2}>
@@ -131,46 +166,69 @@ export default function SpanningTable(props) {
                   <Table size='small' aria-label='purchases'>
                     <TableHead>
                       <TableRow>
-                        <TableCell>Part Name</TableCell>
-                        <TableCell align='right'>Price</TableCell>
+                        <TableCell style={{ fontWeight: '900' }}>
+                          Part Name
+                        </TableCell>
+                        <TableCell style={{ fontWeight: '900' }} align='right'>
+                          Date
+                        </TableCell>
+                        <TableCell style={{ fontWeight: '900' }} align='right'>
+                          Price
+                        </TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {props.rows.sales_returned.map((item) => (
-                        <TableRow>
-                          <TableCell>{item.part_name}</TableCell>
-                          <TableCell align='right'>{item.price}</TableCell>
-                        </TableRow>
-                      ))}
-                      {/* <TableRow>
-                        <TableCell>Item name 1</TableCell>
-                        <TableCell align='right'>100</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>Item name 2</TableCell>
-                        <TableCell align='right'>200</TableCell>
-                      </TableRow> */}
+                      {props.rows.sales_returned &&
+                        props.rows.sales_returned.map((item, idx) => (
+                          <TableRow key={idx}>
+                            <TableCell>{item.part_name}</TableCell>
+                            <TableCell align='right'>
+                              {new Date(item.date).toISOString().split('T')[0]}
+                            </TableCell>
+                            <TableCell align='right'>{item.price}</TableCell>
+                          </TableRow>
+                        ))}
+                      {props.rows.purchases &&
+                        props.rows.purchases.map((item, idx) => (
+                          <TableRow key={idx}>
+                            <TableCell>
+                              {item.company_name} - {item.vehicle_name}
+                            </TableCell>
+                            <TableCell align='right'>
+                              {new Date(item.date).toISOString().split('T')[0]}
+                            </TableCell>
+                            <TableCell align='right'>{item.price}</TableCell>
+                          </TableRow>
+                        ))}
                     </TableBody>
                   </Table>
                 </Box>
               </Collapse>
             </TableCell>
           </TableRow>
-          <TableRow>
-            <TableCell />
-            <TableCell style={{ fontWeight: 900 }}>Total</TableCell>
-            <TableCell
-              style={{ fontWeight: 900, color: '#ff0000' }}
-              align='right'
-            >
-              {props.rows.total.toFixed(2)}
-            </TableCell>
-          </TableRow>
+          {!props.rows.purchased_total && (
+            <TableRow>
+              <TableCell />
+              <TableCell style={{ fontWeight: 900 }}>Total</TableCell>
+              <TableCell
+                style={{ fontWeight: 900, color: '#ff0000' }}
+                align='right'
+              >
+                {props.rows.total && props.rows.total.toFixed(2)}
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </>
     );
   } else {
-    rows = <TableCell>No data found</TableCell>;
+    rows = (
+      <TableHead>
+        <TableRow>
+          <TableCell>No data found</TableCell>
+        </TableRow>
+      </TableHead>
+    );
   }
 
   return (

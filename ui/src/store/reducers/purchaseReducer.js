@@ -33,10 +33,15 @@ const purchaseReducer = (state = initialState, action) => {
       });
 
     case PURCHASE_CREATE_SUCCESS:
-      let modifyPurchasesForCreate = [
-        ...state.purchases,
-        action.payload.purchase,
-      ];
+      let modifyPurchasesForCreate;
+      if (state.purchases) {
+        modifyPurchasesForCreate = [
+          ...state.purchases,
+          action.payload.purchase,
+        ];
+      } else {
+        modifyPurchasesForCreate = [action.payload.purchase];
+      }
 
       return mergeObjects(state, {
         purchases: modifyPurchasesForCreate,

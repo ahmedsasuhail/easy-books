@@ -8,7 +8,7 @@ export const purchaseCreate = (values) => {
   return async (dispatch) => {
     dispatch(purchaseActions.purchaseCreateRequest());
     try {
-      const response = await axios.put(
+      const response = await axios.post(
         'purchases/',
         {
           company_name: values.formValues.company_name,
@@ -43,7 +43,7 @@ export const purchaseUpdate = (values) => {
   return async (dispatch) => {
     dispatch(purchaseActions.purchaseUpdateRequest());
     try {
-      const response = await axios.put(
+      const response = await axios.patch(
         'purchases/',
         {
           company_name: values.formValues.company_name,

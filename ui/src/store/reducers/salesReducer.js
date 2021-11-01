@@ -33,12 +33,12 @@ const salesReducer = (state = initialState, action) => {
       });
 
     case SALES_CREATE_SUCCESS:
-      // let modifySalesForCreateOrUpdate = [...state.sales];
-      // const salesIndex = modifySalesForCreateOrUpdate.findIndex(
-      //   (sales) => +action.payload.sales.id === +sales.id,
-      // );
-
-      let modifySalesForCreate = [...state.sales, action.payload.sales];
+      let modifySalesForCreate;
+      if (state.sales) {
+        modifySalesForCreate = [...state.sales, action.payload.sales];
+      } else {
+        modifySalesForCreate = [action.payload.sales];
+      }
 
       return mergeObjects(state, {
         sales: modifySalesForCreate,
