@@ -16,6 +16,7 @@ func ReportByPurchaseID(c *gin.Context) {
 	var result *gorm.DB
 	var totalSales float64
 	var totalReturned float64
+	var totalCredit float64
 
 	err := parseRequestBody(c, &record)
 	if err != nil {
@@ -66,6 +67,7 @@ func ReportByPurchaseID(c *gin.Context) {
 
 	var sales []map[string]interface{}
 	var returned []map[string]interface{}
+	var credit []map[string]interface{}
 
 	for _, record := range records {
 		if record.Returned {
@@ -78,6 +80,17 @@ func ReportByPurchaseID(c *gin.Context) {
 				"returned":  record.Returned,
 				"part_name": record.Inventory.PartName,
 			})
+		} else if record.Credit {
+			totalCredit += record.Price
+
+			credit = append(credit, map[string]interface{}{
+				"id":        record.ID,
+				"price":     record.Price,
+				"date":      record.Date,
+				"credit":    record.Credit,
+				"returned":  record.Returned,
+				"part_name": record.Inventory.PartName,
+			})
 		} else {
 			totalSales += record.Price
 
@@ -85,6 +98,7 @@ func ReportByPurchaseID(c *gin.Context) {
 				"id":        record.ID,
 				"price":     record.Price,
 				"date":      record.Date,
+				"credit":    record.Credit,
 				"returned":  record.Returned,
 				"part_name": record.Inventory.PartName,
 			})
@@ -97,8 +111,10 @@ func ReportByPurchaseID(c *gin.Context) {
 		"vehicle_name":         record.Purchases.VehicleName,
 		"price":                record.Purchases.Price,
 		"sales":                sales,
+		"credited_sales":       credit,
 		"sales_returned":       returned,
 		"sales_total":          totalSales,
+		"credited_sales_total": totalCredit,
 		"sales_returned_total": totalReturned,
 		"total":                totalSales - record.Purchases.Price,
 	})
@@ -159,6 +175,7 @@ func ReportByRelationshipID(c *gin.Context) {
 
 	var filteredPurchases []map[string]interface{}
 	var filteredSales []map[string]interface{}
+	var filteredCredit []map[string]interface{}
 	var filteredReturned []map[string]interface{}
 
 	for _, record := range purchases {
@@ -176,6 +193,13 @@ func ReportByRelationshipID(c *gin.Context) {
 	for _, record := range sales {
 		if record.Returned {
 			filteredReturned = append(filteredReturned, map[string]interface{}{
+				"id":        record.ID,
+				"price":     record.Price,
+				"date":      record.Date,
+				"part_name": record.Inventory.PartName,
+			})
+		} else if record.Credit {
+			filteredCredit = append(filteredCredit, map[string]interface{}{
 				"id":        record.ID,
 				"price":     record.Price,
 				"date":      record.Date,
@@ -199,6 +223,7 @@ func ReportByRelationshipID(c *gin.Context) {
 		"purchases":       filteredPurchases,
 		"purchased_total": totalPurchased,
 		"sales":           filteredSales,
+		"credited_sales":  filteredCredit,
 		"sales_returned":  filteredReturned,
 		"sales_total":     totalSales,
 	})
