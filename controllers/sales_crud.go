@@ -43,6 +43,7 @@ func CreateSales(c *gin.Context) {
 		"id":       record.ID,
 		"price":    record.Price,
 		"date":     record.Date,
+		"credit":   record.Credit,
 		"returned": record.Returned,
 		"relationships": map[string]interface{}{
 			"id":   record.Relationships.ID,
@@ -81,10 +82,22 @@ func UpdateSales(c *gin.Context) {
 		return
 	}
 
-	// Dirty fix to toggle `Returned` field from true to false.
+	// Dirty fix to toggle boolean fields.
 	if !record.Returned {
 		err = pgClient.Model(&record).Select("Returned").Updates(
 			models.Sales{Returned: false},
+		).Error
+
+		if err != nil {
+			errorResponse(c, http.StatusInternalServerError, err.Error())
+
+			return
+		}
+	}
+
+	if !record.Credit {
+		err = pgClient.Model(&record).Select("Credit").Updates(
+			models.Sales{Credit: false},
 		).Error
 
 		if err != nil {
@@ -112,6 +125,7 @@ func UpdateSales(c *gin.Context) {
 		"id":       record.ID,
 		"price":    record.Price,
 		"date":     record.Date,
+		"credit":   record.Credit,
 		"returned": record.Returned,
 		"relationships": map[string]interface{}{
 			"id":   record.Relationships.ID,
@@ -187,6 +201,7 @@ func ReadSales(c *gin.Context) {
 			"id":       record.ID,
 			"price":    record.Price,
 			"date":     record.Date,
+			"credit":   record.Credit,
 			"returned": record.Returned,
 			"relationships": map[string]interface{}{
 				"id":   record.Relationships.ID,
@@ -234,9 +249,11 @@ func DeleteSales(c *gin.Context) {
 		return
 	} else {
 		successResponse(c, http.StatusOK, "Deleted record.", map[string]interface{}{
-			"id":    record.ID,
-			"price": record.Price,
-			"date":  record.Date,
+			"id":       record.ID,
+			"price":    record.Price,
+			"date":     record.Date,
+			"credit":   record.Credit,
+			"returned": record.Returned,
 			"relationships": map[string]interface{}{
 				"id":   record.Relationships.ID,
 				"name": record.Relationships.Name,

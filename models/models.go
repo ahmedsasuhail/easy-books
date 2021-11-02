@@ -61,6 +61,7 @@ type Sales struct {
 	RelationshipID uint64         `json:"relationship_id"`
 	PurchaseID     uint64         `json:"purchase_id"`
 	InventoryID    uint64         `json:"inventory_id"`
+	Credit         bool           `json:"credit"`
 	Returned       bool           `json:"returned"`
 	Relationships  Relationships  `gorm:"foreignKey:RelationshipID" json:"relationships"`
 	Purchases      Purchases      `gorm:"foreignKey:PurchaseID" json:"purchases"`
