@@ -243,6 +243,7 @@ func GetInventoryByPurchaseID(c *gin.Context) {
 			"id":        record.ID,
 			"part_name": record.PartName,
 			"quantity":  record.Quantity,
+			"date":      record.Date,
 		})
 	}
 
