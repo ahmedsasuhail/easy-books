@@ -145,12 +145,13 @@ func ReadInventory(c *gin.Context) {
 	}
 
 	successResponse(c, http.StatusOK, "", map[string]interface{}{
-		"page":        pagination.Page,
-		"page_limit":  pagination.PageLimit,
-		"order_by":    pagination.OrderBy,
-		"sort_order":  pagination.SortOrder,
-		"total_count": pgClient.Find(&records).RowsAffected,
-		"records":     filteredRecords,
+		"page":                pagination.Page,
+		"page_limit":          pagination.PageLimit,
+		"order_by":            pagination.OrderBy,
+		"sort_order":          pagination.SortOrder,
+		"total_count":         pgClient.Find(&records).RowsAffected,
+		"records":             filteredRecords,
+		"total_matched_count": len(filteredRecords),
 	})
 }
 
@@ -248,11 +249,12 @@ func GetInventoryByPurchaseID(c *gin.Context) {
 	}
 
 	successResponse(c, http.StatusOK, "", map[string]interface{}{
-		"page":        pagination.Page,
-		"page_limit":  pagination.PageLimit,
-		"order_by":    pagination.OrderBy,
-		"sort_order":  pagination.SortOrder,
-		"total_count": pgClient.Find(&records).RowsAffected,
-		"records":     filteredRecords,
+		"page":                pagination.Page,
+		"page_limit":          pagination.PageLimit,
+		"order_by":            pagination.OrderBy,
+		"sort_order":          pagination.SortOrder,
+		"total_count":         pgClient.Find(&records).RowsAffected,
+		"records":             filteredRecords,
+		"total_matched_count": len(filteredRecords),
 	})
 }
