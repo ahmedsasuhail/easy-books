@@ -258,6 +258,6 @@ func GetInventoryByPurchaseID(c *gin.Context) {
 		"total_matched_count": pgClient.Where(
 			"purchase_id = ?",
 			record.PurchaseID,
-		).Find(&records),
+		).Find(&records).RowsAffected,
 	})
 }
