@@ -202,6 +202,7 @@ func ReportByRelationshipID(c *gin.Context) {
 				"price":     record.Price,
 				"date":      record.Date,
 				"part_name": record.Inventory.PartName,
+				"credit":    record.Credit,
 			})
 		} else if record.Credit {
 			totalCredit += record.Price
