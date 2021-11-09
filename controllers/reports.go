@@ -80,6 +80,7 @@ func ReportByPurchaseID(c *gin.Context) {
 				"date":      record.Date,
 				"returned":  record.Returned,
 				"part_name": record.Inventory.PartName,
+				"credit":    record.Credit,
 			})
 		} else if record.Credit {
 			totalCredit += record.Price
