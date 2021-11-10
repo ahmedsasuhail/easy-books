@@ -1,0 +1,134 @@
+import React from 'react';
+
+import { IconButton } from '@material-ui/core';
+import {
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+  AddBox as AddBoxIcon,
+  CheckBox as CheckBoxIcon,
+  CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon,
+} from '@material-ui/icons';
+import TableCell from '@mui/material/TableCell';
+import TableRow from '@mui/material/TableRow';
+
+const EnhancedTableContent = (props) => {
+  const {
+    rows,
+    headCells,
+    submitAddFunction,
+    actions,
+    openEditFunction,
+    submitDeleteFunction,
+    submitReturnFunction,
+  } = props;
+
+  let listContent = [];
+
+  if (rows.length > 0) {
+    listContent = rows.map((row, index) => {
+      const labelId = `enhanced-table-checkbox-${index}`;
+
+      const value = {};
+      headCells.forEach((head) => {
+        if (head.id === 'sn') {
+          value['id'] = row['id'];
+        } else if (head.id === 'date') {
+          value['date'] = row.date.split('/').reverse().join('-');
+        } else {
+          value[head.id] = row[head.id];
+        }
+      });
+
+      const list = headCells.map((cell, idx) => {
+        if (cell.display !== false) {
+          const opts = {};
+          if (cell.id === 'sn') {
+            opts.id = labelId;
+          }
+          if (!!cell.checkbox) {
+            if (row[cell.id]) {
+              return (
+                <TableCell key={idx} align='center'>
+                  <IconButton color='primary' component='span' size='small'>
+                    <CheckBoxIcon fontSize='small' />
+                  </IconButton>
+                </TableCell>
+              );
+            } else {
+              return (
+                <TableCell key={idx} align='center'>
+                  <IconButton
+                    onClick={() => submitReturnFunction(value)}
+                    color='primary'
+                    component='span'
+                    size='small'
+                  >
+                    <CheckBoxOutlineBlankIcon fontSize='small' />
+                  </IconButton>
+                </TableCell>
+              );
+            }
+          } else {
+            return (
+              <TableCell {...opts} key={idx}>
+                {row[cell.id]}
+              </TableCell>
+            );
+          }
+        } else return false;
+      });
+
+      return (
+        <TableRow hover role='checkbox' tabIndex={-1} key={index}>
+          {list}
+          {actions && (
+            <TableCell align='center'>
+              {submitAddFunction && (
+                <IconButton
+                  onClick={() => submitAddFunction(value)}
+                  color='primary'
+                  component='span'
+                  size='small'
+                >
+                  <AddBoxIcon fontSize='small' />
+                </IconButton>
+              )}
+              {openEditFunction && (
+                <IconButton
+                  onClick={() => openEditFunction(value)}
+                  color='primary'
+                  component='span'
+                  size='small'
+                >
+                  <EditIcon fontSize='small' />
+                </IconButton>
+              )}
+              {submitDeleteFunction && (
+                <IconButton
+                  onClick={() => submitDeleteFunction(row.id)}
+                  color='primary'
+                  component='span'
+                  size='small'
+                >
+                  <DeleteIcon fontSize='small' />
+                </IconButton>
+              )}
+            </TableCell>
+          )}
+        </TableRow>
+      );
+    });
+  } else {
+    listContent = (
+      <TableRow>
+        <TableCell align='center' colSpan={headCells.length + 1}>
+          No records found in this page!
+        </TableCell>
+      </TableRow>
+    );
+  }
+
+  return <>{listContent}</>;
+};
+
+export default EnhancedTableContent;

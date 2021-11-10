@@ -55,7 +55,7 @@ export default makeStyles((theme) => ({
   },
   divider: {
     marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(4),
+    marginBottom: theme.spacing(2),
     height: 1,
     backgroundColor: '#D8D8D880',
   },

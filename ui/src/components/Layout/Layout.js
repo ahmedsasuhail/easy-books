@@ -1,50 +1,93 @@
-import React from 'react';
-import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
+import React, { useEffect, Fragment } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Route, Switch, withRouter } from 'react-router-dom';
+
 import classnames from 'classnames';
-import { Box, IconButton, Link } from '@material-ui/core';
-import Icon from '@mdi/react';
 
-//icons
-import {
-  mdiFacebook as FacebookIcon,
-  mdiTwitter as TwitterIcon,
-  mdiGithub as GithubIcon,
-} from '@mdi/js';
-
-// styles
 import useStyles from './styles';
 
-// components
 import Header from '../Header';
 import Sidebar from '../Sidebar';
+import Loader from '../Loader/Loader';
 
-// pages
-import Dashboard from '../../pages/dashboard';
-import Typography from '../../pages/typography';
-import Notifications from '../../pages/notifications';
-import Maps from '../../pages/maps';
-import Tables from '../../pages/tables';
-import Icons from '../../pages/icons';
-import Charts from '../../pages/charts';
+import Dashboard from '../../pages/dashboard/Dashboard';
 import Miscellaneous from '../../pages/miscellaneous/ReadMiscellaneous';
 import Purchases from '../../pages/purchases/ReadPurchase';
 import Sales from '../../pages/sales/ReadSales';
 import Inventory from '../../pages/inventory/ReadInventory';
-import Contacts from '../../pages/contacts/ReadContact';
+import Relationships from '../../pages/relationships/ReadRelationships';
+import Reports from '../../pages/reports/Reports';
 
-// context
 import { useLayoutState } from '../../context/LayoutContext';
 
-function Layout(props) {
+import { relationshipRead } from '../../store/actions/relationship';
+import { purchaseRead } from '../../store/actions/purchase';
+import { inventoryRead } from '../../store/actions/inventory';
+
+function Layout() {
   var classes = useStyles();
 
-  // global
   var layoutState = useLayoutState();
 
+  const dispatch = useDispatch();
+
+  const token = useSelector((state) => state.user.token);
+
+  const isMiscellaneousLoading = useSelector(
+    (state) => state.miscellaneous.pageLoading,
+  );
+  const isRelationshipLoading = useSelector(
+    (state) => state.relationship.pageLoading,
+  );
+  const isPurchaseLoading = useSelector((state) => state.purchase.pageLoading);
+  const isInventoryLoading = useSelector(
+    (state) => state.inventory.pageLoading,
+  );
+  const isSalesLoading = useSelector((state) => state.sales.pageLoading);
+
+  useEffect(() => {
+    dispatch(
+      relationshipRead({
+        token: token,
+        pageNo: 0,
+        rowsPerPage: 5,
+        order: 'asc',
+        orderBy: 'name',
+      }),
+    );
+    dispatch(
+      purchaseRead({
+        token: token,
+        pageNo: 0,
+        rowsPerPage: 5,
+        order: 'asc',
+        orderBy: 'date',
+      }),
+    );
+    dispatch(
+      inventoryRead({
+        token: token,
+        pageNo: 0,
+        rowsPerPage: 5,
+        order: 'asc',
+        orderBy: 'date',
+      }),
+    );
+  }, [dispatch, token]);
+
   return (
-    <div className={classes.root}>
-      <>
-        <Header history={props.history} />
+    <Fragment>
+      <Loader
+        open={
+          isMiscellaneousLoading ||
+          isRelationshipLoading ||
+          isPurchaseLoading ||
+          isInventoryLoading ||
+          isSalesLoading
+        }
+      />
+      <div className={classes.root}>
+        <Header />
         <Sidebar />
         <div
           className={classnames(classes.content, {
@@ -54,80 +97,16 @@ function Layout(props) {
           <div className={classes.fakeToolbar} />
           <Switch>
             <Route path='/app/dashboard' component={Dashboard} />
-            <Route path='/app/typography' component={Typography} />
-            <Route path='/app/tables' component={Tables} />
-            <Route path='/app/notifications' component={Notifications} />
-            <Route path='/app/miscellaneous' component={Miscellaneous} />
             <Route path='/app/purchases' component={Purchases} />
-            <Route path='/app/sales' component={Sales} />
             <Route path='/app/inventory' component={Inventory} />
-            <Route path='/app/contacts' component={Contacts} />
-            <Route
-              exact
-              path='/app/ui'
-              render={() => <Redirect to='/app/ui/icons' />}
-            />
-            <Route path='/app/ui/maps' component={Maps} />
-            <Route path='/app/ui/icons' component={Icons} />
-            <Route path='/app/ui/charts' component={Charts} />
+            <Route path='/app/sales' component={Sales} />
+            <Route path='/app/miscellaneous' component={Miscellaneous} />
+            <Route path='/app/relationships' component={Relationships} />
+            <Route path='/app/reports' component={Reports} />
           </Switch>
-          <Box
-            mt={5}
-            width={'100%'}
-            display={'flex'}
-            alignItems={'center'}
-            justifyContent='space-between'
-          >
-            <div>
-              <Link
-                color={'primary'}
-                href={'https://flatlogic.com/'}
-                target={'_blank'}
-                className={classes.link}
-              >
-                Flatlogic
-              </Link>
-              <Link
-                color={'primary'}
-                href={'https://flatlogic.com/about'}
-                target={'_blank'}
-                className={classes.link}
-              >
-                About Us
-              </Link>
-              <Link
-                color={'primary'}
-                href={'https://flatlogic.com/blog'}
-                target={'_blank'}
-                className={classes.link}
-              >
-                Blog
-              </Link>
-            </div>
-            <div>
-              <Link
-                href={'https://www.facebook.com/flatlogic'}
-                target={'_blank'}
-              >
-                <IconButton aria-label='facebook'>
-                  <Icon path={FacebookIcon} size={1} color='#6E6E6E99' />
-                </IconButton>
-              </Link>
-              <Link href={'https://twitter.com/flatlogic'} target={'_blank'}>
-                <IconButton aria-label='twitter'>
-                  <Icon path={TwitterIcon} size={1} color='#6E6E6E99' />
-                </IconButton>
-              </Link>
-              <Link href={'https://github.com/flatlogic'} target={'_blank'}>
-                <IconButton aria-label='github' style={{ marginRight: -12 }}>
-                  <Icon path={GithubIcon} size={1} color='#6E6E6E99' />
-                </IconButton>
-              </Link>
-            </div>
-          </Box>
         </div>
-      </>
-    </div>
+      </div>
+    </Fragment>
   );
 }
 

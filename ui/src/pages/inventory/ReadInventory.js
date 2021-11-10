@@ -1,24 +1,145 @@
-import { useEffect, useState } from 'react';
-import { Grid, Button, IconButton } from '@material-ui/core';
-import { Edit as EditIcon, Delete as DeleteIcon } from '@material-ui/icons';
-import MUIDataTable from 'mui-datatables';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { Grid, Button, makeStyles } from '@material-ui/core';
+import Box from '@mui/material/Box';
 
 import PageTitle from '../../components/PageTitle/PageTitle';
 import Dialog from '../../components/Dialog/Dialog';
+import CustomTable from '../../components/Table/CustomTable';
+
 import CreateUpdateInventory from './CreateUpdateInventory';
-import { inventoryItems, purchaseItems } from '../../mocks/tableItems';
+
+import {
+  inventoryCreate,
+  inventoryRead,
+  inventoryUpdate,
+  inventoryDelete,
+} from '../../store/actions/inventory';
+
+import { formattedDate } from '../../utils/helpers';
+
+const useStyles = makeStyles((theme) => ({
+  pageContainer: {
+    [theme.breakpoints.up('lg')]: {
+      width: '80%',
+      margin: 'auto',
+    },
+  },
+}));
 
 const ReadInventory = () => {
-  // On Load
+  let rows = [];
+  const headCells = [
+    {
+      id: 'sn',
+      label: 'SN',
+      disableSort: true,
+    },
+    {
+      id: 'purchase_id',
+      display: false,
+    },
+    {
+      id: 'purchase_name',
+      label: 'Purchase Name',
+      disableSort: true,
+    },
+    {
+      id: 'part_name',
+      label: 'Part Name',
+    },
+    {
+      id: 'quantity',
+      label: 'Quantity',
+    },
+    {
+      id: 'date',
+      label: 'Date',
+    },
+  ];
+
+  const dispatch = useDispatch();
+
+  const classes = useStyles();
+
+  const [openCreateUpdateInventory, setOpenCreateUpdateInventory] =
+    useState(false);
+  const [valueForm, setValueForm] = useState(null);
+
+  const token = useSelector((state) => state.user.token);
+  const inventoryItems = useSelector((state) => state.inventory.inventory);
+  const pageNo = useSelector((state) => state.inventory.pageNo);
+  const rowsPerPage = useSelector((state) => state.inventory.rowsPerPage);
+  const orderBy = useSelector((state) => state.inventory.orderBy);
+  const order = useSelector((state) => state.inventory.order);
+  const totalCount = useSelector((state) => state.inventory.count);
+  const isLoading = useSelector((state) => state.inventory.formLoading);
+
+  if (inventoryItems) {
+    rows = inventoryItems.map((inventory, idx) => {
+      return {
+        sn: pageNo === 0 ? idx + 1 : rowsPerPage * pageNo + (idx + 1),
+        id: inventory.id,
+        purchase_id: inventory.purchases.id
+          ? inventory.purchases.id
+          : 'Not Specified',
+        purchase_name: inventory.purchases.id
+          ? `${inventory.purchases.company_name} - ${inventory.purchases.vehicle_name}`
+          : 'Not Specified',
+        part_name: inventory.part_name ? inventory.part_name : 'Not Specified',
+        quantity: inventory.quantity ? inventory.quantity : 'Not Specified',
+        date: inventory.date ? formattedDate(inventory.date) : 'Not Specified',
+      };
+    });
+  }
+
   useEffect(() => {
     document.title = `Inventory | ${process.env.REACT_APP_NAME}`;
   }, []);
 
-  // Local
-  const [openCreateUpdateInventory, setOpenCreateUpdateInventory] = useState(
-    false,
-  );
-  const [valueForm, setValueForm] = useState(null);
+  const handleRequestSort = (property) => {
+    const isAsc = orderBy === property && order === 'asc';
+    const direction = isAsc ? 'desc' : 'asc';
+    dispatch(
+      inventoryRead({
+        token,
+        pageNo,
+        rowsPerPage,
+        order: direction,
+        orderBy: property,
+      }),
+    );
+  };
+
+  const handleChangePage = (_event, newPage) => {
+    dispatch(
+      inventoryRead({
+        token,
+        pageNo: newPage,
+        rowsPerPage,
+        orderBy,
+        order,
+      }),
+    );
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    dispatch(
+      inventoryRead({
+        token,
+        pageNo,
+        rowsPerPage: parseInt(event.target.value, 10),
+        orderBy,
+        order,
+      }),
+    );
+  };
+
+  useEffect(() => {
+    handleChangePage(null, pageNo);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageNo]);
 
   const handleOpenCreateInventory = () => {
     setOpenCreateUpdateInventory(true);
@@ -34,137 +155,74 @@ const ReadInventory = () => {
     setOpenCreateUpdateInventory(false);
   };
 
-  const handleSubmitCreateUpdateInventory = (values) => {
-    const IDExists = values.hasOwnProperty('id');
-    if (IDExists) {
-      console.log('Update');
+  const handleSubmitCreateUpdateInventory = (formValues) => {
+    formValues.date = new Date(formValues.date).toISOString();
+    if (formValues.id) {
+      dispatch(inventoryUpdate({ formValues, token }));
     } else {
-      console.log('Create ');
+      dispatch(inventoryCreate({ formValues, token }));
     }
     handleCloseCreateOrEditInventory();
   };
 
-  const handleSubmitDeleteInventory = (id, name) => {
+  const handleSubmitDeleteInventory = (id) => {
     const result = window.confirm(
-      `Are you sure you want to delete inventory ${name}?`,
+      `Are you sure you want to delete this inventory item?`,
     );
     if (result) {
-      console.log('Delete');
+      dispatch(inventoryDelete({ id, token }));
     }
-  };
-
-  // Rows
-  let tableStructure = [];
-  if (inventoryItems) {
-    tableStructure = inventoryItems.map((inventory, idx) => {
-      return [
-        inventory.id ? inventory.id : idx + 1,
-        inventory.part_name ? inventory.part_name : 'Not Specified',
-        inventory.quantity ? inventory.quantity : 'Not Specified',
-        inventory.purchase_id
-          ? purchaseItems.map((item) => {
-              return (
-                item.id === inventory.purchase_id &&
-                `${item.company_name} - ${item.vehicle_name}`
-              );
-            })
-          : 'Not Specified',
-        inventory.date ? inventory.date : 'Not Specified',
-        {
-          id: inventory.id,
-          part_name: inventory.part_name,
-          quantity: inventory.quantity,
-          date: inventory.date,
-          purchase_id: inventory.purchase_id,
-        },
-      ];
-    });
-  }
-
-  // Columns
-  const columns = ['SNo.', 'Part Name', 'Quantity', 'Purchase Name', 'Date'];
-
-  columns.push({
-    name: 'Actions',
-    options: {
-      customBodyRender: (value) => {
-        return (
-          <>
-            <IconButton
-              onClick={() => handleOpenEditInventory(value)}
-              color='primary'
-              aria-label='create-edit-inventory'
-              component='span'
-              size='small'
-            >
-              <EditIcon fontSize='small' />
-            </IconButton>
-            <IconButton
-              onClick={() => handleSubmitDeleteInventory(value.id, value.name)}
-              color='primary'
-              aria-label='delete-inventory'
-              component='span'
-              size='small'
-            >
-              <DeleteIcon fontSize='small' />
-            </IconButton>
-          </>
-        );
-      },
-    },
-  });
-
-  // Config
-  const options = {
-    filter: true,
-    filterType: 'dropdown',
-    responsive: 'standard',
-    selectableRows: 'none',
-    rowsPerPage: 5,
-    rowsPerPageOptions: [5, 10, 15],
-    jumpToPage: true,
-    textLabels: {
-      pagination: {
-        rowsPerPage: 'Total Items Per Page',
-      },
-    },
   };
 
   return (
     <>
-      <PageTitle
-        title={'Inventory'}
-        button={
-          <Button
-            variant='outlined'
-            size='medium'
-            color='secondary'
-            onClick={handleOpenCreateInventory}
-          >
-            Add Inventory
-          </Button>
-        }
-      />
-      <Grid container spacing={4}>
-        <Grid item xs={12}>
-          <MUIDataTable
-            title='All Inventories'
-            data={tableStructure}
-            columns={columns}
-            options={options}
-          />
+      <Box className={classes.pageContainer}>
+        <PageTitle
+          title={'Inventory'}
+          button={
+            <Button
+              variant='outlined'
+              size='medium'
+              color='secondary'
+              onClick={handleOpenCreateInventory}
+            >
+              Add Inventory
+            </Button>
+          }
+        />
+        <Grid container spacing={4}>
+          <Grid item xs={12}>
+            <CustomTable
+              tableTitle='All Inventory'
+              order={order}
+              orderBy={orderBy}
+              requestSort={handleRequestSort}
+              headCells={headCells}
+              rows={rows}
+              openEditFunction={handleOpenEditInventory}
+              submitDeleteFunction={handleSubmitDeleteInventory}
+              totalCount={totalCount}
+              pageNo={pageNo}
+              rowsPerPage={rowsPerPage}
+              changePage={handleChangePage}
+              changeRowsPerPage={handleChangeRowsPerPage}
+              size='medium'
+              actions={true}
+            />
+          </Grid>
         </Grid>
-      </Grid>
+      </Box>
       <Dialog
+        title={`${valueForm ? 'Edit' : 'Create'} Inventory`}
         fullWidth={true}
         maxWidth='xs'
+        initialValues={valueForm}
+        isLoading={isLoading}
         open={openCreateUpdateInventory}
         handleClose={handleCloseCreateOrEditInventory}
-        title={`${valueForm ? 'Edit' : 'Create'} Inventory`}
         handleSubmit={handleSubmitCreateUpdateInventory}
-        initialValues={valueForm}
       >
-        <CreateUpdateInventory initialValues={valueForm} />
+        <CreateUpdateInventory />
       </Dialog>
     </>
   );

@@ -5,6 +5,7 @@ const secondary = '#5642E0';
 const warning = '#FFC260';
 const success = '#3CD4A0';
 const info = '#9013FE';
+const error = '#D8000C';
 
 const lightenRate = 7.5;
 const darkenRate = 15;
@@ -31,6 +32,11 @@ const defaultTheme = {
       main: success,
       light: tinycolor(success).lighten(lightenRate).toHexString(),
       dark: tinycolor(success).darken(darkenRate).toHexString(),
+    },
+    error: {
+      main: error,
+      light: tinycolor(error).lighten(lightenRate).toHexString(),
+      dark: tinycolor(error).darken(darkenRate).toHexString(),
     },
     info: {
       main: info,

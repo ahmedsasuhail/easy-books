@@ -1,15 +1,15 @@
 import React from 'react';
+
 import { TextField } from '@material-ui/core';
 
-// Styles
 import useStyles from './inputStyles';
 
 const Input = (props) => {
   var classes = useStyles();
-
   return (
     <TextField
       {...props.input}
+      value={props.input.value}
       type={props.input.type}
       variant={props.variant}
       className={props.className}
@@ -29,8 +29,8 @@ const Input = (props) => {
       }}
       InputLabelProps={props.InputLabelProps}
       multiline={props.multiline}
-      rows={props.rows}
-      rowsMax={props.rowsMax}
+      minRows={props.rows}
+      maxRows={props.rowsMax}
       error={props.error}
     />
   );

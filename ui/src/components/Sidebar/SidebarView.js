@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { Drawer, IconButton, List, withStyles } from '@material-ui/core';
 import {
   Home as HomeIcon,
@@ -11,6 +12,7 @@ import {
   HelpOutline as FAQIcon,
   ArrowBack as ArrowBackIcon,
 } from '@material-ui/icons';
+
 import classNames from 'classnames';
 
 import SidebarLink from './components/SidebarLink/SidebarLinkContainer';

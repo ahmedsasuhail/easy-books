@@ -1,10 +1,11 @@
 import React from 'react';
 import { Field } from 'react-final-form';
 
-// Components
 import Input from '../../components/Input/Input';
 
 const CreateUpdateMiscellaneous = () => {
+  const required = (value) => (value ? undefined : 'Required');
+
   return (
     <>
       <Field
@@ -16,9 +17,11 @@ const CreateUpdateMiscellaneous = () => {
         margin='normal'
         fullWidth
         multiline={true}
-        rows={3}
-        rowsMax={3}
+        minRows={3}
+        maxRows={3}
         autoFocus
+        required
+        validate={required}
       />
       <Field
         component={Input}
@@ -29,6 +32,7 @@ const CreateUpdateMiscellaneous = () => {
         margin='normal'
         fullWidth
         required
+        validate={required}
       />
       <Field
         component={Input}
@@ -38,9 +42,12 @@ const CreateUpdateMiscellaneous = () => {
         type='date'
         margin='normal'
         fullWidth
+        defaultValue={new Date().toISOString().split('T')[0]}
         InputLabelProps={{
           shrink: true,
         }}
+        required
+        validate={required}
       />
     </>
   );

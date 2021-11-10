@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { Button } from '@material-ui/core';
 import {
   NotificationsNone as NotificationsIcon,
@@ -16,13 +17,13 @@ import {
   Publish as UploadIcon,
 } from '@material-ui/icons';
 import { useTheme } from '@material-ui/styles';
+
 import classnames from 'classnames';
+
 import tinycolor from 'tinycolor2';
 
-// styles
 import useStyles from './styles';
 
-// components
 import { Typography } from '../Wrappers';
 
 const typesIcons = {
