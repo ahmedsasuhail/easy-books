@@ -48,7 +48,7 @@ type Users struct {
 }
 
 func (Users) TableName() string {
-	return "eb_users"
+	return UsersTableName
 }
 
 type Sales struct {
@@ -69,7 +69,7 @@ type Sales struct {
 }
 
 func (Sales) TableName() string {
-	return "eb_sales"
+	return SalesTableName
 }
 
 type Purchases struct {
@@ -86,7 +86,7 @@ type Purchases struct {
 }
 
 func (Purchases) TableName() string {
-	return "eb_purchases"
+	return PurchasesTableName
 }
 
 type Inventory struct {
@@ -102,7 +102,7 @@ type Inventory struct {
 }
 
 func (Inventory) TableName() string {
-	return "eb_inventory"
+	return InventoryTableName
 }
 
 type Relationships struct {
@@ -116,7 +116,7 @@ type Relationships struct {
 }
 
 func (Relationships) TableName() string {
-	return "eb_relationships"
+	return RelationshipsTableName
 }
 
 type Miscellaneous struct {
@@ -130,5 +130,5 @@ type Miscellaneous struct {
 }
 
 func (Miscellaneous) TableName() string {
-	return "eb_miscellaneous"
+	return MiscellaneousTableName
 }
