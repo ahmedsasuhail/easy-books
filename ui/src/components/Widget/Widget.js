@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+
 import {
   Paper,
   IconButton,
@@ -7,9 +8,9 @@ import {
   Typography,
 } from '@material-ui/core';
 import { MoreVert as MoreIcon } from '@material-ui/icons';
+
 import classnames from 'classnames';
 
-// styles
 import useStyles from './styles';
 
 export default function Widget({
@@ -27,7 +28,6 @@ export default function Widget({
 }) {
   var classes = useStyles();
 
-  // local
   var [moreButtonRef, setMoreButtonRef] = useState(null);
   var [isMoreMenuOpen, setMoreMenuOpen] = useState(false);
 

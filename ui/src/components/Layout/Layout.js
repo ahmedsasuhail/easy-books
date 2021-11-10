@@ -1,6 +1,7 @@
 import React, { useEffect, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Route, Switch, withRouter } from 'react-router-dom';
+
 import classnames from 'classnames';
 
 import useStyles from './styles';
@@ -15,13 +16,13 @@ import Purchases from '../../pages/purchases/ReadPurchase';
 import Sales from '../../pages/sales/ReadSales';
 import Inventory from '../../pages/inventory/ReadInventory';
 import Relationships from '../../pages/relationships/ReadRelationships';
+import Reports from '../../pages/reports/Reports';
 
 import { useLayoutState } from '../../context/LayoutContext';
 
 import { relationshipRead } from '../../store/actions/relationship';
 import { purchaseRead } from '../../store/actions/purchase';
 import { inventoryRead } from '../../store/actions/inventory';
-import { salesRead } from '../../store/actions/sales';
 
 function Layout() {
   var classes = useStyles();
@@ -54,9 +55,24 @@ function Layout() {
         orderBy: 'name',
       }),
     );
-    dispatch(purchaseRead({ token: token }));
-    dispatch(inventoryRead({ token: token }));
-    dispatch(salesRead({ token: token }));
+    dispatch(
+      purchaseRead({
+        token: token,
+        pageNo: 0,
+        rowsPerPage: 5,
+        order: 'asc',
+        orderBy: 'date',
+      }),
+    );
+    dispatch(
+      inventoryRead({
+        token: token,
+        pageNo: 0,
+        rowsPerPage: 5,
+        order: 'asc',
+        orderBy: 'date',
+      }),
+    );
   }, [dispatch, token]);
 
   return (
@@ -86,6 +102,7 @@ function Layout() {
             <Route path='/app/sales' component={Sales} />
             <Route path='/app/miscellaneous' component={Miscellaneous} />
             <Route path='/app/relationships' component={Relationships} />
+            <Route path='/app/reports' component={Reports} />
           </Switch>
         </div>
       </div>

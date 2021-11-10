@@ -14,7 +14,6 @@ import {
 } from '../actions/actionTypes';
 import { mergeObjects } from '../../utils/helpers';
 
-// Set Initial State
 const initialState = {
   miscellaneous: [],
   orderBy: 'date',
@@ -26,10 +25,8 @@ const initialState = {
   pageLoading: false,
 };
 
-// Reducer
 const miscellaneousReducer = (state = initialState, action) => {
   switch (action.type) {
-    // Create
     case MISCELLANEOUS_CREATE_REQUEST:
       return mergeObjects(state, {
         formLoading: true,
@@ -68,7 +65,6 @@ const miscellaneousReducer = (state = initialState, action) => {
         pageLoading: false,
       });
 
-    // Update
     case MISCELLANEOUS_UPDATE_REQUEST:
       return mergeObjects(state, {
         formLoading: true,
@@ -103,7 +99,6 @@ const miscellaneousReducer = (state = initialState, action) => {
         pageLoading: false,
       });
 
-    // Read
     case MISCELLANEOUS_READ_REQUEST:
       return mergeObjects(state, {
         pageLoading: true,
@@ -125,7 +120,6 @@ const miscellaneousReducer = (state = initialState, action) => {
         pageLoading: false,
       });
 
-    // Delete
     case MISCELLANEOUS_DELETE_REQUEST:
       return mergeObjects(state, {
         pageLoading: true,

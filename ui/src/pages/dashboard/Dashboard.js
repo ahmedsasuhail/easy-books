@@ -1,215 +1,39 @@
-import React, { useEffect, useState, useReducer } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import {
-  AccountBalanceWallet as AccountBalanceWalletIcon,
-  Contacts as ContactsIcon,
-} from '@material-ui/icons';
-import Box from '@mui/material/Box';
-import FormControl from '@mui/material/FormControl';
-import NativeSelect from '@mui/material/NativeSelect';
-import InputLabel from '@mui/material/InputLabel';
+import React from 'react';
+import { Link } from 'react-router-dom';
 
-import SpanningTable from '../../components/Table/ReportsTable';
+import { Grid, Paper, Typography } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
 
-import { mergeObjects } from '../../utils/helpers';
-import axios from '../../utils/axiosInstance';
+import { structure } from '../../components/Sidebar/Sidebar';
 
-import { userActions } from '../../store/actions/user/userActions';
-
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role='tabpanel'
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          {/* <Typography>{children}</Typography> */}
-          {children}
-        </Box>
-      )}
-    </div>
-  );
-}
-
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  };
-}
+import useStyles from './styles';
 
 const Dashboard = () => {
-  const purchaseItems = useSelector((state) => state.purchase.purchases);
-  const relationshipItems = useSelector(
-    (state) => state.relationship.relationships,
-  );
-  const userDispatch = useDispatch();
+  const classes = useStyles();
 
-  const initialState = {
-    purchaseRows: {},
-    relationshipRows: {},
-  };
-
-  const reducer = (state = initialState, action) => {
-    switch (action.type) {
-      case 'PURCHASES':
-        return mergeObjects(state, {
-          purchaseRows: action.payload,
-        });
-      case 'RELATIONSHIPS':
-        return mergeObjects(state, {
-          relationshipRows: action.payload,
-        });
-      case 'CLEAR':
-        return {
-          purchaseRows: {},
-          relationshipRows: {},
-        };
-      default:
-        return state;
-    }
-  };
-
-  const [state, dispatch] = useReducer(reducer, initialState);
-
-  useEffect(() => {
-    document.title = `Dashboard | ${process.env.REACT_APP_NAME}`;
-  }, []);
-
-  const [value, setValue] = useState(0);
-
-  const token = useSelector((state) => state.user.token);
-
-  const handleTabChange = (event, newValue) => {
-    setValue(newValue);
-    dispatch({ type: 'CLEAR' });
-  };
-
-  const handlePurchasesChange = async (event, actionType) => {
-    const id = event.target.value;
-    try {
-      const response = await axios.post(
-        'reports/by_purchase',
-        { purchase_id: +id },
-        { headers: { Authorization: token } },
-      );
-      if (response.data.data) {
-        dispatch({ type: 'PURCHASES', payload: response.data.data });
-      } else {
-        console.log('Error: ', response);
-        return false;
-      }
-    } catch (error) {
-      console.log('Error: ', error);
-      if (error.response && error.response.status === 401) {
-        userDispatch(userActions.logoutUser());
-      }
-    }
-  };
-
-  const handleRelationshipsChange = async (event, actionType) => {
-    const id = event.target.value;
-    try {
-      const response = await axios.post(
-        'reports/by_relationship',
-        { relationship_id: +id },
-        { headers: { Authorization: token } },
-      );
-      if (response.data.data) {
-        dispatch({ type: 'RELATIONSHIPS', payload: response.data.data });
-      } else {
-        console.log('Error: ', response);
-        return false;
-      }
-    } catch (error) {
-      console.log('Error: ', error);
-      if (error.response && error.response.status === 401) {
-        userDispatch(userActions.logoutUser());
-      }
-    }
-  };
+  const dashboardItems = structure.map((item, index) => {
+    return (
+      item.display && (
+        <Grid item={true} xs={6} lg={4} key={'dashboardItem' + index}>
+          <Link to={item.link} className={classes.noUnderline}>
+            <Paper className={classes.paper}>
+              <IconButton color='primary' component='span' size='small'>
+                {item.icon}
+              </IconButton>
+              <Typography variant='h6' component='h6'>
+                {item.label}
+              </Typography>
+            </Paper>
+          </Link>
+        </Grid>
+      )
+    );
+  });
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs
-          value={value}
-          onChange={handleTabChange}
-          aria-label='icon label tabs example'
-        >
-          <Tab
-            icon={<AccountBalanceWalletIcon />}
-            label='PURCHASES'
-            {...a11yProps(0)}
-          />
-          <Tab
-            icon={<ContactsIcon />}
-            label='RELATIONSHIPS'
-            {...a11yProps(1)}
-          />
-        </Tabs>
-      </Box>
-      <TabPanel value={value} index={0}>
-        <FormControl>
-          <InputLabel variant='standard' htmlFor='uncontrolled-native'>
-            Purchases
-          </InputLabel>
-          <NativeSelect
-            inputProps={{
-              name: 'purchases',
-              id: 'uncontrolled-native',
-            }}
-            onChange={(e) => handlePurchasesChange(e, 'PURCHASES')}
-          >
-            <option value=''></option>
-            {purchaseItems &&
-              purchaseItems.map((item) => {
-                return (
-                  <option
-                    key={item.id}
-                    value={item.id}
-                  >{`${item.company_name} - ${item.vehicle_name}`}</option>
-                );
-              })}
-          </NativeSelect>
-        </FormControl>
-        <SpanningTable rows={state.purchaseRows} />
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        <FormControl>
-          <InputLabel variant='standard' htmlFor='uncontrolled-native'>
-            Relationships
-          </InputLabel>
-          <NativeSelect
-            inputProps={{
-              name: 'relationships',
-              id: 'uncontrolled-native',
-            }}
-            onChange={(e) => handleRelationshipsChange(e, 'RELATIONSHIPS')}
-          >
-            <option value=''></option>
-            {relationshipItems &&
-              relationshipItems.map((item) => {
-                return (
-                  <option key={item.id} value={item.id}>
-                    {item.name}
-                  </option>
-                );
-              })}
-          </NativeSelect>
-        </FormControl>
-        <br />
-        <SpanningTable rows={state.relationshipRows} />
-      </TabPanel>
-    </Box>
+    <Grid container className={classes.pageContainer}>
+      {dashboardItems}
+    </Grid>
   );
 };
 

@@ -1,4 +1,6 @@
 import React from 'react';
+import { Form } from 'react-final-form';
+
 import {
   Button,
   CircularProgress,
@@ -7,7 +9,6 @@ import {
   DialogContent,
   DialogTitle,
 } from '@material-ui/core';
-import { Form } from 'react-final-form';
 
 const CustomDialog = (props) => {
   return (
@@ -22,7 +23,7 @@ const CustomDialog = (props) => {
         <Form
           initialValues={props.initialValues}
           onSubmit={props.handleSubmit}
-          render={({ handleSubmit, invalid, form, values }) => {
+          render={({ handleSubmit, invalid }) => {
             return (
               <form onSubmit={handleSubmit}>
                 <DialogContent>{props.children}</DialogContent>

@@ -1,17 +1,12 @@
 import React from 'react';
+
 import { TextField } from '@material-ui/core/';
 
 const Select = (props) => {
   return (
     <TextField
       {...props.input}
-      value={
-        props.input.value
-          ? props.input.value
-          : props.selectedValue
-          ? props.selectedValue
-          : props.input.value
-      }
+      value={props.input.value}
       className={props.className}
       label={props.label}
       required={props.required}
@@ -32,7 +27,7 @@ const Select = (props) => {
         props.onChange && props.onChange(e);
       }}
     >
-      {props.hasEmptyOption ? <option value='' /> : ''}
+      {props.hasEmptyOption && <option value='' />}
       {props.options
         ? props.options.map((item, index) => {
             return (
@@ -41,8 +36,9 @@ const Select = (props) => {
                   ? item.name
                   : item.part_name
                   ? item.part_name
-                  : // TODO: Remove below line if unused
-                    `${item.company_name} - ${item.vehicle_name}`}
+                  : item.company_name
+                  ? `${item.company_name} - ${item.vehicle_name}`
+                  : ''}
               </option>
             );
           })

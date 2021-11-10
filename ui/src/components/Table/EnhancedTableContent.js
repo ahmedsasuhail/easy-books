@@ -1,7 +1,13 @@
 import React from 'react';
 
 import { IconButton } from '@material-ui/core';
-import { Edit as EditIcon, Delete as DeleteIcon } from '@material-ui/icons';
+import {
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+  AddBox as AddBoxIcon,
+  CheckBox as CheckBoxIcon,
+  CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon,
+} from '@material-ui/icons';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 
@@ -9,9 +15,11 @@ const EnhancedTableContent = (props) => {
   const {
     rows,
     headCells,
-    openEditMiscellaneous,
-    submitDeleteMiscellaneous,
+    submitAddFunction,
     actions,
+    openEditFunction,
+    submitDeleteFunction,
+    submitReturnFunction,
   } = props;
 
   let listContent = [];
@@ -32,15 +40,42 @@ const EnhancedTableContent = (props) => {
       });
 
       const list = headCells.map((cell, idx) => {
-        const opts = {};
-        if (cell.id === 'sn') {
-          opts.id = labelId;
-        }
-        return (
-          <TableCell {...opts} key={idx}>
-            {row[cell.id]}
-          </TableCell>
-        );
+        if (cell.display !== false) {
+          const opts = {};
+          if (cell.id === 'sn') {
+            opts.id = labelId;
+          }
+          if (!!cell.checkbox) {
+            if (row[cell.id]) {
+              return (
+                <TableCell key={idx} align='center'>
+                  <IconButton color='primary' component='span' size='small'>
+                    <CheckBoxIcon fontSize='small' />
+                  </IconButton>
+                </TableCell>
+              );
+            } else {
+              return (
+                <TableCell key={idx} align='center'>
+                  <IconButton
+                    onClick={() => submitReturnFunction(value)}
+                    color='primary'
+                    component='span'
+                    size='small'
+                  >
+                    <CheckBoxOutlineBlankIcon fontSize='small' />
+                  </IconButton>
+                </TableCell>
+              );
+            }
+          } else {
+            return (
+              <TableCell {...opts} key={idx}>
+                {row[cell.id]}
+              </TableCell>
+            );
+          }
+        } else return false;
       });
 
       return (
@@ -48,22 +83,30 @@ const EnhancedTableContent = (props) => {
           {list}
           {actions && (
             <TableCell align='center'>
-              {openEditMiscellaneous && (
+              {submitAddFunction && (
                 <IconButton
-                  onClick={() => openEditMiscellaneous(value)}
+                  onClick={() => submitAddFunction(value)}
                   color='primary'
-                  aria-label='create-edit-miscellaneous'
+                  component='span'
+                  size='small'
+                >
+                  <AddBoxIcon fontSize='small' />
+                </IconButton>
+              )}
+              {openEditFunction && (
+                <IconButton
+                  onClick={() => openEditFunction(value)}
+                  color='primary'
                   component='span'
                   size='small'
                 >
                   <EditIcon fontSize='small' />
                 </IconButton>
               )}
-              {submitDeleteMiscellaneous && (
+              {submitDeleteFunction && (
                 <IconButton
-                  onClick={() => submitDeleteMiscellaneous(row.id)}
+                  onClick={() => submitDeleteFunction(row.id)}
                   color='primary'
-                  aria-label='delete-miscellaneous'
                   component='span'
                   size='small'
                 >

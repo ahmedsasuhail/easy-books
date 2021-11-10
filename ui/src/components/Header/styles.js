@@ -90,7 +90,6 @@ export default makeStyles((theme) => ({
   headerMenuItem: {
     '&:hover, &:focus': {
       backgroundColor: theme.palette.background.light,
-      // color: "white",
     },
   },
   headerMenuButton: {

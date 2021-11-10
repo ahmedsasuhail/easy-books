@@ -13,9 +13,7 @@ import {
   INVENTORY_DELETE_FAILURE,
 } from '../actionTypes';
 
-// Inventory Actions
 export const inventoryActions = {
-  // Create
   inventoryCreateRequest: () => {
     return {
       type: INVENTORY_CREATE_REQUEST,
@@ -37,7 +35,6 @@ export const inventoryActions = {
     };
   },
 
-  // Update
   inventoryUpdateRequest: () => {
     return {
       type: INVENTORY_UPDATE_REQUEST,
@@ -59,7 +56,6 @@ export const inventoryActions = {
     };
   },
 
-  // Read
   inventoryReadRequest: () => {
     return {
       type: INVENTORY_READ_REQUEST,
@@ -71,7 +67,11 @@ export const inventoryActions = {
       type: INVENTORY_READ_SUCCESS,
       payload: {
         inventory: values.records,
-        pageNo: values.page,
+        pageNo: values.page - 1,
+        rowsPerPage: values.page_limit,
+        orderBy: values.order_by,
+        order: values.sort_order,
+        count: values.total_count,
       },
     };
   },
@@ -82,7 +82,6 @@ export const inventoryActions = {
     };
   },
 
-  // Delete
   inventoryDeleteRequest: () => {
     return {
       type: INVENTORY_DELETE_REQUEST,

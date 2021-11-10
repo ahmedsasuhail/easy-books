@@ -3,7 +3,6 @@ import axios from '../../../utils/axiosInstance';
 import { userActions } from '../user/userActions';
 
 // Action Creators
-// Create
 export const relationshipCreate = (values) => {
   return async (dispatch) => {
     dispatch(relationshipActions.relationshipCreateRequest());
@@ -39,7 +38,6 @@ export const relationshipCreate = (values) => {
   };
 };
 
-// Update
 export const relationshipUpdate = (values) => {
   return async (dispatch) => {
     dispatch(relationshipActions.relationshipUpdateRequest());
@@ -76,7 +74,6 @@ export const relationshipUpdate = (values) => {
   };
 };
 
-// Read
 export const relationshipRead = (values) => {
   return async (dispatch) => {
     dispatch(relationshipActions.relationshipReadRequest());
@@ -109,7 +106,6 @@ export const relationshipRead = (values) => {
   };
 };
 
-// Delete
 export const relationshipDelete = (values) => {
   return async (dispatch) => {
     dispatch(relationshipActions.relationshipDeleteRequest());
@@ -135,6 +131,8 @@ export const relationshipDelete = (values) => {
       dispatch(relationshipActions.relationshipDeleteFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
+      } else if (error.response && error.response.status === 500) {
+        alert('Cannot delete this item!');
       }
     }
   };

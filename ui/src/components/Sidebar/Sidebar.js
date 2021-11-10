@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { withRouter } from 'react-router-dom';
+
 import { Drawer, IconButton, List } from '@material-ui/core';
 import {
   ArrowBack as ArrowBackIcon,
@@ -6,25 +8,23 @@ import {
   AccountBalanceWallet as AccountBalanceWalletIcon,
   Contacts as ContactsIcon,
   Dashboard as DashboardIcon,
+  Assessment as AssessmentIcon,
 } from '@material-ui/icons';
 import { useTheme } from '@material-ui/styles';
-import { withRouter } from 'react-router-dom';
+
 import classNames from 'classnames';
 
-// styles
 import useStyles from './styles';
 
-// components
 import SidebarLink from './components/SidebarLink/SidebarLink';
 
-// context
 import {
   useLayoutState,
   useLayoutDispatch,
   toggleSidebar,
 } from '../../context/LayoutContext';
 
-const structure = [
+export const structure = [
   {
     id: 0,
     label: 'Dashboard',
@@ -37,34 +37,50 @@ const structure = [
   },
   {
     id: 2,
-    label: 'Purchases',
-    link: '/app/purchases',
-    icon: <AccountBalanceWalletIcon />,
+    label: 'Reports',
+    link: '/app/reports',
+    icon: <AssessmentIcon />,
+    display: true,
   },
   {
     id: 3,
-    label: 'Inventory',
-    link: '/app/inventory',
-    icon: <ShoppingCartIcon />,
+    type: 'divider',
   },
   {
     id: 4,
+    label: 'Purchases',
+    link: '/app/purchases',
+    icon: <AccountBalanceWalletIcon />,
+    display: true,
+  },
+  {
+    id: 5,
+    label: 'Inventory',
+    link: '/app/inventory',
+    icon: <ShoppingCartIcon />,
+    display: true,
+  },
+  {
+    id: 6,
     label: 'Sales',
     link: '/app/sales',
     icon: <AccountBalanceWalletIcon />,
+    display: true,
   },
-  { id: 5, type: 'divider' },
+  { id: 7, type: 'divider' },
   {
-    id: 6,
+    id: 8,
     label: 'Miscellaneous',
     link: '/app/miscellaneous',
     icon: <AccountBalanceWalletIcon />,
+    display: true,
   },
   {
-    id: 7,
+    id: 9,
     label: 'Relationships',
     link: '/app/relationships',
     icon: <ContactsIcon />,
+    display: true,
   },
 ];
 
@@ -72,11 +88,9 @@ function Sidebar({ location }) {
   var classes = useStyles();
   var theme = useTheme();
 
-  // global
   var { isSidebarOpened } = useLayoutState();
   var layoutDispatch = useLayoutDispatch();
 
-  // local
   var [isPermanent, setPermanent] = useState(true);
 
   useEffect(function () {

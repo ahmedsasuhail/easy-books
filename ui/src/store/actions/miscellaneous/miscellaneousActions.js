@@ -13,9 +13,7 @@ import {
   MISCELLANEOUS_DELETE_FAILURE,
 } from '../actionTypes';
 
-// Miscellaneous Actions
 export const miscellaneousActions = {
-  // Create
   miscellaneousCreateRequest: () => {
     return {
       type: MISCELLANEOUS_CREATE_REQUEST,
@@ -37,7 +35,6 @@ export const miscellaneousActions = {
     };
   },
 
-  // Update
   miscellaneousUpdateRequest: () => {
     return {
       type: MISCELLANEOUS_UPDATE_REQUEST,
@@ -59,7 +56,6 @@ export const miscellaneousActions = {
     };
   },
 
-  // Read
   miscellaneousReadRequest: () => {
     return {
       type: MISCELLANEOUS_READ_REQUEST,
@@ -86,7 +82,6 @@ export const miscellaneousActions = {
     };
   },
 
-  // Delete
   miscellaneousDeleteRequest: () => {
     return {
       type: MISCELLANEOUS_DELETE_REQUEST,

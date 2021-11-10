@@ -13,9 +13,7 @@ import {
   RELATIONSHIP_DELETE_FAILURE,
 } from '../actionTypes';
 
-// Relationship Actions
 export const relationshipActions = {
-  // Create
   relationshipCreateRequest: () => {
     return {
       type: RELATIONSHIP_CREATE_REQUEST,
@@ -37,7 +35,6 @@ export const relationshipActions = {
     };
   },
 
-  // Update
   relationshipUpdateRequest: () => {
     return {
       type: RELATIONSHIP_UPDATE_REQUEST,
@@ -59,7 +56,6 @@ export const relationshipActions = {
     };
   },
 
-  // Read
   relationshipReadRequest: () => {
     return {
       type: RELATIONSHIP_READ_REQUEST,
@@ -86,7 +82,6 @@ export const relationshipActions = {
     };
   },
 
-  // Delete
   relationshipDeleteRequest: () => {
     return {
       type: RELATIONSHIP_DELETE_REQUEST,

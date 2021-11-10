@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
   AppBar,
   Toolbar,
@@ -19,10 +20,13 @@ import {
   ArrowBack as ArrowBackIcon,
 } from '@material-ui/icons';
 import { alpha } from '@material-ui/core/styles';
+
 import classNames from 'classnames';
 
 import { Badge, Typography } from '../Wrappers';
+
 import Notification from '../Notification';
+
 import UserAvatar from '../UserAvatar';
 
 const messages = [

@@ -9,12 +9,10 @@ import {
 } from '../actions/actionTypes';
 import { mergeObjects } from '../../utils/helpers';
 
-// Check localStorage For Data
 let data_store = localStorage.getItem('easyBooksAuth')
   ? JSON.parse(localStorage.getItem('easyBooksAuth'))
   : '';
 
-// Set Initial State
 const initialState = {
   isAuthenticated: data_store && data_store.token ? true : false,
   token: data_store && data_store.token ? data_store.token : null,
@@ -25,10 +23,8 @@ const initialState = {
   messageType: null,
 };
 
-// Reducer
 const userReducer = (state = initialState, action) => {
   switch (action.type) {
-    // Registration
     // case USER_REGISTRATION_SUCCESS:
     //   return mergeObjects(state, {
     //     message: action.payload.message,
@@ -42,7 +38,6 @@ const userReducer = (state = initialState, action) => {
     //     loading: false,
     //   });
 
-    // Login
     case USER_LOGIN_REQUEST:
       return mergeObjects(state, {
         loading: true,
@@ -64,7 +59,6 @@ const userReducer = (state = initialState, action) => {
         loading: false,
       });
 
-    // Logout
     case USER_LOGOUT:
       return mergeObjects(state, {
         isAuthenticated: false,

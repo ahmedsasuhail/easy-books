@@ -3,7 +3,6 @@ import axios from '../../../utils/axiosInstance';
 import { userActions } from '../user/userActions';
 
 // Action Creators
-// Create
 export const purchaseCreate = (values) => {
   return async (dispatch) => {
     dispatch(purchaseActions.purchaseCreateRequest());
@@ -30,6 +29,7 @@ export const purchaseCreate = (values) => {
         dispatch(purchaseActions.purchaseCreateFailure());
       }
     } catch (error) {
+      console.log('Catch Error: ', error);
       dispatch(purchaseActions.purchaseCreateFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
@@ -38,7 +38,6 @@ export const purchaseCreate = (values) => {
   };
 };
 
-// Update
 export const purchaseUpdate = (values) => {
   return async (dispatch) => {
     dispatch(purchaseActions.purchaseUpdateRequest());
@@ -66,6 +65,7 @@ export const purchaseUpdate = (values) => {
         dispatch(purchaseActions.purchaseUpdateFailure());
       }
     } catch (error) {
+      console.log('Catch Error: ', error);
       dispatch(purchaseActions.purchaseUpdateFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
@@ -74,13 +74,14 @@ export const purchaseUpdate = (values) => {
   };
 };
 
-// Read
 export const purchaseRead = (values) => {
   return async (dispatch) => {
     dispatch(purchaseActions.purchaseReadRequest());
     try {
       const response = await axios.get(
-        `purchases/?page=1&page_limit=50&order_by=id&sort_order=asc`,
+        `purchases/?page=${values.pageNo + 1}&page_limit=${
+          values.rowsPerPage
+        }&order_by=${values.orderBy}&sort_order=${values.order}`,
         {
           headers: {
             Authorization: values.token,
@@ -94,6 +95,7 @@ export const purchaseRead = (values) => {
         dispatch(purchaseActions.purchaseReadFailure());
       }
     } catch (error) {
+      console.log('Catch Error: ', error);
       dispatch(purchaseActions.purchaseReadFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
@@ -102,7 +104,6 @@ export const purchaseRead = (values) => {
   };
 };
 
-// Delete
 export const purchaseDelete = (values) => {
   return async (dispatch) => {
     dispatch(purchaseActions.purchaseDeleteRequest());
@@ -122,9 +123,12 @@ export const purchaseDelete = (values) => {
         dispatch(purchaseActions.purchaseDeleteFailure());
       }
     } catch (error) {
+      console.log('Catch Error: ', error);
       dispatch(purchaseActions.purchaseDeleteFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
+      } else if (error.response && error.response.status === 500) {
+        alert('Cannot delete this item!');
       }
     }
   };

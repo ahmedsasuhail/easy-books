@@ -8,9 +8,7 @@ import {
   USER_LOGOUT,
 } from '../actionTypes';
 
-// User Actions
 export const userActions = {
-  // Registration
   // registrationRequest: () => {
   //   return {
   //     type: USER_REGISTRATION_REQUEST,
@@ -33,7 +31,6 @@ export const userActions = {
   //   };
   // },
 
-  // Login
   loginRequest: () => {
     return {
       type: USER_LOGIN_REQUEST,
@@ -57,7 +54,6 @@ export const userActions = {
     };
   },
 
-  // Logout
   logoutUser: () => {
     return {
       type: USER_LOGOUT,

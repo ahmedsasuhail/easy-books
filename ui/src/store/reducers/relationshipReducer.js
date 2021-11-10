@@ -14,7 +14,6 @@ import {
 } from '../actions/actionTypes';
 import { mergeObjects } from '../../utils/helpers';
 
-// Set Initial State
 const initialState = {
   relationships: [],
   orderBy: 'name',
@@ -26,10 +25,8 @@ const initialState = {
   pageLoading: false,
 };
 
-// Reducer
 const relationshipReducer = (state = initialState, action) => {
   switch (action.type) {
-    // Create
     case RELATIONSHIP_CREATE_REQUEST:
       return mergeObjects(state, {
         formLoading: true,
@@ -42,10 +39,10 @@ const relationshipReducer = (state = initialState, action) => {
 
       modifyRelationshipsForCreate =
         state.relationships.length === 0
-          ? [action.payload.relationships]
+          ? [action.payload.relationship]
           : state.relationships.length === 5
           ? []
-          : [...state.relationships, action.payload.relationships];
+          : [...state.relationships, action.payload.relationship];
 
       if (
         state.relationships.length !== 0 &&
@@ -68,7 +65,6 @@ const relationshipReducer = (state = initialState, action) => {
         pageLoading: false,
       });
 
-    // Create or Update
     case RELATIONSHIP_UPDATE_REQUEST:
       return mergeObjects(state, {
         formLoading: true,
@@ -102,7 +98,6 @@ const relationshipReducer = (state = initialState, action) => {
         pageLoading: false,
       });
 
-    // Read
     case RELATIONSHIP_READ_REQUEST:
       return mergeObjects(state, {
         pageLoading: true,
@@ -110,7 +105,7 @@ const relationshipReducer = (state = initialState, action) => {
 
     case RELATIONSHIP_READ_SUCCESS:
       return mergeObjects(state, {
-        relationships: action.payload.relationships,
+        relationships: action.payload.relationships || [],
         pageNo: action.payload.pageNo,
         rowsPerPage: action.payload.rowsPerPage,
         orderBy: action.payload.orderBy,
@@ -124,7 +119,6 @@ const relationshipReducer = (state = initialState, action) => {
         pageLoading: false,
       });
 
-    // Delete
     case RELATIONSHIP_DELETE_REQUEST:
       return mergeObjects(state, {
         pageLoading: true,

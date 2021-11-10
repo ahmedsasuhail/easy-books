@@ -13,9 +13,7 @@ import {
   SALES_DELETE_FAILURE,
 } from '../actionTypes';
 
-// sales Actions
 export const salesActions = {
-  // Create
   salesCreateRequest: () => {
     return {
       type: SALES_CREATE_REQUEST,
@@ -37,7 +35,6 @@ export const salesActions = {
     };
   },
 
-  // Update
   salesUpdateRequest: () => {
     return {
       type: SALES_UPDATE_REQUEST,
@@ -59,7 +56,6 @@ export const salesActions = {
     };
   },
 
-  // Read
   salesReadRequest: () => {
     return {
       type: SALES_READ_REQUEST,
@@ -71,7 +67,11 @@ export const salesActions = {
       type: SALES_READ_SUCCESS,
       payload: {
         sales: values.records,
-        pageNo: values.page,
+        pageNo: values.page - 1,
+        rowsPerPage: values.page_limit,
+        orderBy: values.order_by,
+        order: values.sort_order,
+        count: values.total_count,
       },
     };
   },
@@ -82,7 +82,6 @@ export const salesActions = {
     };
   },
 
-  // Delete
   salesDeleteRequest: () => {
     return {
       type: SALES_DELETE_REQUEST,

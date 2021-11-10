@@ -2,7 +2,6 @@ import { userActions } from './userActions';
 import axios from '../../../utils/axiosInstance';
 
 // Action Creators
-// Register
 // export const userRegisteration = (values) => {
 //   return async (dispatch) => {
 //     dispatch(userActions.loading());
@@ -22,7 +21,6 @@ import axios from '../../../utils/axiosInstance';
 //   };
 // };
 
-// Login
 export const userLogin = (login, password) => {
   return async (dispatch) => {
     dispatch(userActions.loginRequest());
@@ -44,12 +42,12 @@ export const userLogin = (login, password) => {
         dispatch(userActions.loginFailure());
       }
     } catch (error) {
+      console.log('Catch Error: ', error);
       dispatch(userActions.loginFailure());
     }
   };
 };
 
-// Logout
 export const userLogout = () => {
   return (dispatch) => {
     localStorage.removeItem('easyBooksAuth');

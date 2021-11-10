@@ -6,8 +6,11 @@ import { ThemeProvider } from '@material-ui/styles';
 import { CssBaseline } from '@material-ui/core';
 
 import Themes from './themes';
+
 import store from './store/Store.js';
+
 import { LayoutProvider } from './context/LayoutContext';
+
 import { unregister } from './serviceWorker';
 
 import App from './App';

@@ -13,18 +13,21 @@ import EnhancedTablePagination from './EnhancedTablePagination';
 const Table = (props) => {
   const {
     tableTitle,
-    order,
-    orderBy,
-    requestSort,
-    headCells,
-    rows,
-    openEditMiscellaneous,
-    submitDeleteMiscellaneous,
-    totalCount,
     pageNo,
     rowsPerPage,
+    order,
+    orderBy,
+    headCells,
+    rows,
+    totalCount,
+    requestSort,
     changePage,
     changeRowsPerPage,
+    actions,
+    openEditFunction,
+    submitDeleteFunction,
+    submitAddFunction,
+    submitReturnFunction,
     size,
   } = props;
 
@@ -48,9 +51,11 @@ const Table = (props) => {
             <EnhancedTableContent
               rows={rows}
               headCells={headCells}
-              openEditMiscellaneous={openEditMiscellaneous}
-              submitDeleteMiscellaneous={submitDeleteMiscellaneous}
-              actions={true}
+              actions={actions}
+              submitAddFunction={submitAddFunction}
+              openEditFunction={openEditFunction}
+              submitDeleteFunction={submitDeleteFunction}
+              submitReturnFunction={submitReturnFunction}
             />
           </TableBody>
         </MuiTable>

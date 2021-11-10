@@ -1,7 +1,7 @@
 import React from 'react';
+
 import { Backdrop, CircularProgress } from '@material-ui/core';
 
-// Styles
 import useStyles from './loaderStyles';
 
 function Loader(props) {

@@ -14,18 +14,19 @@ import {
 } from '../actions/actionTypes';
 import { mergeObjects } from '../../utils/helpers';
 
-// Set Initial State
 const initialState = {
   inventory: [],
-  pageNo: null,
+  orderBy: 'date',
+  order: 'desc',
+  pageNo: 0,
+  rowsPerPage: 5,
+  count: 0,
   formLoading: false,
   pageLoading: false,
 };
 
-// Reducer
 const inventoryReducer = (state = initialState, action) => {
   switch (action.type) {
-    // Create
     case INVENTORY_CREATE_REQUEST:
       return mergeObjects(state, {
         formLoading: true,
@@ -34,19 +35,28 @@ const inventoryReducer = (state = initialState, action) => {
 
     case INVENTORY_CREATE_SUCCESS:
       let modifyInventoryForCreate;
-      if (state.inventory) {
-        modifyInventoryForCreate = [
-          ...state.inventory,
-          action.payload.inventory,
-        ];
-      } else {
-        modifyInventoryForCreate = [action.payload.inventory];
+      let nextPageNo = state.pageNo;
+
+      modifyInventoryForCreate =
+        state.inventory.length === 0
+          ? [action.payload.inventory]
+          : state.inventory.length === 5
+          ? []
+          : [...state.inventory, action.payload.inventory];
+
+      if (
+        state.inventory.length !== 0 &&
+        state.inventory.length % state.rowsPerPage === 0
+      ) {
+        nextPageNo = Math.floor(state.count / state.rowsPerPage);
       }
 
       return mergeObjects(state, {
         inventory: modifyInventoryForCreate,
         formLoading: false,
         pageLoading: false,
+        pageNo: nextPageNo,
+        count: state.count + 1,
       });
 
     case INVENTORY_CREATE_FAILURE:
@@ -55,7 +65,6 @@ const inventoryReducer = (state = initialState, action) => {
         pageLoading: false,
       });
 
-    // Create
     case INVENTORY_UPDATE_REQUEST:
       return mergeObjects(state, {
         formLoading: true,
@@ -64,6 +73,7 @@ const inventoryReducer = (state = initialState, action) => {
 
     case INVENTORY_UPDATE_SUCCESS:
       let modifyInventoryForUpdate = [...state.inventory];
+
       const inventoryIndex = modifyInventoryForUpdate.findIndex(
         (inventory) => +action.payload.inventory.id === +inventory.id,
       );
@@ -77,6 +87,8 @@ const inventoryReducer = (state = initialState, action) => {
         inventory: modifyInventoryForUpdate,
         formLoading: false,
         pageLoading: false,
+        pageNo: state.pageNo,
+        count: state.count,
       });
 
     case INVENTORY_UPDATE_FAILURE:
@@ -85,7 +97,6 @@ const inventoryReducer = (state = initialState, action) => {
         pageLoading: false,
       });
 
-    // Read
     case INVENTORY_READ_REQUEST:
       return mergeObjects(state, {
         pageLoading: true,
@@ -93,8 +104,12 @@ const inventoryReducer = (state = initialState, action) => {
 
     case INVENTORY_READ_SUCCESS:
       return mergeObjects(state, {
-        inventory: action.payload.inventory,
+        inventory: action.payload.inventory || [],
         pageNo: action.payload.pageNo,
+        rowsPerPage: action.payload.rowsPerPage,
+        orderBy: action.payload.orderBy,
+        order: action.payload.order,
+        count: action.payload.count,
         pageLoading: false,
       });
 
@@ -103,7 +118,6 @@ const inventoryReducer = (state = initialState, action) => {
         pageLoading: false,
       });
 
-    // Delete
     case INVENTORY_DELETE_REQUEST:
       return mergeObjects(state, {
         pageLoading: true,
@@ -111,14 +125,25 @@ const inventoryReducer = (state = initialState, action) => {
 
     case INVENTORY_DELETE_SUCCESS:
       let modifyInventoryForDelete = [...state.inventory];
+
       const modifiedInventoryAfterDeleted = modifyInventoryForDelete.filter(
         (inventory) => {
           return +action.payload.inventoryId !== +inventory.id;
         },
       );
+
+      let prevPageNo =
+        state.count % state.rowsPerPage === 1 &&
+        state.count > state.rowsPerPage &&
+        state.pageNo === Math.floor(state.count / state.rowsPerPage)
+          ? state.pageNo - 1
+          : state.pageNo;
+
       return mergeObjects(state, {
         inventory: modifiedInventoryAfterDeleted,
         pageLoading: false,
+        pageNo: prevPageNo,
+        count: state.count - 1,
       });
 
     case INVENTORY_DELETE_FAILURE:

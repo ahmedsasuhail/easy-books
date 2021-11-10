@@ -2,12 +2,15 @@ import { inventoryPurchaseActions } from './inventoryPurchaseActions';
 import axios from '../../../utils/axiosInstance';
 import { userActions } from '../user/userActions';
 
+// Action Creators
 export const getInventoryPurchase = (values) => {
   return async (dispatch) => {
+    dispatch(inventoryPurchaseActions.inventoryPurchaseRequest());
     try {
-      dispatch(inventoryPurchaseActions.inventoryPurchaseRequest());
       const response = await axios.post(
-        'inventory/get_by_purchase?page=1&page_limit=50&order_by=id&sort_order=asc',
+        `inventory/get_by_purchase?page=${values.pageNo + 1}&page_limit=${
+          values.rowsPerPage
+        }&order_by=${values.orderBy}&sort_order=${values.order}`,
         {
           purchase_id: +values.id,
         },
@@ -26,6 +29,7 @@ export const getInventoryPurchase = (values) => {
         dispatch(inventoryPurchaseActions.inventoryPurchaseFailure());
       }
     } catch (error) {
+      console.log('Catch Error: ', error);
       dispatch(inventoryPurchaseActions.inventoryPurchaseFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());

@@ -3,7 +3,6 @@ import axios from '../../../utils/axiosInstance';
 import { userActions } from '../user/userActions';
 
 // Action Creators
-// Create
 export const salesCreate = (values) => {
   return async (dispatch) => {
     dispatch(salesActions.salesCreateRequest());
@@ -16,7 +15,7 @@ export const salesCreate = (values) => {
           relationship_id: +values.formValues.relationship_id,
           price: +values.formValues.price,
           date: values.formValues.date,
-          returned: values.formValues.returned,
+          credit: values.formValues.credit,
         },
         {
           headers: {
@@ -31,6 +30,7 @@ export const salesCreate = (values) => {
         dispatch(salesActions.salesCreateFailure());
       }
     } catch (error) {
+      console.log('Catch Error: ', error);
       dispatch(salesActions.salesCreateFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
@@ -39,7 +39,6 @@ export const salesCreate = (values) => {
   };
 };
 
-// Update
 export const salesUpdate = (values) => {
   return async (dispatch) => {
     dispatch(salesActions.salesUpdateRequest());
@@ -52,7 +51,11 @@ export const salesUpdate = (values) => {
           relationship_id: +values.formValues.relationship_id,
           price: +values.formValues.price,
           date: values.formValues.date,
-          returned: values.formValues.returned,
+          returned:
+            values.formValues.returned === true
+              ? values.formValues.returned
+              : false,
+          credit: values.formValues.credit && values.formValues.credit,
           id: +values.formValues.id,
         },
         {
@@ -68,6 +71,7 @@ export const salesUpdate = (values) => {
         dispatch(salesActions.salesUpdateFailure());
       }
     } catch (error) {
+      console.log('Catch Error: ', error);
       dispatch(salesActions.salesUpdateFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
@@ -76,13 +80,14 @@ export const salesUpdate = (values) => {
   };
 };
 
-// Read
 export const salesRead = (values) => {
   return async (dispatch) => {
     dispatch(salesActions.salesReadRequest());
     try {
       const response = await axios.get(
-        `sales/?page=1&page_limit=50&order_by=id&sort_order=asc`,
+        `sales/?page=${values.pageNo + 1}&page_limit=${
+          values.rowsPerPage
+        }&order_by=${values.orderBy}&sort_order=${values.order}`,
         {
           headers: {
             Authorization: values.token,
@@ -96,6 +101,7 @@ export const salesRead = (values) => {
         dispatch(salesActions.salesReadFailure());
       }
     } catch (error) {
+      console.log('Catch Error: ', error);
       dispatch(salesActions.salesReadFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
@@ -104,7 +110,6 @@ export const salesRead = (values) => {
   };
 };
 
-// Delete
 export const salesDelete = (values) => {
   return async (dispatch) => {
     dispatch(salesActions.salesDeleteRequest());
@@ -124,9 +129,12 @@ export const salesDelete = (values) => {
         dispatch(salesActions.salesDeleteFailure());
       }
     } catch (error) {
+      console.log('Catch Error: ', error);
       dispatch(salesActions.salesDeleteFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
+      } else if (error.response && error.response.status === 500) {
+        alert('Cannot delete this item!');
       }
     }
   };

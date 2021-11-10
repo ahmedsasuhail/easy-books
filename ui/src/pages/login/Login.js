@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+
 import {
   Grid,
   CircularProgress,
@@ -8,25 +10,20 @@ import {
   TextField,
   Fade,
 } from '@material-ui/core';
-import { withRouter } from 'react-router-dom';
 
-// redux
 import { userLogin } from '../../store/actions/user';
 
-// styles
-import useStyles from './styles';
-
-// logo
 import logo from '../../assets/images/logo.svg';
+
+import useStyles from './styles';
 
 function Login() {
   var classes = useStyles();
 
   const dispatch = useDispatch();
 
-  // local
-  var [loginValue, setLoginValue] = useState('john.doe@example.com');
-  var [passwordValue, setPasswordValue] = useState('password');
+  var [loginValue, setLoginValue] = useState(''); // john.doe@example.com
+  var [passwordValue, setPasswordValue] = useState(''); // password
 
   var isLoading = useSelector((state) => state.user.loading);
   var error = useSelector((state) => state.user.messageType);
@@ -59,7 +56,7 @@ function Login() {
             value={loginValue}
             onChange={(e) => setLoginValue(e.target.value)}
             margin='normal'
-            placeholder='Email Adress'
+            placeholder='Email Address'
             type='email'
             fullWidth
           />

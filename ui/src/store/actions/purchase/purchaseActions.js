@@ -13,9 +13,7 @@ import {
   PURCHASE_DELETE_FAILURE,
 } from '../actionTypes';
 
-// Purchase Actions
 export const purchaseActions = {
-  // Create
   purchaseCreateRequest: () => {
     return {
       type: PURCHASE_CREATE_REQUEST,
@@ -37,7 +35,6 @@ export const purchaseActions = {
     };
   },
 
-  // Update
   purchaseUpdateRequest: () => {
     return {
       type: PURCHASE_UPDATE_REQUEST,
@@ -59,7 +56,6 @@ export const purchaseActions = {
     };
   },
 
-  // Read
   purchaseReadRequest: () => {
     return {
       type: PURCHASE_READ_REQUEST,
@@ -71,7 +67,11 @@ export const purchaseActions = {
       type: PURCHASE_READ_SUCCESS,
       payload: {
         purchases: values.records,
-        pageNo: values.page,
+        pageNo: values.page - 1,
+        rowsPerPage: values.page_limit,
+        orderBy: values.order_by,
+        order: values.sort_order,
+        count: values.total_count,
       },
     };
   },
@@ -82,7 +82,6 @@ export const purchaseActions = {
     };
   },
 
-  // Delete
   purchaseDeleteRequest: () => {
     return {
       type: PURCHASE_DELETE_REQUEST,

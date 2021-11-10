@@ -3,7 +3,6 @@ import axios from '../../../utils/axiosInstance';
 import { userActions } from '../user/userActions';
 
 // Action Creators
-// Create
 export const miscellaneousCreate = (values) => {
   return async (dispatch) => {
     dispatch(miscellaneousActions.miscellaneousCreateRequest());
@@ -26,7 +25,7 @@ export const miscellaneousCreate = (values) => {
           miscellaneousActions.miscellaneousCreateSuccess(response.data.data),
         );
       } else {
-        console.log('Response Error: ', response);
+        console.log('Error: ', response);
         dispatch(miscellaneousActions.miscellaneousCreateFailure());
       }
     } catch (error) {
@@ -39,7 +38,6 @@ export const miscellaneousCreate = (values) => {
   };
 };
 
-// Update
 export const miscellaneousUpdate = (values) => {
   return async (dispatch) => {
     dispatch(miscellaneousActions.miscellaneousUpdateRequest());
@@ -76,7 +74,6 @@ export const miscellaneousUpdate = (values) => {
   };
 };
 
-// Read
 export const miscellaneousRead = (values) => {
   return async (dispatch) => {
     dispatch(miscellaneousActions.miscellaneousReadRequest());
@@ -109,7 +106,6 @@ export const miscellaneousRead = (values) => {
   };
 };
 
-// Delete
 export const miscellaneousDelete = (values) => {
   return async (dispatch) => {
     dispatch(miscellaneousActions.miscellaneousDeleteRequest());
@@ -135,6 +131,8 @@ export const miscellaneousDelete = (values) => {
       dispatch(miscellaneousActions.miscellaneousDeleteFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
+      } else if (error.response && error.response.status === 500) {
+        alert('Cannot delete this item!');
       }
     }
   };

@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { Grid, Button, makeStyles } from '@material-ui/core';
+import Box from '@mui/material/Box';
 
 import PageTitle from '../../components/PageTitle/PageTitle';
 import Dialog from '../../components/Dialog/Dialog';
-import CustomTable from '../../components/Table/CustomTable.js';
+import CustomTable from '../../components/Table/CustomTable';
 
 import CreateUpdateMiscellaneous from './CreateUpdateMiscellaneous';
 
@@ -32,26 +33,19 @@ const ReadMiscellaneous = () => {
   const headCells = [
     {
       id: 'sn',
-      numeric: false,
-      disablePadding: false,
       label: 'SN',
+      disableSort: true,
     },
     {
       id: 'description',
-      numeric: false,
-      disablePadding: false,
       label: 'Description',
     },
     {
       id: 'price',
-      numeric: false,
-      disablePadding: false,
       label: 'Price',
     },
     {
       id: 'date',
-      numeric: false,
-      disablePadding: false,
       label: 'Date',
     },
   ];
@@ -75,21 +69,11 @@ const ReadMiscellaneous = () => {
   const totalCount = useSelector((state) => state.miscellaneous.count);
   const isLoading = useSelector((state) => state.miscellaneous.formLoading);
 
-  console.log(
-    'INIT',
-    miscellaneousItems ? miscellaneousItems.length : miscellaneousItems,
-    pageNo,
-    rowsPerPage,
-    orderBy,
-    order,
-    totalCount,
-  );
-
   if (miscellaneousItems) {
     rows = miscellaneousItems.map((miscellaneous, idx) => {
       return {
         sn: pageNo === 0 ? idx + 1 : rowsPerPage * pageNo + (idx + 1),
-        id: miscellaneous.id && miscellaneous.id,
+        id: miscellaneous.id,
         description: miscellaneous.description
           ? miscellaneous.description
           : 'Not Specified',
@@ -198,7 +182,7 @@ const ReadMiscellaneous = () => {
 
   return (
     <>
-      <div className={classes.pageContainer}>
+      <Box className={classes.pageContainer}>
         <PageTitle
           title={'Miscellaneous'}
           button={
@@ -216,23 +200,24 @@ const ReadMiscellaneous = () => {
           <Grid item xs={12}>
             <CustomTable
               tableTitle='All Miscellaneous'
-              order={order}
-              orderBy={orderBy}
-              requestSort={handleRequestSort}
-              headCells={headCells}
-              rows={rows}
-              openEditMiscellaneous={handleOpenEditMiscellaneous}
-              submitDeleteMiscellaneous={handleSubmitDeleteMiscellaneous}
-              totalCount={totalCount}
               pageNo={pageNo}
               rowsPerPage={rowsPerPage}
+              order={order}
+              orderBy={orderBy}
+              headCells={headCells}
+              rows={rows}
+              totalCount={totalCount}
+              requestSort={handleRequestSort}
               changePage={handleChangePage}
               changeRowsPerPage={handleChangeRowsPerPage}
+              actions={true}
+              openEditFunction={handleOpenEditMiscellaneous}
+              submitDeleteFunction={handleSubmitDeleteMiscellaneous}
               size='medium'
             />
           </Grid>
         </Grid>
-      </div>
+      </Box>
       <Dialog
         title={`${valueForm ? 'Edit' : 'Create'} Miscellaneous`}
         fullWidth={true}

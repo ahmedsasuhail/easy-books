@@ -3,7 +3,6 @@ import axios from '../../../utils/axiosInstance';
 import { userActions } from '../user/userActions';
 
 // Action Creators
-// Create
 export const inventoryCreate = (values) => {
   return async (dispatch) => {
     dispatch(inventoryActions.inventoryCreateRequest());
@@ -29,6 +28,7 @@ export const inventoryCreate = (values) => {
         dispatch(inventoryActions.inventoryCreateFailure());
       }
     } catch (error) {
+      console.log('Catch Error: ', error);
       dispatch(inventoryActions.inventoryCreateFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
@@ -37,7 +37,6 @@ export const inventoryCreate = (values) => {
   };
 };
 
-// Update
 export const inventoryUpdate = (values) => {
   return async (dispatch) => {
     dispatch(inventoryActions.inventoryUpdateRequest());
@@ -64,6 +63,7 @@ export const inventoryUpdate = (values) => {
         dispatch(inventoryActions.inventoryUpdateFailure());
       }
     } catch (error) {
+      console.log('Catch Error: ', error);
       dispatch(inventoryActions.inventoryUpdateFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
@@ -72,13 +72,14 @@ export const inventoryUpdate = (values) => {
   };
 };
 
-// Read
 export const inventoryRead = (values) => {
   return async (dispatch) => {
     dispatch(inventoryActions.inventoryReadRequest());
     try {
       const response = await axios.get(
-        `inventory/?page=1&page_limit=50&order_by=id&sort_order=asc`,
+        `inventory/?page=${values.pageNo + 1}&page_limit=${
+          values.rowsPerPage
+        }&order_by=${values.orderBy}&sort_order=${values.order}`,
         {
           headers: {
             Authorization: values.token,
@@ -92,6 +93,7 @@ export const inventoryRead = (values) => {
         dispatch(inventoryActions.inventoryReadFailure());
       }
     } catch (error) {
+      console.log('Catch Error: ', error);
       dispatch(inventoryActions.inventoryReadFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
@@ -100,7 +102,6 @@ export const inventoryRead = (values) => {
   };
 };
 
-// Delete
 export const inventoryDelete = (values) => {
   return async (dispatch) => {
     dispatch(inventoryActions.inventoryDeleteRequest());
@@ -120,9 +121,12 @@ export const inventoryDelete = (values) => {
         dispatch(inventoryActions.inventoryDeleteFailure());
       }
     } catch (error) {
+      console.log('Catch Error: ', error);
       dispatch(inventoryActions.inventoryDeleteFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
+      } else if (error.response && error.response.status === 500) {
+        alert('Cannot delete this item!');
       }
     }
   };

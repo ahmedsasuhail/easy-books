@@ -14,18 +14,19 @@ import {
 } from '../actions/actionTypes';
 import { mergeObjects } from '../../utils/helpers';
 
-// Set Initial State
 const initialState = {
   sales: [],
-  pageNo: null,
+  orderBy: 'date',
+  order: 'desc',
+  pageNo: 0,
+  rowsPerPage: 5,
+  count: 0,
   formLoading: false,
   pageLoading: false,
 };
 
-// Reducer
 const salesReducer = (state = initialState, action) => {
   switch (action.type) {
-    // Create
     case SALES_CREATE_REQUEST:
       return mergeObjects(state, {
         formLoading: true,
@@ -34,16 +35,28 @@ const salesReducer = (state = initialState, action) => {
 
     case SALES_CREATE_SUCCESS:
       let modifySalesForCreate;
-      if (state.sales) {
-        modifySalesForCreate = [...state.sales, action.payload.sales];
-      } else {
-        modifySalesForCreate = [action.payload.sales];
+      let nextPageNo = state.pageNo;
+
+      modifySalesForCreate =
+        state.sales.length === 0
+          ? [action.payload.sales]
+          : state.sales.length === 5
+          ? []
+          : [...state.sales, action.payload.sales];
+
+      if (
+        state.sales.length !== 0 &&
+        state.sales.length % state.rowsPerPage === 0
+      ) {
+        nextPageNo = Math.floor(state.count / state.rowsPerPage);
       }
 
       return mergeObjects(state, {
         sales: modifySalesForCreate,
         formLoading: false,
         pageLoading: false,
+        pageNo: nextPageNo,
+        count: state.count + 1,
       });
 
     case SALES_CREATE_FAILURE:
@@ -52,7 +65,6 @@ const salesReducer = (state = initialState, action) => {
         pageLoading: false,
       });
 
-    // Update
     case SALES_UPDATE_REQUEST:
       return mergeObjects(state, {
         formLoading: true,
@@ -61,6 +73,7 @@ const salesReducer = (state = initialState, action) => {
 
     case SALES_UPDATE_SUCCESS:
       let modifySalesForUpdate = [...state.sales];
+
       const salesIndex = modifySalesForUpdate.findIndex(
         (sales) => +action.payload.sales.id === +sales.id,
       );
@@ -71,6 +84,8 @@ const salesReducer = (state = initialState, action) => {
         sales: modifySalesForUpdate,
         formLoading: false,
         pageLoading: false,
+        pageNo: state.pageNo,
+        count: state.count,
       });
 
     case SALES_UPDATE_FAILURE:
@@ -79,7 +94,6 @@ const salesReducer = (state = initialState, action) => {
         pageLoading: false,
       });
 
-    // Read
     case SALES_READ_REQUEST:
       return mergeObjects(state, {
         pageLoading: true,
@@ -87,8 +101,12 @@ const salesReducer = (state = initialState, action) => {
 
     case SALES_READ_SUCCESS:
       return mergeObjects(state, {
-        sales: action.payload.sales,
+        sales: action.payload.sales || [],
         pageNo: action.payload.pageNo,
+        rowsPerPage: action.payload.rowsPerPage,
+        orderBy: action.payload.orderBy,
+        order: action.payload.order,
+        count: action.payload.count,
         pageLoading: false,
       });
 
@@ -97,7 +115,6 @@ const salesReducer = (state = initialState, action) => {
         pageLoading: false,
       });
 
-    // Delete
     case SALES_DELETE_REQUEST:
       return mergeObjects(state, {
         pageLoading: true,
@@ -105,12 +122,23 @@ const salesReducer = (state = initialState, action) => {
 
     case SALES_DELETE_SUCCESS:
       let modifySalesForDelete = [...state.sales];
+
       const modifiedSalesAfterDeleted = modifySalesForDelete.filter(
         (sales) => +action.payload.salesId !== +sales.id,
       );
+
+      let prevPageNo =
+        state.count % state.rowsPerPage === 1 &&
+        state.count > state.rowsPerPage &&
+        state.pageNo === Math.floor(state.count / state.rowsPerPage)
+          ? state.pageNo - 1
+          : state.pageNo;
+
       return mergeObjects(state, {
         sales: modifiedSalesAfterDeleted,
         pageLoading: false,
+        pageNo: prevPageNo,
+        count: state.count - 1,
       });
 
     case SALES_DELETE_FAILURE:
