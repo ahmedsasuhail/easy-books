@@ -23,7 +23,7 @@ RUN npm run build
 # Construct final app image.
 # -----------------------------------------------------------------------------
 
-FROM alpine:3.13
+FROM alpine:3.13 AS production
 WORKDIR /app
 COPY --from=backend /backend/easy-books .
 COPY --from=frontend /frontend/build ./ui
