@@ -19,7 +19,7 @@ var pgClient *db.PostgresClient
 // InitDB initializes a database connection and migrates the specified models.
 func InitDB(models []interface{}) error {
 	var err error
-	pgClient, err = db.ConnectPostgres(os.Getenv("EB_POSTGRES_URI"))
+	pgClient, err = db.ConnectPostgres(os.Getenv("DATABASE_URL"))
 	if err != nil {
 		return err
 	}

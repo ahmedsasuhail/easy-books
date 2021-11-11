@@ -18,7 +18,7 @@ func Init() *gin.Engine {
 
 	// Retrieve required variables from environment and exit if any not found.
 	env := []string{
-		"EB_POSTGRES_URI",
+		"DATABASE_URL",
 		"EB_SECRET_KEY",
 		"EB_FRONTEND_PATH",
 	}
