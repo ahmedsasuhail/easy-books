@@ -11,3 +11,8 @@ build:
       dockerfile: Dockerfile
       target: production
     web: Dockerfile
+
+release:
+  image: web
+  command:
+    - echo "Easy-Books Docker image successfully built."
