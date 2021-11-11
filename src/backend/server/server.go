@@ -19,6 +19,7 @@ func Init() *gin.Engine {
 	// Retrieve required variables from environment and exit if any not found.
 	env := []string{
 		"DATABASE_URL",
+		"PORT",
 		"EB_SECRET_KEY",
 		"EB_FRONTEND_PATH",
 	}
@@ -64,5 +65,7 @@ func Init() *gin.Engine {
 
 // Run runs the webserver using the specified router.
 func Run(router *gin.Engine) {
-	router.Run()
+	router.Run(
+		fmt.Sprintf(":%s", os.Getenv("PORT")),
+	)
 }
