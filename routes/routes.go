@@ -2,8 +2,11 @@
 package routes
 
 import (
+	"os"
+
 	"github.com/ahmedsasuhail/easy-books/controllers"
 	"github.com/ahmedsasuhail/easy-books/middleware"
+	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 )
 
@@ -12,7 +15,19 @@ func Get() *gin.Engine {
 	router := gin.Default()
 	router.Use(middleware.CORSMiddleware())
 
-	// `/eb` is the Easy-Books app root.
+	// Serve UI at app root.
+	// The absolute path to the UI static directory must be set in the
+	// EB_FRONTEND_PATH environment variable.
+	uiPath := os.Getenv("EB_FRONTEND_PATH")
+
+	router.Use(
+		static.Serve("/", static.LocalFile(
+			uiPath,
+			true,
+		)),
+	)
+
+	// `/eb` is the Easy-Books API root.
 	app := router.Group("/eb")
 	{
 		app.GET("/", controllers.AppInit)

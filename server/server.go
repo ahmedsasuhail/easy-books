@@ -20,6 +20,7 @@ func Init() *gin.Engine {
 	env := []string{
 		"EB_POSTGRES_URI",
 		"EB_SECRET_KEY",
+		"EB_FRONTEND_PATH",
 	}
 	var missingEnv []string
 
