@@ -2,8 +2,9 @@
 package models
 
 import (
+	"time"
+
 	"gorm.io/datatypes"
-	"gorm.io/gorm"
 )
 
 // ----------------------------------------------------------------------------
@@ -18,6 +19,15 @@ type Response struct {
 	Data    interface{} `json:"data"`
 }
 
+// Pagination represents a pagination request.
+type Pagination struct {
+	GetAll    bool   `json:"get_all"`
+	Page      int    `json:"page"`
+	PageLimit int    `json:"page_limit"`
+	OrderBy   string `json:"order_by"`
+	SortOrder string `json:"sort_order"` // Can either be `"asc"` or `"desc"`.
+}
+
 // ----------------------------------------------------------------------------
 // DATABASE MODELS
 // ----------------------------------------------------------------------------
@@ -29,94 +39,96 @@ type Tabler interface {
 
 // User represents a table containing user data.
 type Users struct {
-	gorm.Model
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 
-	Name     string
-	Email    string `gorm:"type:varchar(100);unique_index"`
-	Password string `json:"Password"`
+	Name     string `json:"name"`
+	Email    string `gorm:"type:varchar(100);unique_index;primaryKey" json:"email"`
+	Password string `json:"password"`
 }
 
 func (Users) TableName() string {
-	return "eb_users"
+	return UsersTableName
 }
 
 type Sales struct {
-	gorm.Model
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 
-	ID             uint64  `gorm:"primaryKey"`
-	Price          float64 `sql:"type:decimal(8,2);"`
-	Data           datatypes.Date
-	RelationshipID uint64
-	PurchaseID     uint64
-	InventoryID    uint64
+	ID             uint64         `gorm:"primaryKey" json:"id"`
+	Price          float64        `sql:"type:decimal(8,2);" json:"price"`
+	Date           datatypes.Date `json:"date"`
+	RelationshipID uint64         `json:"relationship_id"`
+	PurchaseID     uint64         `json:"purchase_id"`
+	InventoryID    uint64         `json:"inventory_id"`
+	Credit         bool           `json:"credit"`
+	Returned       bool           `json:"returned"`
+	Relationships  Relationships  `gorm:"foreignKey:RelationshipID" json:"relationships"`
+	Purchases      Purchases      `gorm:"foreignKey:PurchaseID" json:"purchases"`
+	Inventory      Inventory      `gorm:"foreignKey:InventoryID" json:"inventory"`
 }
 
 func (Sales) TableName() string {
-	return "eb_sales"
-}
-
-type SalesReturns struct {
-	gorm.Model
-
-	ID      uint64 `gorm:"primaryKey"`
-	Date    datatypes.Date
-	SalesID uint64
-}
-
-func (SalesReturns) TableName() string {
-	return "eb_sales_returns"
+	return SalesTableName
 }
 
 type Purchases struct {
-	gorm.Model
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 
-	ID             uint64 `gorm:"primaryKey"`
-	CompanyName    string
-	VehicleName    string
-	Price          float64 `sql:"type:decimal(8,2);"`
-	Date           datatypes.Date
-	RelationshipID uint64
+	ID             uint64         `gorm:"primaryKey" json:"id"`
+	CompanyName    string         `json:"company_name"`
+	VehicleName    string         `json:"vehicle_name"`
+	Price          float64        `sql:"type:decimal(8,2);" json:"price"`
+	Date           datatypes.Date `json:"date"`
+	RelationshipID uint64         `json:"relationship_id"`
+	Relationships  Relationships  `gorm:"foreignKey:RelationshipID" json:"relationships"`
 }
 
 func (Purchases) TableName() string {
-	return "eb_purchases"
+	return PurchasesTableName
 }
 
 type Inventory struct {
-	gorm.Model
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 
-	ID         uint64 `gorm:"primaryKey"`
-	PartName   string
-	Quantity   uint32
-	PurchaseID uint64
+	ID         uint64         `gorm:"primaryKey" json:"id"`
+	PartName   string         `json:"part_name"`
+	Quantity   uint32         `json:"quantity"`
+	PurchaseID uint64         `json:"purchase_id"`
+	Date       datatypes.Date `json:"date"`
+	Purchases  Purchases      `gorm:"foreignKey:PurchaseID" json:"purchases"`
 }
 
 func (Inventory) TableName() string {
-	return "eb_inventory"
+	return InventoryTableName
 }
 
 type Relationships struct {
-	gorm.Model
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 
-	ID          uint64 `gorm:"primaryKey"`
-	Name        string
-	PhoneNumber string
-	Address     string
+	ID          uint64 `gorm:"primaryKey" json:"id"`
+	Name        string `json:"name"`
+	PhoneNumber string `gorm:"unique_index" json:"phone_number"`
+	Address     string `json:"address"`
 }
 
 func (Relationships) TableName() string {
-	return "eb_relationships"
+	return RelationshipsTableName
 }
 
 type Miscellaneous struct {
-	gorm.Model
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 
-	ID          uint64 `gorm:"primaryKey"`
-	Description string
-	Price       float64 `sql:"type:decimal(8,2);"`
-	Date        datatypes.Date
+	ID          uint64         `gorm:"primaryKey" json:"id"`
+	Description string         `json:"description"`
+	Price       float64        `sql:"type:decimal(8,2);" json:"price"`
+	Date        datatypes.Date `json:"date"`
 }
 
 func (Miscellaneous) TableName() string {
-	return "eb_miscellaneous"
+	return MiscellaneousTableName
 }

@@ -1,12 +1,10 @@
 package middleware
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/ahmedsasuhail/easy-books/auth"
 	"github.com/ahmedsasuhail/easy-books/models"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,10 +14,10 @@ func CORSMiddleware() gin.HandlerFunc {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PATCH, DELETE")
 
 		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(204)
+			c.AbortWithStatus(http.StatusNoContent)
 			return
 		}
 
@@ -28,23 +26,20 @@ func CORSMiddleware() gin.HandlerFunc {
 }
 
 // ValidateJWT validates a provided JWT authentication token.
-func ValidateJWT(secret, issuer string) gin.HandlerFunc {
+func ValidateJWT() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		const BEARER_SCHEMA = "Bearer"
-		authHeader := c.GetHeader("Authorization")
-		tokenString := authHeader[len(BEARER_SCHEMA):]
-		token, err := auth.JWTAuthService(secret, issuer).ValidateToken(tokenString)
-
-		if token.Valid {
-			claims := token.Claims.(jwt.MapClaims)
-			fmt.Println(claims)
-		} else {
-			fmt.Println(err)
-			c.JSON(http.StatusUnauthorized, models.Response{
+		// Read and parse bearer token.
+		token := c.GetHeader("Authorization")
+		// Validate token.
+		err := auth.ValidateToken(token)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, models.Response{
 				Status:  "fail",
 				Code:    http.StatusUnauthorized,
-				Message: "Invalid auth token.",
+				Message: err.Error(),
 			})
 		}
+
+		c.Next()
 	}
 }
