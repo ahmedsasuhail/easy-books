@@ -16,8 +16,7 @@ RUN go build -o easy-books
 FROM node:16.13.0-alpine3.13 AS frontend
 WORKDIR /frontend
 COPY ./src/frontend .
-RUN npm install
-RUN npm run build
+RUN npm install && npm run build
 
 # -----------------------------------------------------------------------------
 # Construct final app image.
