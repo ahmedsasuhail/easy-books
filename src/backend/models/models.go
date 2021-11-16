@@ -42,7 +42,7 @@ type Users struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 
-	Name     string `json:"name"`
+	Name     string `gorm:"type:varchar(100)" json:"name"`
 	Email    string `gorm:"type:varchar(100);unique_index;primaryKey" json:"email"`
 	Password string `json:"password"`
 }
@@ -56,7 +56,7 @@ type Sales struct {
 	UpdatedAt time.Time `json:"updated_at"`
 
 	ID             uint64         `gorm:"primaryKey" json:"id"`
-	Price          float64        `sql:"type:decimal(8,2);" json:"price"`
+	Price          float64        `gorm:"type:decimal(8,2)" json:"price"`
 	Date           datatypes.Date `json:"date"`
 	RelationshipID uint64         `json:"relationship_id"`
 	PurchaseID     uint64         `json:"purchase_id"`
@@ -77,9 +77,9 @@ type Purchases struct {
 	UpdatedAt time.Time `json:"updated_at"`
 
 	ID             uint64         `gorm:"primaryKey" json:"id"`
-	CompanyName    string         `json:"company_name"`
-	VehicleName    string         `json:"vehicle_name"`
-	Price          float64        `sql:"type:decimal(8,2);" json:"price"`
+	CompanyName    string         `gorm:"type:varchar(100)" json:"company_name"`
+	VehicleName    string         `gorm:"type:varchar(100)" json:"vehicle_name"`
+	Price          float64        `gorm:"type:decimal(8,2)" json:"price"`
 	Date           datatypes.Date `json:"date"`
 	RelationshipID uint64         `json:"relationship_id"`
 	Relationships  Relationships  `gorm:"foreignKey:RelationshipID" json:"relationships"`
@@ -94,7 +94,7 @@ type Inventory struct {
 	UpdatedAt time.Time `json:"updated_at"`
 
 	ID         uint64         `gorm:"primaryKey" json:"id"`
-	PartName   string         `json:"part_name"`
+	PartName   string         `gorm:"type:varchar(100)" json:"part_name"`
 	Quantity   uint32         `json:"quantity"`
 	PurchaseID uint64         `json:"purchase_id"`
 	Date       datatypes.Date `json:"date"`
@@ -110,9 +110,9 @@ type Relationships struct {
 	UpdatedAt time.Time `json:"updated_at"`
 
 	ID          uint64 `gorm:"primaryKey" json:"id"`
-	Name        string `json:"name"`
-	PhoneNumber string `gorm:"unique_index" json:"phone_number"`
-	Address     string `json:"address"`
+	Name        string `gorm:"type:varchar(100)" json:"name"`
+	PhoneNumber string `gorm:"unique_index;type:varchar(10)" json:"phone_number"`
+	Address     string `gorm:"type:varchar(250)" json:"address"`
 }
 
 func (Relationships) TableName() string {
@@ -124,8 +124,8 @@ type Miscellaneous struct {
 	UpdatedAt time.Time `json:"updated_at"`
 
 	ID          uint64         `gorm:"primaryKey" json:"id"`
-	Description string         `json:"description"`
-	Price       float64        `sql:"type:decimal(8,2);" json:"price"`
+	Description string         `gorm:"type:varchar(250)" json:"description"`
+	Price       float64        `gorm:"type:decimal(8,2)" json:"price"`
 	Date        datatypes.Date `json:"date"`
 }
 
