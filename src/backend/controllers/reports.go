@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/ahmedsasuhail/easy-books/models"
 	"github.com/gin-gonic/gin"
@@ -125,9 +126,14 @@ func ReportByPurchaseID(c *gin.Context) {
 // ReportByRelationshipID retrieves a list of purchase and sales records matching
 // a specified relationship ID.
 func ReportByRelationshipID(c *gin.Context) {
+	type reportRequest struct {
+		RelationshipID uint64 `json:"relationship_id"`
+		DateRange      string `json:"date_range"`
+	}
+
 	var purchases []models.Purchases
 	var sales []models.Sales
-	var request map[string]uint64
+	var request reportRequest
 	var relationship models.Relationships
 	var result *gorm.DB
 	var totalSales float64
@@ -144,7 +150,7 @@ func ReportByRelationshipID(c *gin.Context) {
 
 	result = pgClient.Where(
 		"id = ?",
-		request["relationship_id"],
+		request.RelationshipID,
 	).Find(&relationship)
 
 	if result.Error != nil {
@@ -153,9 +159,22 @@ func ReportByRelationshipID(c *gin.Context) {
 		return
 	}
 
+	dateRange := strings.Split(request.DateRange, "|")
+	if len(dateRange) != 2 {
+		errorResponse(
+			c,
+			http.StatusBadRequest,
+			"Please specify a date range.",
+		)
+
+		return
+	}
+
 	result = pgClient.Where(
-		"relationship_id = ?",
+		"relationship_id = ? AND date BETWEEN ? AND ?",
 		relationship.ID,
+		dateRange[0],
+		dateRange[1],
 	).Find(&purchases)
 
 	if result.Error != nil {
@@ -165,10 +184,10 @@ func ReportByRelationshipID(c *gin.Context) {
 	}
 
 	result = pgClient.Where(
-		"relationship_id = ?",
+		"relationship_id = ? AND date BETWEEN ? AND ?",
 		relationship.ID,
-	).Preload(
-		"Inventory",
+		dateRange[0],
+		dateRange[1],
 	).Find(&sales)
 
 	if result.Error != nil {
