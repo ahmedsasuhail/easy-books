@@ -9,5 +9,5 @@ RUN echo "deb [trusted=yes] https://apt.fury.io/meilisearch/ /" > /etc/apt/sourc
 
 # ** [Optional] Uncomment this section to install additional packages. **
 RUN apt update && export DEBIAN_FRONTEND=noninteractive \
-	&& apt -y install --no-install-recommends vim meilisearch-http
+	&& apt -y install --no-install-recommends vim meilisearch-http neofetch
 
