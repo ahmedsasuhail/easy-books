@@ -188,7 +188,7 @@ func ReportByRelationshipID(c *gin.Context) {
 		relationship.ID,
 		dateRange[0],
 		dateRange[1],
-	).Find(&sales)
+	).Preload("Inventory").Find(&sales)
 
 	if result.Error != nil {
 		errorResponse(c, http.StatusInternalServerError, result.Error.Error())
