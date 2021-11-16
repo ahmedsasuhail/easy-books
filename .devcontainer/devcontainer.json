@@ -14,10 +14,13 @@
     "terminal.integrated.profiles.linux": {
       "bash": {
         "path": "bash",
-        "icon": "terminal-bash"
+        "icon": "terminal-bash",
+        "color": "terminal.ansiGreen"
       },
       "zsh": {
-        "path": "zsh"
+        "path": "zsh",
+        "icon": "terminal-debian",
+        "color": "terminal.ansiRed"
       }
     },
     "terminal.integrated.defaultProfile.linux": "zsh",
