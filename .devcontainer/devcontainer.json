@@ -42,7 +42,8 @@
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   "forwardPorts": [
     3000, // React development server.
-    8080 // Go API server.
+    8080, // Go API server.
+    7700 // Meilisearch server.
   ],
 
   // Uncomment to use the Docker CLI from inside the container. See https://aka.ms/vscode-remote/samples/docker-from-docker.
