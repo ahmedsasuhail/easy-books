@@ -21,6 +21,11 @@
         "path": "zsh",
         "icon": "terminal-debian",
         "color": "terminal.ansiRed"
+      },
+      "meilisearch": {
+        "path": "meilisearch",
+        "icon": "server-process",
+        "color": "terminal.ansiMagenta"
       }
     },
     "terminal.integrated.defaultProfile.linux": "zsh",
