@@ -6,8 +6,12 @@ import (
 
 	"github.com/ahmedsasuhail/easy-books/models"
 	"github.com/gin-gonic/gin"
+	"github.com/meilisearch/meilisearch-go"
 	"gorm.io/gorm"
 )
+
+// Meilisearch index.
+var salesIndex = msClient.Index(models.SalesTableName)
 
 // CreateSales creates a new record in the `eb_sales` table.
 func CreateSales(c *gin.Context) {
@@ -20,7 +24,7 @@ func CreateSales(c *gin.Context) {
 		return
 	}
 
-	// Create record in table.
+	// Create record in table and add it to Meilisearch index.
 	err = pgClient.Create(&record).Error
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
@@ -39,7 +43,7 @@ func CreateSales(c *gin.Context) {
 	).Preload(
 		"Inventory.Purchases.Relationships",
 	).First(&record)
-	successResponse(c, http.StatusOK, "", map[string]interface{}{
+	filteredRecord := map[string]interface{}{
 		"id":       record.ID,
 		"price":    record.Price,
 		"date":     record.Date,
@@ -60,7 +64,19 @@ func CreateSales(c *gin.Context) {
 			"part_name": record.Inventory.PartName,
 			"quantity":  record.Inventory.Quantity,
 		},
-	})
+	}
+
+	_, err = salesIndex.AddDocumentsWithPrimaryKey(
+		filteredRecord,
+		"id",
+	)
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+
+	successResponse(c, http.StatusOK, "", filteredRecord)
 }
 
 // UpdateSales updates a record in the `eb_sales` table.
@@ -74,7 +90,7 @@ func UpdateSales(c *gin.Context) {
 		return
 	}
 
-	// Create or update record in table.
+	// Update record in table and update Meilisearch index.
 	err = pgClient.Model(&record).Updates(&record).Error
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
@@ -120,8 +136,7 @@ func UpdateSales(c *gin.Context) {
 	).Preload(
 		"Inventory.Purchases.Relationships",
 	).First(&record)
-
-	successResponse(c, http.StatusOK, "", map[string]interface{}{
+	filteredRecord := map[string]interface{}{
 		"id":       record.ID,
 		"price":    record.Price,
 		"date":     record.Date,
@@ -142,7 +157,19 @@ func UpdateSales(c *gin.Context) {
 			"part_name": record.Inventory.PartName,
 			"quantity":  record.Inventory.Quantity,
 		},
-	})
+	}
+
+	_, err = salesIndex.UpdateDocumentsWithPrimaryKey(
+		filteredRecord,
+		"id",
+	)
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+
+	successResponse(c, http.StatusOK, "", filteredRecord)
 }
 
 // ReadSales returns a paginated list of results from the `eb_sales`
@@ -248,28 +275,81 @@ func DeleteSales(c *gin.Context) {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 
 		return
-	} else {
-		successResponse(c, http.StatusOK, "Deleted record.", map[string]interface{}{
-			"id":       record.ID,
-			"price":    record.Price,
-			"date":     record.Date,
-			"credit":   record.Credit,
-			"returned": record.Returned,
-			"relationships": map[string]interface{}{
-				"id":   record.Relationships.ID,
-				"name": record.Relationships.Name,
-			},
-			"purchases": map[string]interface{}{
-				"id":           record.Purchases.ID,
-				"company_name": record.Purchases.CompanyName,
-				"vehicle_name": record.Purchases.VehicleName,
-				"price":        record.Purchases.Price,
-			},
-			"inventory": map[string]interface{}{
-				"id":        record.Inventory.ID,
-				"part_name": record.Inventory.PartName,
-				"quantity":  record.Inventory.Quantity,
-			},
-		})
 	}
+	filteredRecord := map[string]interface{}{
+		"id":       record.ID,
+		"price":    record.Price,
+		"date":     record.Date,
+		"credit":   record.Credit,
+		"returned": record.Returned,
+		"relationships": map[string]interface{}{
+			"id":   record.Relationships.ID,
+			"name": record.Relationships.Name,
+		},
+		"purchases": map[string]interface{}{
+			"id":           record.Purchases.ID,
+			"company_name": record.Purchases.CompanyName,
+			"vehicle_name": record.Purchases.VehicleName,
+			"price":        record.Purchases.Price,
+		},
+		"inventory": map[string]interface{}{
+			"id":        record.Inventory.ID,
+			"part_name": record.Inventory.PartName,
+			"quantity":  record.Inventory.Quantity,
+		},
+	}
+
+	_, err = salesIndex.DeleteDocument(fmt.Sprint(record.ID))
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+
+	successResponse(c, http.StatusOK, "Deleted record.", filteredRecord)
+}
+
+// SearchSales returns a paginated list of records based on a specified
+// search term.
+func SearchSales(c *gin.Context) {
+	pagination, err := parsePaginationRequest(c)
+	if err != nil {
+		errorResponse(
+			c,
+			http.StatusBadRequest,
+			err.Error(),
+		)
+
+		return
+	}
+
+	var searchRequest models.SearchRequest
+	err = parseRequestBody(c, &searchRequest)
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+
+	searchRes, err := inventoryIndex.Search(
+		searchRequest.SearchTerm,
+		&meilisearch.SearchRequest{
+			Limit: int64(searchRequest.Limit),
+		},
+	)
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+
+	successResponse(c, http.StatusOK, "", map[string]interface{}{
+		"page":                pagination.Page,
+		"page_limit":          pagination.PageLimit,
+		"order_by":            pagination.OrderBy,
+		"sort_order":          pagination.SortOrder,
+		"total_count":         nil, // TODO: implement.
+		"records":             searchRes.Hits,
+		"total_matched_count": len(searchRes.Hits),
+	})
 }

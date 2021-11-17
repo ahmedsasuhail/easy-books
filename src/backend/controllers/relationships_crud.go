@@ -6,8 +6,12 @@ import (
 
 	"github.com/ahmedsasuhail/easy-books/models"
 	"github.com/gin-gonic/gin"
+	"github.com/meilisearch/meilisearch-go"
 	"gorm.io/gorm"
 )
+
+// Meilisearch index.
+var relationshipsIndex = msClient.Index(models.RelationshipsTableName)
 
 // CreateRelationships creates a record in the `eb_relationships` table.
 func CreateRelationships(c *gin.Context) {
@@ -20,7 +24,7 @@ func CreateRelationships(c *gin.Context) {
 		return
 	}
 
-	// Create record in table.
+	// Create record in table and add it to Meilisearch index.
 	err = pgClient.Create(&record).Error
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
@@ -29,12 +33,24 @@ func CreateRelationships(c *gin.Context) {
 	}
 
 	pgClient.First(&record)
-	successResponse(c, http.StatusOK, "", map[string]interface{}{
+	filteredRecord := map[string]interface{}{
 		"id":           record.ID,
 		"name":         record.Name,
 		"phone_number": record.PhoneNumber,
 		"address":      record.Address,
-	})
+	}
+
+	_, err = relationshipsIndex.AddDocumentsWithPrimaryKey(
+		filteredRecord,
+		"id",
+	)
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+
+	successResponse(c, http.StatusOK, "", filteredRecord)
 }
 
 // UpdateRelationships updates a record in the `eb_relationships` table.
@@ -48,7 +64,7 @@ func UpdateRelationships(c *gin.Context) {
 		return
 	}
 
-	// Create or update record in table.
+	// Update record in table and update Meilisearch index.
 	err = pgClient.Model(&record).Updates(&record).Error
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
@@ -57,12 +73,24 @@ func UpdateRelationships(c *gin.Context) {
 	}
 
 	pgClient.First(&record)
-	successResponse(c, http.StatusOK, "", map[string]interface{}{
+	filteredRecord := map[string]interface{}{
 		"id":           record.ID,
 		"name":         record.Name,
 		"phone_number": record.PhoneNumber,
 		"address":      record.Address,
-	})
+	}
+
+	_, err = relationshipsIndex.UpdateDocumentsWithPrimaryKey(
+		filteredRecord,
+		"id",
+	)
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+
+	successResponse(c, http.StatusOK, "", filteredRecord)
 }
 
 // ReadRelationships returns a paginated list of results from the `eb_relationships`
@@ -140,12 +168,65 @@ func DeleteRelationships(c *gin.Context) {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 
 		return
-	} else {
-		successResponse(c, http.StatusOK, "Deleted record.", map[string]interface{}{
-			"id":           record.ID,
-			"name":         record.Name,
-			"phone_number": record.PhoneNumber,
-			"address":      record.Address,
-		})
 	}
+	filteredRecord := map[string]interface{}{
+		"id":           record.ID,
+		"name":         record.Name,
+		"phone_number": record.PhoneNumber,
+		"address":      record.Address,
+	}
+
+	_, err = relationshipsIndex.DeleteDocument(fmt.Sprint(record.ID))
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+
+	successResponse(c, http.StatusOK, "Deleted record.", filteredRecord)
+}
+
+// SearchRelationships returns a paginated list of records based on a specified
+// search term.
+func SearchRelationships(c *gin.Context) {
+	pagination, err := parsePaginationRequest(c)
+	if err != nil {
+		errorResponse(
+			c,
+			http.StatusBadRequest,
+			err.Error(),
+		)
+
+		return
+	}
+
+	var searchRequest models.SearchRequest
+	err = parseRequestBody(c, &searchRequest)
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+
+	searchRes, err := relationshipsIndex.Search(
+		searchRequest.SearchTerm,
+		&meilisearch.SearchRequest{
+			Limit: int64(searchRequest.Limit),
+		},
+	)
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+
+	successResponse(c, http.StatusOK, "", map[string]interface{}{
+		"page":                pagination.Page,
+		"page_limit":          pagination.PageLimit,
+		"order_by":            pagination.OrderBy,
+		"sort_order":          pagination.SortOrder,
+		"total_count":         nil, // TODO: implement.
+		"records":             searchRes.Hits,
+		"total_matched_count": len(searchRes.Hits),
+	})
 }

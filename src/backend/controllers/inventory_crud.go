@@ -6,8 +6,12 @@ import (
 
 	"github.com/ahmedsasuhail/easy-books/models"
 	"github.com/gin-gonic/gin"
+	"github.com/meilisearch/meilisearch-go"
 	"gorm.io/gorm"
 )
+
+// Meilisearch index.
+var inventoryIndex = msClient.Index(models.InventoryTableName)
 
 // CreateInventory creates a new record in the `eb_inventory` table.
 func CreateInventory(c *gin.Context) {
@@ -20,7 +24,7 @@ func CreateInventory(c *gin.Context) {
 		return
 	}
 
-	// Create record in table.
+	// Create record in table and add it to Meilisearch index.
 	err = pgClient.Create(&record).Error
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
@@ -33,7 +37,7 @@ func CreateInventory(c *gin.Context) {
 	).Preload(
 		"Purchases.Relationships",
 	).First(&record)
-	successResponse(c, http.StatusOK, "", map[string]interface{}{
+	filteredRecord := map[string]interface{}{
 		"id":        record.ID,
 		"part_name": record.PartName,
 		"quantity":  record.Quantity,
@@ -43,7 +47,19 @@ func CreateInventory(c *gin.Context) {
 			"company_name": record.Purchases.CompanyName,
 			"vehicle_name": record.Purchases.VehicleName,
 		},
-	})
+	}
+
+	_, err = inventoryIndex.AddDocumentsWithPrimaryKey(
+		filteredRecord,
+		"id",
+	)
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+
+	successResponse(c, http.StatusOK, "", filteredRecord)
 }
 
 // UpdateInventory updates a record in the `eb_inventory` table.
@@ -57,7 +73,7 @@ func UpdateInventory(c *gin.Context) {
 		return
 	}
 
-	// Create or update record in table.
+	// Update record in table and update Meilisearch index.
 	err = pgClient.Model(&record).Updates(&record).Error
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
@@ -70,7 +86,7 @@ func UpdateInventory(c *gin.Context) {
 	).Preload(
 		"Purchases.Relationships",
 	).First(&record)
-	successResponse(c, http.StatusOK, "", map[string]interface{}{
+	filteredRecord := map[string]interface{}{
 		"id":        record.ID,
 		"part_name": record.PartName,
 		"quantity":  record.Quantity,
@@ -80,7 +96,19 @@ func UpdateInventory(c *gin.Context) {
 			"company_name": record.Purchases.CompanyName,
 			"vehicle_name": record.Purchases.VehicleName,
 		},
-	})
+	}
+
+	_, err = inventoryIndex.UpdateDocumentsWithPrimaryKey(
+		filteredRecord,
+		"id",
+	)
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+
+	successResponse(c, http.StatusOK, "", filteredRecord)
 }
 
 // ReadInventory returns a paginated list of results from the `eb_inventory`
@@ -171,19 +199,28 @@ func DeleteInventory(c *gin.Context) {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 
 		return
-	} else {
-		successResponse(c, http.StatusOK, "Deleted record.", map[string]interface{}{
-			"id":        record.ID,
-			"part_name": record.PartName,
-			"quantity":  record.Quantity,
-			"date":      record.Date,
-			"purchases": map[string]interface{}{
-				"id":           record.Purchases.ID,
-				"company_name": record.Purchases.CompanyName,
-				"vehicle_name": record.Purchases.VehicleName,
-			},
-		})
 	}
+
+	filteredRecord := map[string]interface{}{
+		"id":        record.ID,
+		"part_name": record.PartName,
+		"quantity":  record.Quantity,
+		"date":      record.Date,
+		"purchases": map[string]interface{}{
+			"id":           record.Purchases.ID,
+			"company_name": record.Purchases.CompanyName,
+			"vehicle_name": record.Purchases.VehicleName,
+		},
+	}
+
+	_, err = inventoryIndex.DeleteDocument(fmt.Sprint(record.ID))
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+
+	successResponse(c, http.StatusOK, "Deleted record.", filteredRecord)
 }
 
 // GetInventoryByPurchaseID retrieves a list of inventory records matching a
@@ -259,5 +296,50 @@ func GetInventoryByPurchaseID(c *gin.Context) {
 			"purchase_id = ?",
 			record.PurchaseID,
 		).Find(&records).RowsAffected,
+	})
+}
+
+// SearchInventory returns a paginated list of records based on a specified
+// search term.
+func SearchInventory(c *gin.Context) {
+	pagination, err := parsePaginationRequest(c)
+	if err != nil {
+		errorResponse(
+			c,
+			http.StatusBadRequest,
+			err.Error(),
+		)
+
+		return
+	}
+
+	var searchRequest models.SearchRequest
+	err = parseRequestBody(c, &searchRequest)
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+
+	searchRes, err := inventoryIndex.Search(
+		searchRequest.SearchTerm,
+		&meilisearch.SearchRequest{
+			Limit: int64(searchRequest.Limit),
+		},
+	)
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+
+	successResponse(c, http.StatusOK, "", map[string]interface{}{
+		"page":                pagination.Page,
+		"page_limit":          pagination.PageLimit,
+		"order_by":            pagination.OrderBy,
+		"sort_order":          pagination.SortOrder,
+		"total_count":         nil, // TODO: implement.
+		"records":             searchRes.Hits,
+		"total_matched_count": len(searchRes.Hits),
 	})
 }

@@ -22,6 +22,8 @@ func Init() *gin.Engine {
 		"PORT",
 		"EB_SECRET_KEY",
 		"EB_FRONTEND_PATH",
+		"MEILISEARCH_HOST",
+		"MEILISEARCH_API_KEY",
 	}
 	var missingEnv []string
 

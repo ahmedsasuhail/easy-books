@@ -6,8 +6,12 @@ import (
 
 	"github.com/ahmedsasuhail/easy-books/models"
 	"github.com/gin-gonic/gin"
+	"github.com/meilisearch/meilisearch-go"
 	"gorm.io/gorm"
 )
+
+// Meilisearch index.
+var miscellaneousIndex = msClient.Index(models.MiscellaneousTableName)
 
 // CreateMiscellaneous creates a record in the `eb_miscellaneous` table.
 func CreateMiscellaneous(c *gin.Context) {
@@ -29,12 +33,24 @@ func CreateMiscellaneous(c *gin.Context) {
 	}
 
 	pgClient.First(&record)
-	successResponse(c, http.StatusOK, "", map[string]interface{}{
+	filteredRecord := map[string]interface{}{
 		"id":          record.ID,
 		"description": record.Description,
 		"price":       record.Price,
 		"date":        record.Date,
-	})
+	}
+
+	_, err = miscellaneousIndex.AddDocumentsWithPrimaryKey(
+		filteredRecord,
+		"id",
+	)
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+
+	successResponse(c, http.StatusOK, "", filteredRecord)
 }
 
 // UpdateMiscellaneous creates or updates a record in the `eb_miscellaneous`
@@ -49,7 +65,7 @@ func UpdateMiscellaneous(c *gin.Context) {
 		return
 	}
 
-	// Update record in table.
+	// Update record in table and update Meilisearch index.
 	err = pgClient.Model(&record).Updates(&record).Error
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
@@ -58,12 +74,24 @@ func UpdateMiscellaneous(c *gin.Context) {
 	}
 
 	pgClient.First(&record)
-	successResponse(c, http.StatusOK, "", map[string]interface{}{
+	filteredRecord := map[string]interface{}{
 		"id":          record.ID,
 		"description": record.Description,
 		"price":       record.Price,
 		"date":        record.Date,
-	})
+	}
+
+	_, err = miscellaneousIndex.UpdateDocumentsWithPrimaryKey(
+		filteredRecord,
+		"id",
+	)
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+
+	successResponse(c, http.StatusOK, "", filteredRecord)
 }
 
 // ReadMiscellaneous returns a paginated list of results from the `eb_miscellaneous`
@@ -141,12 +169,66 @@ func DeleteMiscellaneous(c *gin.Context) {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 
 		return
-	} else {
-		successResponse(c, http.StatusOK, "Deleted record.", map[string]interface{}{
-			"id":          record.ID,
-			"description": record.Description,
-			"price":       record.Price,
-			"date":        record.Date,
-		})
 	}
+
+	filteredRecord := map[string]interface{}{
+		"id":          record.ID,
+		"description": record.Description,
+		"price":       record.Price,
+		"date":        record.Date,
+	}
+
+	_, err = miscellaneousIndex.DeleteDocument(fmt.Sprint(record.ID))
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+
+	successResponse(c, http.StatusOK, "Deleted record.", filteredRecord)
+}
+
+// SearchMiscellaneous returns a paginated list of records based on a specified
+// search term.
+func SearchMiscellaneous(c *gin.Context) {
+	pagination, err := parsePaginationRequest(c)
+	if err != nil {
+		errorResponse(
+			c,
+			http.StatusBadRequest,
+			err.Error(),
+		)
+
+		return
+	}
+
+	var searchRequest models.SearchRequest
+	err = parseRequestBody(c, &searchRequest)
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+
+	searchRes, err := miscellaneousIndex.Search(
+		searchRequest.SearchTerm,
+		&meilisearch.SearchRequest{
+			Limit: int64(searchRequest.Limit),
+		},
+	)
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+
+	successResponse(c, http.StatusOK, "", map[string]interface{}{
+		"page":                pagination.Page,
+		"page_limit":          pagination.PageLimit,
+		"order_by":            pagination.OrderBy,
+		"sort_order":          pagination.SortOrder,
+		"total_count":         nil, // TODO: implement.
+		"records":             searchRes.Hits,
+		"total_matched_count": len(searchRes.Hits),
+	})
 }

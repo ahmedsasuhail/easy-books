@@ -11,10 +11,12 @@ import (
 	"github.com/ahmedsasuhail/easy-books/db"
 	"github.com/ahmedsasuhail/easy-books/models"
 	"github.com/gin-gonic/gin"
+	"github.com/meilisearch/meilisearch-go"
 	"golang.org/x/crypto/sha3"
 )
 
 var pgClient *db.PostgresClient
+var msClient = initMeilisearch()
 
 // InitDB initializes a database connection and migrates the specified models.
 func InitDB(models []interface{}) error {
@@ -27,6 +29,14 @@ func InitDB(models []interface{}) error {
 	pgClient.Migrate(models)
 
 	return nil
+}
+
+// initMeilisearch returns a new Meilisearch client.
+func initMeilisearch() *meilisearch.Client {
+	return meilisearch.NewClient(meilisearch.ClientConfig{
+		Host:   os.Getenv("MEILISEARCH_HOST"),
+		APIKey: os.Getenv("MEILISEARCH_API_KEY"),
+	})
 }
 
 // AppInit initializes the backend app and displays a JSON message.

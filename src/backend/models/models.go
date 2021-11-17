@@ -11,7 +11,6 @@ import (
 // API MODELS
 // ----------------------------------------------------------------------------
 
-// Response represents a well structured JSON response.
 type Response struct {
 	Status  string      `json:"status"`
 	Code    uint        `json:"code"`
@@ -19,13 +18,17 @@ type Response struct {
 	Data    interface{} `json:"data"`
 }
 
-// Pagination represents a pagination request.
 type Pagination struct {
 	GetAll    bool   `json:"get_all"`
 	Page      int    `json:"page"`
 	PageLimit int    `json:"page_limit"`
 	OrderBy   string `json:"order_by"`
 	SortOrder string `json:"sort_order"` // Can either be `"asc"` or `"desc"`.
+}
+
+type SearchRequest struct {
+	Limit      uint8  `json:"limit"`
+	SearchTerm string `json:"search_term"`
 }
 
 // ----------------------------------------------------------------------------
