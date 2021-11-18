@@ -326,8 +326,9 @@ func SearchInventory(c *gin.Context) {
 	searchRes, err := inventoryIndex.Search(
 		searchRequest.SearchTerm,
 		&meilisearch.SearchRequest{
-			Limit:  int64(pagination.PageLimit),
-			Offset: int64(offset),
+			Limit:                 int64(pagination.PageLimit),
+			Offset:                int64(offset),
+			AttributesToHighlight: []string{"*"},
 		},
 	)
 	if err != nil {
