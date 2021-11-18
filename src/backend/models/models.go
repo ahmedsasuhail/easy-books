@@ -27,7 +27,6 @@ type Pagination struct {
 }
 
 type SearchRequest struct {
-	Limit      uint8  `json:"limit"`
 	SearchTerm string `json:"search_term"`
 }
 

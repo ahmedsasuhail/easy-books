@@ -208,10 +208,16 @@ func SearchRelationships(c *gin.Context) {
 		return
 	}
 
+	offset := (pagination.Page - 1) * pagination.PageLimit
+
 	searchRes, err := relationshipsIndex.Search(
 		searchRequest.SearchTerm,
 		&meilisearch.SearchRequest{
-			Limit: int64(searchRequest.Limit),
+			Limit:  int64(pagination.PageLimit),
+			Offset: int64(offset),
+			Sort: []string{
+				fmt.Sprintf("%s:%s", pagination.OrderBy, pagination.SortOrder),
+			},
 		},
 	)
 	if err != nil {
