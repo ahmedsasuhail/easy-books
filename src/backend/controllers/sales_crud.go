@@ -333,7 +333,7 @@ func SearchSales(c *gin.Context) {
 
 	offset := (pagination.Page - 1) * pagination.PageLimit
 
-	searchRes, err := inventoryIndex.Search(
+	searchRes, err := salesIndex.Search(
 		searchRequest.SearchTerm,
 		&meilisearch.SearchRequest{
 			Limit:                 int64(pagination.PageLimit),
