@@ -47,11 +47,31 @@ func InitMeilisearch() {
 	var relationshipsTable []models.Relationships
 	var salesTable []models.Sales
 
-	pgClient.Find(&inventoryTable)
+	pgClient.Preload(
+		"Purchases",
+	).Preload(
+		"Purchases.Relationships",
+	).Find(&inventoryTable)
+
 	pgClient.Find(&miscellaneousTable)
-	pgClient.Find(&purchasesTable)
+
+	pgClient.Preload(
+		"Relationships",
+	).Find(&purchasesTable)
+
 	pgClient.Find(&relationshipsTable)
-	pgClient.Find(&salesTable)
+
+	pgClient.Preload(
+		"Relationships",
+	).Preload(
+		"Purchases",
+	).Preload(
+		"Purchases.Relationships",
+	).Preload(
+		"Inventory",
+	).Preload(
+		"Inventory.Purchases.Relationships",
+	).Find(&salesTable)
 
 	indeces := map[string]interface{}{
 		models.InventoryTableName:     inventoryTable,
