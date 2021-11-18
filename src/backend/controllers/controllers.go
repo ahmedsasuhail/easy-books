@@ -16,7 +16,7 @@ import (
 )
 
 var pgClient *db.PostgresClient
-var msClient = initMeilisearch()
+var msClient = newMeilisearchClient()
 
 // InitDB initializes a database connection and migrates the specified models.
 func InitDB(models []interface{}) error {
@@ -31,12 +31,43 @@ func InitDB(models []interface{}) error {
 	return nil
 }
 
-// initMeilisearch returns a new Meilisearch client.
-func initMeilisearch() *meilisearch.Client {
+func newMeilisearchClient() *meilisearch.Client {
 	return meilisearch.NewClient(meilisearch.ClientConfig{
 		Host:   os.Getenv("MEILISEARCH_HOST"),
 		APIKey: os.Getenv("MEILISEARCH_API_KEY"),
 	})
+}
+
+// InitMeilisearch clears Meilisearch's indeces and repopulates them with the
+// latest data from the PostgreSQL database.
+func InitMeilisearch() {
+	var inventoryTable []models.Inventory
+	var miscellaneousTable []models.Miscellaneous
+	var purchasesTable []models.Purchases
+	var relationshipsTable []models.Relationships
+	var salesTable []models.Sales
+
+	pgClient.Find(&inventoryTable)
+	pgClient.Find(&miscellaneousTable)
+	pgClient.Find(&purchasesTable)
+	pgClient.Find(&relationshipsTable)
+	pgClient.Find(&salesTable)
+
+	indeces := map[string]interface{}{
+		models.InventoryTableName:     inventoryTable,
+		models.MiscellaneousTableName: miscellaneousTable,
+		models.PurchasesTableName:     purchasesTable,
+		models.RelationshipsTableName: relationshipsTable,
+		models.SalesTableName:         salesTable,
+	}
+
+	for index, table := range indeces {
+		msClient.DeleteIndexIfExists(index)
+		msClient.Index(index).AddDocumentsWithPrimaryKey(
+			table,
+			"id",
+		)
+	}
 }
 
 // AppInit initializes the backend app and displays a JSON message.

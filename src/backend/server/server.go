@@ -62,6 +62,9 @@ func Init() *gin.Engine {
 		panic(err)
 	}
 
+	// Initialize and populate Meilisearch instance.
+	controllers.InitMeilisearch()
+
 	return routes.Get()
 }
 
