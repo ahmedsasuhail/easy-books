@@ -73,12 +73,89 @@ func InitMeilisearch() {
 		"Inventory.Purchases.Relationships",
 	).Find(&salesTable)
 
+	var filteredInventory []map[string]interface{}
+	var filteredMiscellaneous []map[string]interface{}
+	var filteredPurchases []map[string]interface{}
+	var filteredRelationships []map[string]interface{}
+	var filteredSales []map[string]interface{}
+
+	for _, record := range inventoryTable {
+		filteredInventory = append(filteredInventory, map[string]interface{}{
+			"id":        record.ID,
+			"part_name": record.PartName,
+			"quantity":  record.Quantity,
+			"date":      record.Date,
+			"purchases": map[string]interface{}{
+				"id":           record.Purchases.ID,
+				"company_name": record.Purchases.CompanyName,
+				"vehicle_name": record.Purchases.VehicleName,
+			},
+		})
+	}
+
+	for _, record := range miscellaneousTable {
+		filteredMiscellaneous = append(filteredMiscellaneous, map[string]interface{}{
+			"id":          record.ID,
+			"description": record.Description,
+			"price":       record.Price,
+			"date":        record.Date,
+		})
+	}
+
+	for _, record := range purchasesTable {
+		filteredPurchases = append(filteredPurchases, map[string]interface{}{
+			"id":           record.ID,
+			"company_name": record.CompanyName,
+			"vehicle_name": record.VehicleName,
+			"price":        record.Price,
+			"date":         record.Date,
+			"relationships": map[string]interface{}{
+				"id":   record.Relationships.ID,
+				"name": record.Relationships.Name,
+			},
+		})
+	}
+
+	for _, record := range relationshipsTable {
+		filteredRelationships = append(filteredRelationships, map[string]interface{}{
+			"id":           record.ID,
+			"name":         record.Name,
+			"phone_number": record.PhoneNumber,
+			"address":      record.Address,
+		})
+	}
+
+	for _, record := range salesTable {
+		filteredSales = append(filteredSales, map[string]interface{}{
+			"id":       record.ID,
+			"price":    record.Price,
+			"date":     record.Date,
+			"credit":   record.Credit,
+			"returned": record.Returned,
+			"relationships": map[string]interface{}{
+				"id":   record.Relationships.ID,
+				"name": record.Relationships.Name,
+			},
+			"purchases": map[string]interface{}{
+				"id":           record.Purchases.ID,
+				"company_name": record.Purchases.CompanyName,
+				"vehicle_name": record.Purchases.VehicleName,
+				"price":        record.Purchases.Price,
+			},
+			"inventory": map[string]interface{}{
+				"id":        record.Inventory.ID,
+				"part_name": record.Inventory.PartName,
+				"quantity":  record.Inventory.Quantity,
+			},
+		})
+	}
+
 	indeces := map[string]interface{}{
-		models.InventoryTableName:     inventoryTable,
-		models.MiscellaneousTableName: miscellaneousTable,
-		models.PurchasesTableName:     purchasesTable,
-		models.RelationshipsTableName: relationshipsTable,
-		models.SalesTableName:         salesTable,
+		models.InventoryTableName:     filteredInventory,
+		models.MiscellaneousTableName: filteredMiscellaneous,
+		models.PurchasesTableName:     filteredPurchases,
+		models.RelationshipsTableName: filteredRelationships,
+		models.SalesTableName:         filteredSales,
 	}
 
 	for index, table := range indeces {
