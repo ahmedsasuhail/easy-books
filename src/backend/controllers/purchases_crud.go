@@ -241,12 +241,19 @@ func SearchPurchases(c *gin.Context) {
 		return
 	}
 
+	stats, err := purchasesIndex.GetStats()
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+
 	successResponse(c, http.StatusOK, "", map[string]interface{}{
 		"page":                pagination.Page,
 		"page_limit":          pagination.PageLimit,
 		"order_by":            pagination.OrderBy,
 		"sort_order":          pagination.SortOrder,
-		"total_count":         nil, // TODO: implement.
+		"total_count":         stats.NumberOfDocuments,
 		"records":             searchRes.Hits,
 		"total_matched_count": len(searchRes.Hits),
 	})
