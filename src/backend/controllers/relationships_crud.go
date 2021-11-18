@@ -215,9 +215,6 @@ func SearchRelationships(c *gin.Context) {
 		&meilisearch.SearchRequest{
 			Limit:  int64(pagination.PageLimit),
 			Offset: int64(offset),
-			Sort: []string{
-				fmt.Sprintf("%s:%s", pagination.OrderBy, pagination.SortOrder),
-			},
 		},
 	)
 	if err != nil {
