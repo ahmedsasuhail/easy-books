@@ -258,3 +258,122 @@ func ReportByRelationshipID(c *gin.Context) {
 		"credited_sales_total": totalCredit,
 	})
 }
+
+// Returns a report of records between a specified range.
+func ReportByRange(c *gin.Context) {
+	type reportRequest struct {
+		DateRange string `json:"date_range"`
+	}
+
+	var sales []models.Sales
+	var purchases []models.Purchases
+	var expenses []models.Miscellaneous
+	var totalSales float64
+	var totalPurchased float64
+	var totalExpenses float64
+	var request reportRequest
+	var result *gorm.DB
+
+	err := parseRequestBody(c, &request)
+	if err != nil {
+		errorResponse(c, http.StatusBadRequest, err.Error())
+
+		return
+	}
+
+	dateRange := strings.Split(request.DateRange, "|")
+	if len(dateRange) != 2 {
+		errorResponse(
+			c,
+			http.StatusBadRequest,
+			"Please specify a date range.",
+		)
+
+		return
+	}
+
+	result = pgClient.Where(
+		"date BETWEEN ? AND ?",
+		dateRange[0],
+		dateRange[1],
+	).Preload("Inventory").Find(&sales)
+	if result.Error != nil {
+		errorResponse(c, http.StatusInternalServerError, result.Error.Error())
+
+		return
+	}
+
+	result = pgClient.Preload(
+		"date BETWEEN ? AND ?",
+		dateRange[0],
+		dateRange[1],
+	).Find(&purchases)
+	if result.Error != nil {
+		errorResponse(c, http.StatusInternalServerError, result.Error.Error())
+
+		return
+	}
+
+	result = pgClient.Where(
+		"date BETWEEN ? AND ?",
+		dateRange[0],
+		dateRange[1],
+	).Find(&expenses)
+	if result.Error != nil {
+		errorResponse(c, http.StatusInternalServerError, result.Error.Error())
+
+		return
+	}
+
+	var filteredSales []map[string]interface{}
+	var filteredPurchases []map[string]interface{}
+	var filteredExpenses []map[string]interface{}
+
+	for _, record := range sales {
+		if !record.Returned {
+			totalSales += record.Price
+		}
+
+		filteredSales = append(filteredSales, map[string]interface{}{
+			"id":        record.ID,
+			"price":     record.Price,
+			"date":      record.Date,
+			"part_name": record.Inventory.PartName,
+			"credit":    record.Credit,
+			"returned":  record.Returned,
+		})
+	}
+
+	for _, record := range purchases {
+		totalPurchased += record.Price
+
+		filteredPurchases = append(filteredPurchases, map[string]interface{}{
+			"id":           record.ID,
+			"company_name": record.CompanyName,
+			"vehicle_name": record.VehicleName,
+			"price":        record.Price,
+			"date":         record.Date,
+		})
+	}
+
+	for _, record := range expenses {
+		totalExpenses += record.Price
+
+		filteredExpenses = append(filteredExpenses, map[string]interface{}{
+			"id":          record.ID,
+			"description": record.Description,
+			"price":       record.Price,
+			"date":        record.Date,
+		})
+	}
+
+	successResponse(c, http.StatusOK, "", map[string]interface{}{
+		"sales":           filteredSales,
+		"purchases":       filteredPurchases,
+		"expenses":        filteredExpenses,
+		"sales_total":     totalSales,
+		"purchased_total": totalPurchased,
+		"expenses_total":  totalExpenses,
+		"total":           totalSales - totalPurchased - totalExpenses,
+	})
+}

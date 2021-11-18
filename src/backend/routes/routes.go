@@ -99,6 +99,7 @@ func Get() *gin.Engine {
 		{
 			reports.POST("/by_purchase", controllers.ReportByPurchaseID)
 			reports.POST("/by_relationship", controllers.ReportByRelationshipID)
+			reports.POST("/by_range", controllers.ReportByRange)
 		}
 	}
 
