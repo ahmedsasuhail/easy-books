@@ -303,7 +303,7 @@ func ReportByRange(c *gin.Context) {
 		return
 	}
 
-	result = pgClient.Preload(
+	result = pgClient.Where(
 		"date BETWEEN ? AND ?",
 		dateRange[0],
 		dateRange[1],
