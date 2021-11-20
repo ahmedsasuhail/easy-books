@@ -1,10 +1,11 @@
-import { inventoryPurchaseActions } from './inventoryPurchaseActions';
-import axios from '../../../utils/axiosInstance';
-import { userActions } from '../user/userActions';
+import { inventoryPurchaseActions } from "./inventoryPurchaseActions";
+import axios from "../../../utils/axiosInstance";
+import { userActions } from "../user/userActions";
 
 // Action Creators
 export const getInventoryPurchase = (values) => {
   return async (dispatch) => {
+    let result;
     dispatch(inventoryPurchaseActions.inventoryPurchaseRequest());
     try {
       const response = await axios.post(
@@ -18,22 +19,24 @@ export const getInventoryPurchase = (values) => {
           headers: {
             Authorization: values.token,
           },
-        },
+        }
       );
       if (response.data.data) {
+        result = response.data.data.records;
         dispatch(
-          inventoryPurchaseActions.inventoryPurchaseSuccess(response.data.data),
+          inventoryPurchaseActions.inventoryPurchaseSuccess(response.data.data)
         );
       } else {
-        console.log('Error: ', response);
+        console.log("Error: ", response);
         dispatch(inventoryPurchaseActions.inventoryPurchaseFailure());
       }
     } catch (error) {
-      console.log('Catch Error: ', error);
+      console.log("Catch Error: ", error);
       dispatch(inventoryPurchaseActions.inventoryPurchaseFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
       }
     }
+    return result;
   };
 };

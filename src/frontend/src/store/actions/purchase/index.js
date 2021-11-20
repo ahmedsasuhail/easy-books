@@ -1,6 +1,6 @@
-import { purchaseActions } from './purchaseActions';
-import axios from '../../../utils/axiosInstance';
-import { userActions } from '../user/userActions';
+import { purchaseActions } from "./purchaseActions";
+import axios from "../../../utils/axiosInstance";
+import { userActions } from "../user/userActions";
 
 // Action Creators
 export const purchaseCreate = (values) => {
@@ -8,7 +8,7 @@ export const purchaseCreate = (values) => {
     dispatch(purchaseActions.purchaseCreateRequest());
     try {
       const response = await axios.post(
-        'purchases/',
+        "purchases/",
         {
           company_name: values.formValues.company_name,
           vehicle_name: values.formValues.vehicle_name,
@@ -20,16 +20,16 @@ export const purchaseCreate = (values) => {
           headers: {
             Authorization: values.token,
           },
-        },
+        }
       );
       if (response.data.data) {
         dispatch(purchaseActions.purchaseCreateSuccess(response.data.data));
       } else {
-        console.log('Error: ', response);
+        console.log("Error: ", response);
         dispatch(purchaseActions.purchaseCreateFailure());
       }
     } catch (error) {
-      console.log('Catch Error: ', error);
+      console.log("Catch Error: ", error);
       dispatch(purchaseActions.purchaseCreateFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
@@ -43,7 +43,7 @@ export const purchaseUpdate = (values) => {
     dispatch(purchaseActions.purchaseUpdateRequest());
     try {
       const response = await axios.patch(
-        'purchases/',
+        "purchases/",
         {
           company_name: values.formValues.company_name,
           vehicle_name: values.formValues.vehicle_name,
@@ -56,16 +56,16 @@ export const purchaseUpdate = (values) => {
           headers: {
             Authorization: values.token,
           },
-        },
+        }
       );
       if (response.data.data) {
         dispatch(purchaseActions.purchaseUpdateSuccess(response.data.data));
       } else {
-        console.log('Error: ', response);
+        console.log("Error: ", response);
         dispatch(purchaseActions.purchaseUpdateFailure());
       }
     } catch (error) {
-      console.log('Catch Error: ', error);
+      console.log("Catch Error: ", error);
       dispatch(purchaseActions.purchaseUpdateFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
@@ -86,16 +86,16 @@ export const purchaseRead = (values) => {
           headers: {
             Authorization: values.token,
           },
-        },
+        }
       );
       if (response.data.data) {
         dispatch(purchaseActions.purchaseReadSuccess(response.data.data));
       } else {
-        console.log('Error: ', response);
+        console.log("Error: ", response);
         dispatch(purchaseActions.purchaseReadFailure());
       }
     } catch (error) {
-      console.log('Catch Error: ', error);
+      console.log("Catch Error: ", error);
       dispatch(purchaseActions.purchaseReadFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
@@ -106,9 +106,10 @@ export const purchaseRead = (values) => {
 
 export const purchaseDelete = (values) => {
   return async (dispatch) => {
+    let result;
     dispatch(purchaseActions.purchaseDeleteRequest());
     try {
-      const response = await axios.delete('purchases/', {
+      const response = await axios.delete("purchases/", {
         headers: {
           Authorization: values.token,
         },
@@ -117,18 +118,51 @@ export const purchaseDelete = (values) => {
         },
       });
       if (response.data.data) {
-        dispatch(purchaseActions.purchaseDeleteSuccess(response.data.data));
+        dispatch(purchaseActions.purchaseDeleteSuccess());
+        result = true;
       } else {
-        console.log('Error: ', response);
+        console.log("Error: ", response);
         dispatch(purchaseActions.purchaseDeleteFailure());
       }
     } catch (error) {
-      console.log('Catch Error: ', error);
+      console.log("Catch Error: ", error);
       dispatch(purchaseActions.purchaseDeleteFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
       } else if (error.response && error.response.status === 500) {
-        alert('Cannot delete this item!');
+        result = false;
+      }
+    }
+    return result;
+  };
+};
+
+export const purchaseSearch = (values) => {
+  return async (dispatch) => {
+    dispatch(purchaseActions.purchaseSearchRequest());
+    try {
+      const response = await axios.post(
+        "purchases/search",
+        {
+          search_term: values.keyword,
+        },
+        {
+          headers: {
+            Authorization: values.token,
+          },
+        }
+      );
+      if (response.data.data) {
+        dispatch(purchaseActions.purchaseSearchSuccess(response.data.data));
+      } else {
+        console.log("Error: ", response);
+        dispatch(purchaseActions.purchaseSearchFailure());
+      }
+    } catch (error) {
+      console.log("Catch Error: ", error);
+      dispatch(purchaseActions.purchaseSearchFailure());
+      if (error.response && error.response.status === 401) {
+        dispatch(userActions.logoutUser());
       }
     }
   };

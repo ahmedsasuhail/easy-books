@@ -11,7 +11,10 @@ import {
   INVENTORY_DELETE_REQUEST,
   INVENTORY_DELETE_SUCCESS,
   INVENTORY_DELETE_FAILURE,
-} from '../actionTypes';
+  INVENTORY_SEARCH_REQUEST,
+  INVENTORY_SEARCH_SUCCESS,
+  INVENTORY_SEARCH_FAILURE,
+} from "../actionTypes";
 
 export const inventoryActions = {
   inventoryCreateRequest: () => {
@@ -88,18 +91,41 @@ export const inventoryActions = {
     };
   },
 
-  inventoryDeleteSuccess: (value) => {
+  inventoryDeleteSuccess: () => {
     return {
       type: INVENTORY_DELETE_SUCCESS,
-      payload: {
-        inventoryId: value.id,
-      },
     };
   },
 
   inventoryDeleteFailure: () => {
     return {
       type: INVENTORY_DELETE_FAILURE,
+    };
+  },
+
+  inventorySearchRequest: () => {
+    return {
+      type: INVENTORY_SEARCH_REQUEST,
+    };
+  },
+
+  inventorySearchSuccess: (values) => {
+    return {
+      type: INVENTORY_SEARCH_SUCCESS,
+      payload: {
+        inventory: values.records,
+        pageNo: values.page - 1,
+        rowsPerPage: values.page_limit,
+        orderBy: values.order_by,
+        order: values.sort_order,
+        count: values.total_count,
+      },
+    };
+  },
+
+  inventorySearchFailure: () => {
+    return {
+      type: INVENTORY_SEARCH_FAILURE,
     };
   },
 };

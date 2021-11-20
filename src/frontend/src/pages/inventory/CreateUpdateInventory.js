@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { Field, useFormState } from 'react-final-form';
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { Field, useFormState } from "react-final-form";
 
-import Button from '@mui/material/Button';
+import Button from "@mui/material/Button";
 
-import Input from '../../components/Input/Input';
-import Select from '../../components/Select/Select';
+import Input from "../../components/Input/Input";
+import Select from "../../components/Select/Select";
 
-import PurchasesModal from './PurchasesModal';
+import PurchasesModal from "./PurchasesModal";
 
 const CreateUpdateInventory = () => {
   const formState = useFormState();
@@ -28,7 +28,7 @@ const CreateUpdateInventory = () => {
       setPurchaseId(+formState.values.purchase_id);
 
       const items = purchaseItems.filter(
-        (item) => item.id === formState.values.purchase_id,
+        (item) => item.id === formState.values.purchase_id
       );
 
       if (items.length > 0) {
@@ -48,17 +48,19 @@ const CreateUpdateInventory = () => {
     setOpenPurchasesModal(false);
   };
 
-  const required = (value) => (value ? undefined : 'Required');
+  const required = (value) => (value ? undefined : "Required");
+  const validateString = (maxValue) => (value) =>
+    value && value.length <= maxValue ? undefined : "Invalid value";
 
   return (
     <>
       <Field
         component={Select}
         options={[{ id: purchaseId, name: purchaseName }]}
-        id='purchase_id'
-        name='purchase_id'
-        label='Purchase Id'
-        margin='normal'
+        id="purchase_id"
+        name="purchase_id"
+        label="Purchase Id"
+        margin="normal"
         hasEmptyOption={true}
         hasOne={true}
         disabled={!purchaseId}
@@ -72,10 +74,10 @@ const CreateUpdateInventory = () => {
       <Field>
         {() => (
           <Button
-            variant='text'
+            variant="text"
             onClick={() => setOpenPurchasesModal(true)}
-            size='small'
-            color='primary'
+            size="small"
+            color="primary"
           >
             Add Purchase
           </Button>
@@ -83,36 +85,36 @@ const CreateUpdateInventory = () => {
       </Field>
       <Field
         component={Input}
-        id='part_name'
-        name='part_name'
-        label='Part Name'
-        type='text'
-        margin='normal'
+        id="part_name"
+        name="part_name"
+        label="Part Name"
+        type="text"
+        margin="normal"
         fullWidth
         autoFocus
         required
-        validate={required}
+        validate={validateString(100)}
       />
       <Field
         component={Input}
-        id='quantity'
-        name='quantity'
-        label='Quantity'
-        type='number'
-        margin='normal'
+        id="quantity"
+        name="quantity"
+        label="Quantity"
+        type="number"
+        margin="normal"
         fullWidth
         required
         validate={required}
       />
       <Field
         component={Input}
-        id='date'
-        name='date'
-        label='Date'
-        type='date'
-        margin='normal'
+        id="date"
+        name="date"
+        label="Date"
+        type="date"
+        margin="normal"
         fullWidth
-        defaultValue={new Date().toISOString().split('T')[0]}
+        defaultValue={new Date().toISOString().split("T")[0]}
         InputLabelProps={{
           shrink: true,
         }}

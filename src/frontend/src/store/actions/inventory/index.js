@@ -1,6 +1,6 @@
-import { inventoryActions } from './inventoryActions';
-import axios from '../../../utils/axiosInstance';
-import { userActions } from '../user/userActions';
+import { inventoryActions } from "./inventoryActions";
+import axios from "../../../utils/axiosInstance";
+import { userActions } from "../user/userActions";
 
 // Action Creators
 export const inventoryCreate = (values) => {
@@ -8,7 +8,7 @@ export const inventoryCreate = (values) => {
     dispatch(inventoryActions.inventoryCreateRequest());
     try {
       const response = await axios.post(
-        'inventory/',
+        "inventory/",
         {
           part_name: values.formValues.part_name,
           quantity: +values.formValues.quantity,
@@ -19,16 +19,16 @@ export const inventoryCreate = (values) => {
           headers: {
             Authorization: values.token,
           },
-        },
+        }
       );
       if (response.data.data) {
         dispatch(inventoryActions.inventoryCreateSuccess(response.data.data));
       } else {
-        console.log('Error: ', response);
+        console.log("Error: ", response);
         dispatch(inventoryActions.inventoryCreateFailure());
       }
     } catch (error) {
-      console.log('Catch Error: ', error);
+      console.log("Catch Error: ", error);
       dispatch(inventoryActions.inventoryCreateFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
@@ -42,7 +42,7 @@ export const inventoryUpdate = (values) => {
     dispatch(inventoryActions.inventoryUpdateRequest());
     try {
       const response = await axios.patch(
-        'inventory/',
+        "inventory/",
         {
           part_name: values.formValues.part_name,
           quantity: +values.formValues.quantity,
@@ -54,16 +54,16 @@ export const inventoryUpdate = (values) => {
           headers: {
             Authorization: values.token,
           },
-        },
+        }
       );
       if (response.data.data) {
         dispatch(inventoryActions.inventoryUpdateSuccess(response.data.data));
       } else {
-        console.log('Error: ', response);
+        console.log("Error: ", response);
         dispatch(inventoryActions.inventoryUpdateFailure());
       }
     } catch (error) {
-      console.log('Catch Error: ', error);
+      console.log("Catch Error: ", error);
       dispatch(inventoryActions.inventoryUpdateFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
@@ -84,16 +84,16 @@ export const inventoryRead = (values) => {
           headers: {
             Authorization: values.token,
           },
-        },
+        }
       );
       if (response.data.data) {
         dispatch(inventoryActions.inventoryReadSuccess(response.data.data));
       } else {
-        console.log('Error: ', response);
+        console.log("Error: ", response);
         dispatch(inventoryActions.inventoryReadFailure());
       }
     } catch (error) {
-      console.log('Catch Error: ', error);
+      console.log("Catch Error: ", error);
       dispatch(inventoryActions.inventoryReadFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
@@ -104,9 +104,10 @@ export const inventoryRead = (values) => {
 
 export const inventoryDelete = (values) => {
   return async (dispatch) => {
+    let result;
     dispatch(inventoryActions.inventoryDeleteRequest());
     try {
-      const response = await axios.delete('inventory/', {
+      const response = await axios.delete("inventory/", {
         headers: {
           Authorization: values.token,
         },
@@ -115,18 +116,51 @@ export const inventoryDelete = (values) => {
         },
       });
       if (response.data.data) {
-        dispatch(inventoryActions.inventoryDeleteSuccess(response.data.data));
+        dispatch(inventoryActions.inventoryDeleteSuccess());
+        result = true;
       } else {
-        console.log('Error: ', response);
+        console.log("Error: ", response);
         dispatch(inventoryActions.inventoryDeleteFailure());
       }
     } catch (error) {
-      console.log('Catch Error: ', error);
+      console.log("Catch Error: ", error);
       dispatch(inventoryActions.inventoryDeleteFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
       } else if (error.response && error.response.status === 500) {
-        alert('Cannot delete this item!');
+        result = false;
+      }
+    }
+    return result;
+  };
+};
+
+export const inventorySearch = (values) => {
+  return async (dispatch) => {
+    dispatch(inventoryActions.inventorySearchRequest());
+    try {
+      const response = await axios.post(
+        "inventory/search",
+        {
+          search_term: values.keyword,
+        },
+        {
+          headers: {
+            Authorization: values.token,
+          },
+        }
+      );
+      if (response.data.data) {
+        dispatch(inventoryActions.inventorySearchSuccess(response.data.data));
+      } else {
+        console.log("Error: ", response);
+        dispatch(inventoryActions.inventorySearchFailure());
+      }
+    } catch (error) {
+      console.log("Catch Error: ", error);
+      dispatch(inventoryActions.inventorySearchFailure());
+      if (error.response && error.response.status === 401) {
+        dispatch(userActions.logoutUser());
       }
     }
   };

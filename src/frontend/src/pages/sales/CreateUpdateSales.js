@@ -1,23 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Field, useFormState } from 'react-final-form';
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { Field, useFormState } from "react-final-form";
 
-import Button from '@mui/material/Button';
-import Switch from '@mui/material/Switch';
-import { makeStyles, CircularProgress } from '@material-ui/core';
+import Button from "@mui/material/Button";
+import Switch from "@mui/material/Switch";
+import { makeStyles, CircularProgress } from "@material-ui/core";
 
-import Input from '../../components/Input/Input';
-import Select from '../../components/Select/Select';
+import Input from "../../components/Input/Input";
+import Select from "../../components/Select/Select";
 
-import PurchasesModal from '../inventory/PurchasesModal';
-import RelationshipModal from '../purchases/RelationshipModal';
-import InventoryModal from './InventoryModal';
+import PurchasesModal from "../inventory/PurchasesModal";
+import RelationshipModal from "../purchases/RelationshipModal";
+import InventoryModal from "./InventoryModal";
+import MessageDialogue from "../../components/Dialog/MessageDialogue";
 
-import { getInventoryPurchase } from '../../store/actions/inventory_purchase';
+import { getInventoryPurchase } from "../../store/actions/inventory_purchase";
+
+import { validateFloat } from "../../utils/helpers";
 
 const useStyles = makeStyles((theme) => ({
   switchMargin: {
-    marginTop: '16px',
+    marginTop: "16px",
   },
 }));
 
@@ -29,11 +32,11 @@ const CreateUpdateSales = (props) => {
   const token = useSelector((state) => state.user.token);
   const purchaseItems = useSelector((state) => state.purchase.purchases);
   const relationshipItems = useSelector(
-    (state) => state.relationship.relationships,
+    (state) => state.relationship.relationships
   );
   const inventoryItems = useSelector((state) => state.inventory.inventory);
   const inventoryPurchaseData = useSelector(
-    (state) => state.inventoryPurchase.data,
+    (state) => state.inventoryPurchase.data
   );
   const isLoading = useSelector((state) => state.inventoryPurchase.loading);
   const pageNo = useSelector((state) => state.inventory.pageNo);
@@ -50,6 +53,7 @@ const CreateUpdateSales = (props) => {
   const [openPurchasesModal, setOpenPurchasesModal] = useState(false);
   const [openInventoryModal, setOpenInventoryModal] = useState(false);
   const [openRelationshipModal, setOpenRelationshipModal] = useState(false);
+  const [openAlertModal, setOpenAlertModal] = useState(false);
 
   useEffect(() => {
     if (
@@ -61,7 +65,7 @@ const CreateUpdateSales = (props) => {
       setPurchaseId(+formState.values.purchase_id);
 
       const items = purchaseItems.filter(
-        (item) => item.id === formState.values.purchase_id,
+        (item) => item.id === formState.values.purchase_id
       );
 
       if (items.length > 0) {
@@ -76,7 +80,7 @@ const CreateUpdateSales = (props) => {
       setInventoryId(+formState.values.inventory_id);
 
       const items = inventoryItems.filter(
-        (item) => item.id === formState.values.inventory_id,
+        (item) => item.id === formState.values.inventory_id
       );
 
       if (items.length > 0) {
@@ -91,7 +95,7 @@ const CreateUpdateSales = (props) => {
       setRelationshipId(+formState.values.relationship_id);
 
       const items = relationshipItems.filter(
-        (item) => item.id === formState.values.relationship_id,
+        (item) => item.id === formState.values.relationship_id
       );
 
       if (items.length > 0) {
@@ -103,7 +107,7 @@ const CreateUpdateSales = (props) => {
 
   const dispatch = useDispatch();
 
-  const required = (value) => (value ? undefined : 'Required');
+  const required = (value) => (value ? undefined : "Required");
 
   const handleSetPurchaseName = (value) => {
     setPurchaseId(value.id);
@@ -137,8 +141,13 @@ const CreateUpdateSales = (props) => {
 
   const inventoryPurchaseHandler = (id) => {
     dispatch(
-      getInventoryPurchase({ id, token, pageNo, rowsPerPage, orderBy, order }),
-    );
+      getInventoryPurchase({ id, token, pageNo, rowsPerPage, orderBy, order })
+    ).then((res) => {
+      if (!res) {
+        // alert("There are no inventory items with the current purchase item.");
+        setOpenAlertModal(true);
+      }
+    });
   };
 
   useEffect(() => {
@@ -153,10 +162,10 @@ const CreateUpdateSales = (props) => {
       <Field
         component={Select}
         options={[{ id: purchaseId, name: purchaseName }]}
-        id='purchase_id'
-        name='purchase_id'
-        label='Purchase Id'
-        margin='normal'
+        id="purchase_id"
+        name="purchase_id"
+        label="Purchase Id"
+        margin="normal"
         hasEmptyOption={true}
         disabled={!purchaseId}
         InputLabelProps={{
@@ -170,10 +179,10 @@ const CreateUpdateSales = (props) => {
       <Field>
         {() => (
           <Button
-            variant='text'
+            variant="text"
             onClick={() => setOpenPurchasesModal(true)}
-            size='small'
-            color='primary'
+            size="small"
+            color="primary"
           >
             Add Purchase
           </Button>
@@ -182,10 +191,10 @@ const CreateUpdateSales = (props) => {
       <Field
         component={Select}
         options={[{ id: inventoryId, name: inventoryName }]}
-        id='inventory_id'
-        name='inventory_id'
-        label='Inventory Id'
-        margin='normal'
+        id="inventory_id"
+        name="inventory_id"
+        label="Inventory Id"
+        margin="normal"
         hasEmptyOption={true}
         disabled={!inventoryId}
         InputLabelProps={{
@@ -201,10 +210,10 @@ const CreateUpdateSales = (props) => {
         <Field>
           {() => (
             <Button
-              variant='text'
+              variant="text"
               onClick={() => setOpenInventoryModal(true)}
-              size='small'
-              color='primary'
+              size="small"
+              color="primary"
               disabled={
                 !inventoryPurchaseData.records ||
                 inventoryPurchaseData.records.length === 0
@@ -218,10 +227,10 @@ const CreateUpdateSales = (props) => {
       <Field
         component={Select}
         options={[{ id: relationshipId, name: relationshipName }]}
-        id='relationship_id'
-        name='relationship_id'
-        label='Relationship Id'
-        margin='normal'
+        id="relationship_id"
+        name="relationship_id"
+        label="Relationship Id"
+        margin="normal"
         hasEmptyOption={true}
         disabled={!relationshipId}
         InputLabelProps={{
@@ -234,10 +243,10 @@ const CreateUpdateSales = (props) => {
       <Field>
         {() => (
           <Button
-            variant='text'
+            variant="text"
             onClick={() => setOpenRelationshipModal(true)}
-            size='small'
-            color='primary'
+            size="small"
+            color="primary"
           >
             Add Relationship
           </Button>
@@ -245,31 +254,31 @@ const CreateUpdateSales = (props) => {
       </Field>
       <Field
         component={Input}
-        id='price'
-        name='price'
-        label='Price'
-        type='number'
-        margin='normal'
+        id="price"
+        name="price"
+        label="Price"
+        type="number"
+        margin="normal"
         fullWidth
         required
-        validate={required}
+        validate={validateFloat(8, 2)}
       />
-      <Field id='credit' name='credit' type='checkbox'>
+      <Field id="credit" name="credit" type="checkbox">
         {(props) => (
           <div className={classes.switchMargin}>
-            Credit? <Switch color='primary' {...props.input} />
+            Credit? <Switch color="primary" {...props.input} />
           </div>
         )}
       </Field>
       <Field
         component={Input}
-        id='date'
-        name='date'
-        label='Date'
-        type='date'
-        margin='normal'
+        id="date"
+        name="date"
+        label="Date"
+        type="date"
+        margin="normal"
         fullWidth
-        defaultValue={new Date().toISOString().split('T')[0]}
+        defaultValue={new Date().toISOString().split("T")[0]}
         InputLabelProps={{
           shrink: true,
         }}
@@ -294,6 +303,23 @@ const CreateUpdateSales = (props) => {
         openRelationshipModal={openRelationshipModal}
         handleSetRelationshipName={handleSetRelationshipName}
         handleCloseRelationshipModal={handleCloseRelationshipModal}
+      />
+      <MessageDialogue
+        title="Alert"
+        message="There are no inventory items with the current purchase item."
+        button={
+          <>
+            <Button
+              size="small"
+              onClick={() => setOpenAlertModal(false)}
+              color="primary"
+            >
+              Close
+            </Button>
+          </>
+        }
+        openModal={openAlertModal}
+        handleCloseModal={() => setOpenAlertModal(false)}
       />
     </>
   );

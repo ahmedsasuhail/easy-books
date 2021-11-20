@@ -1,6 +1,6 @@
-import { miscellaneousActions } from './miscellaneousActions';
-import axios from '../../../utils/axiosInstance';
-import { userActions } from '../user/userActions';
+import { miscellaneousActions } from "./miscellaneousActions";
+import axios from "../../../utils/axiosInstance";
+import { userActions } from "../user/userActions";
 
 // Action Creators
 export const miscellaneousCreate = (values) => {
@@ -8,7 +8,7 @@ export const miscellaneousCreate = (values) => {
     dispatch(miscellaneousActions.miscellaneousCreateRequest());
     try {
       const response = await axios.post(
-        'miscellaneous/',
+        "miscellaneous/",
         {
           date: values.formValues.date,
           description: values.formValues.description,
@@ -18,18 +18,18 @@ export const miscellaneousCreate = (values) => {
           headers: {
             Authorization: values.token,
           },
-        },
+        }
       );
       if (response.data.data) {
         dispatch(
-          miscellaneousActions.miscellaneousCreateSuccess(response.data.data),
+          miscellaneousActions.miscellaneousCreateSuccess(response.data.data)
         );
       } else {
-        console.log('Error: ', response);
+        console.log("Error: ", response);
         dispatch(miscellaneousActions.miscellaneousCreateFailure());
       }
     } catch (error) {
-      console.log('Catch Error: ', error);
+      console.log("Catch Error: ", error);
       dispatch(miscellaneousActions.miscellaneousCreateFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
@@ -43,7 +43,7 @@ export const miscellaneousUpdate = (values) => {
     dispatch(miscellaneousActions.miscellaneousUpdateRequest());
     try {
       const response = await axios.patch(
-        'miscellaneous/',
+        "miscellaneous/",
         {
           date: values.formValues.date,
           description: values.formValues.description,
@@ -54,18 +54,18 @@ export const miscellaneousUpdate = (values) => {
           headers: {
             Authorization: values.token,
           },
-        },
+        }
       );
       if (response.data.data) {
         dispatch(
-          miscellaneousActions.miscellaneousUpdateSuccess(response.data.data),
+          miscellaneousActions.miscellaneousUpdateSuccess(response.data.data)
         );
       } else {
-        console.log('Error: ', response);
+        console.log("Error: ", response);
         dispatch(miscellaneousActions.miscellaneousUpdateFailure());
       }
     } catch (error) {
-      console.log('Catch Error: ', error);
+      console.log("Catch Error: ", error);
       dispatch(miscellaneousActions.miscellaneousUpdateFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
@@ -86,18 +86,18 @@ export const miscellaneousRead = (values) => {
           headers: {
             Authorization: values.token,
           },
-        },
+        }
       );
       if (response.data.data) {
         dispatch(
-          miscellaneousActions.miscellaneousReadSuccess(response.data.data),
+          miscellaneousActions.miscellaneousReadSuccess(response.data.data)
         );
       } else {
-        console.log('Error: ', response);
+        console.log("Error: ", response);
         dispatch(miscellaneousActions.miscellaneousReadFailure());
       }
     } catch (error) {
-      console.log('Catch Error: ', error);
+      console.log("Catch Error: ", error);
       dispatch(miscellaneousActions.miscellaneousReadFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
@@ -108,9 +108,10 @@ export const miscellaneousRead = (values) => {
 
 export const miscellaneousDelete = (values) => {
   return async (dispatch) => {
+    let result;
     dispatch(miscellaneousActions.miscellaneousDeleteRequest());
     try {
-      const response = await axios.delete('miscellaneous/', {
+      const response = await axios.delete("miscellaneous/", {
         headers: {
           Authorization: values.token,
         },
@@ -119,20 +120,51 @@ export const miscellaneousDelete = (values) => {
         },
       });
       if (response.data.data) {
-        dispatch(
-          miscellaneousActions.miscellaneousDeleteSuccess(response.data.data),
-        );
+        dispatch(miscellaneousActions.miscellaneousDeleteSuccess());
+        result = true;
       } else {
-        console.log('Error: ', response);
+        console.log("Error: ", response);
         dispatch(miscellaneousActions.miscellaneousDeleteFailure());
       }
     } catch (error) {
-      console.log('Catch Error: ', error);
+      console.log("Catch Error: ", error);
       dispatch(miscellaneousActions.miscellaneousDeleteFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
-      } else if (error.response && error.response.status === 500) {
-        alert('Cannot delete this item!');
+      }
+    }
+    return result;
+  };
+};
+
+export const miscellaneousSearch = (values) => {
+  return async (dispatch) => {
+    dispatch(miscellaneousActions.miscellaneousSearchRequest());
+    try {
+      const response = await axios.post(
+        "miscellaneous/search",
+        {
+          search_term: values.keyword,
+        },
+        {
+          headers: {
+            Authorization: values.token,
+          },
+        }
+      );
+      if (response.data.data) {
+        dispatch(
+          miscellaneousActions.miscellaneousSearchSuccess(response.data.data)
+        );
+      } else {
+        console.log("Error: ", response);
+        dispatch(miscellaneousActions.miscellaneousSearchFailure());
+      }
+    } catch (error) {
+      console.log("Catch Error: ", error);
+      dispatch(miscellaneousActions.miscellaneousSearchFailure());
+      if (error.response && error.response.status === 401) {
+        dispatch(userActions.logoutUser());
       }
     }
   };

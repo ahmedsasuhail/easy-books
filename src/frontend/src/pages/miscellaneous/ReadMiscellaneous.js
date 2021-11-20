@@ -1,29 +1,31 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
-import { Grid, Button, makeStyles } from '@material-ui/core';
-import Box from '@mui/material/Box';
+import { Grid, Button, makeStyles } from "@material-ui/core";
+import Box from "@mui/material/Box";
 
-import PageTitle from '../../components/PageTitle/PageTitle';
-import Dialog from '../../components/Dialog/Dialog';
-import CustomTable from '../../components/Table/CustomTable';
+import PageTitle from "../../components/PageTitle/PageTitle";
+import Dialog from "../../components/Dialog/Dialog";
+import CustomTable from "../../components/Table/CustomTable";
 
-import CreateUpdateMiscellaneous from './CreateUpdateMiscellaneous';
+import CreateUpdateMiscellaneous from "./CreateUpdateMiscellaneous";
+import MessageDialogue from "../../components/Dialog/MessageDialogue";
 
 import {
   miscellaneousRead,
   miscellaneousCreate,
   miscellaneousUpdate,
   miscellaneousDelete,
-} from '../../store/actions/miscellaneous';
+  miscellaneousSearch,
+} from "../../store/actions/miscellaneous";
 
-import { formattedDate } from '../../utils/helpers';
+import { formattedDate } from "../../utils/helpers";
 
 const useStyles = makeStyles((theme) => ({
   pageContainer: {
-    [theme.breakpoints.up('lg')]: {
-      width: '80%',
-      margin: 'auto',
+    [theme.breakpoints.up("lg")]: {
+      width: "80%",
+      margin: "auto",
     },
   },
 }));
@@ -32,21 +34,21 @@ const ReadMiscellaneous = () => {
   let rows = [];
   const headCells = [
     {
-      id: 'sn',
-      label: 'SN',
+      id: "sn",
+      label: "SN",
       disableSort: true,
     },
     {
-      id: 'description',
-      label: 'Description',
+      id: "description",
+      label: "Description",
     },
     {
-      id: 'price',
-      label: 'Price',
+      id: "price",
+      label: "Price",
     },
     {
-      id: 'date',
-      label: 'Date',
+      id: "date",
+      label: "Date",
     },
   ];
 
@@ -56,11 +58,13 @@ const ReadMiscellaneous = () => {
 
   const [openCreateUpdateMiscellaneous, setOpenCreateUpdateMiscellaneous] =
     useState(false);
+  const [openConfirmModal, setOpenConfirmModal] = useState(false);
   const [valueForm, setValueForm] = useState(null);
+  const [id, setId] = useState("");
 
   const token = useSelector((state) => state.user.token);
   const miscellaneousItems = useSelector(
-    (state) => state.miscellaneous.miscellaneous,
+    (state) => state.miscellaneous.miscellaneous
   );
   const pageNo = useSelector((state) => state.miscellaneous.pageNo);
   const rowsPerPage = useSelector((state) => state.miscellaneous.rowsPerPage);
@@ -76,30 +80,32 @@ const ReadMiscellaneous = () => {
         id: miscellaneous.id,
         description: miscellaneous.description
           ? miscellaneous.description
-          : 'Not Specified',
-        price: miscellaneous.price ? miscellaneous.price : 'Not Specified',
+          : "Not Specified",
+        price: miscellaneous.price ? miscellaneous.price : "Not Specified",
         date: miscellaneous.date
           ? formattedDate(miscellaneous.date)
-          : 'Not Specified',
+          : "Not Specified",
       };
     });
   }
 
   useEffect(() => {
-    document.title = `Miscellaneous | ${process.env.REACT_APP_NAME}`;
+    document.title = `Miscellaneous | ${
+      process.env.REACT_APP_NAME || "Easy Books"
+    }`;
   }, []);
 
   const handleRequestSort = (property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    const direction = isAsc ? 'desc' : 'asc';
+    const isAsc = orderBy === property && order === "asc";
+    const direction = isAsc ? "desc" : "asc";
     dispatch(
       miscellaneousRead({
         token,
-        pageNo,
+        pageNo: 0,
         rowsPerPage,
         order: direction,
         orderBy: property,
-      }),
+      })
     );
   };
 
@@ -111,7 +117,7 @@ const ReadMiscellaneous = () => {
         rowsPerPage,
         orderBy,
         order,
-      }),
+      })
     );
   };
 
@@ -119,12 +125,16 @@ const ReadMiscellaneous = () => {
     dispatch(
       miscellaneousRead({
         token,
-        pageNo,
+        pageNo: 0,
         rowsPerPage: parseInt(event.target.value, 10),
         orderBy,
         order,
-      }),
+      })
     );
+  };
+
+  const handleRequestSearch = (value) => {
+    dispatch(miscellaneousSearch({ token, keyword: value }));
   };
 
   useEffect(() => {
@@ -136,9 +146,31 @@ const ReadMiscellaneous = () => {
     setOpenCreateUpdateMiscellaneous(true);
   };
 
+  const handleConfirmModal = (bool) => {
+    setOpenConfirmModal(bool);
+  };
+
   const handleOpenEditMiscellaneous = (values) => {
     setValueForm(values);
     setOpenCreateUpdateMiscellaneous(true);
+  };
+
+  const handleSubmitResult = (result) => {
+    if (result) {
+      let pageNumber =
+        totalCount % rowsPerPage === 1 &&
+        totalCount > rowsPerPage &&
+        pageNo === Math.floor(totalCount / rowsPerPage)
+          ? pageNo - 1
+          : pageNo;
+
+      dispatch(miscellaneousDelete({ id, token })).then((res) => {
+        if (res) {
+          handleChangePage(null, pageNumber);
+        }
+      });
+    }
+    handleConfirmModal(false);
   };
 
   const handleCloseCreateOrEditMiscellaneous = () => {
@@ -153,43 +185,34 @@ const ReadMiscellaneous = () => {
         miscellaneousUpdate({
           formValues,
           token,
-        }),
+        })
       );
     } else {
       dispatch(
         miscellaneousCreate({
           formValues,
           token,
-        }),
+        })
       );
     }
     handleCloseCreateOrEditMiscellaneous();
   };
 
   const handleSubmitDeleteMiscellaneous = (id) => {
-    const result = window.confirm(
-      `Are you sure you want to delete this miscellaneous item?`,
-    );
-    if (result) {
-      dispatch(
-        miscellaneousDelete({
-          id,
-          token,
-        }),
-      );
-    }
+    setId(id);
+    handleConfirmModal(true);
   };
 
   return (
     <>
       <Box className={classes.pageContainer}>
         <PageTitle
-          title={'Miscellaneous'}
+          title={"Miscellaneous"}
           button={
             <Button
-              variant='outlined'
-              size='medium'
-              color='secondary'
+              variant="outlined"
+              size="medium"
+              color="secondary"
               onClick={handleOpenCreateMiscellaneous}
             >
               Add Miscellaneous
@@ -199,7 +222,7 @@ const ReadMiscellaneous = () => {
         <Grid container spacing={4}>
           <Grid item xs={12}>
             <CustomTable
-              tableTitle='All Miscellaneous'
+              tableTitle="All Miscellaneous"
               pageNo={pageNo}
               rowsPerPage={rowsPerPage}
               order={order}
@@ -210,18 +233,19 @@ const ReadMiscellaneous = () => {
               requestSort={handleRequestSort}
               changePage={handleChangePage}
               changeRowsPerPage={handleChangeRowsPerPage}
+              requestSearch={handleRequestSearch}
               actions={true}
               openEditFunction={handleOpenEditMiscellaneous}
               submitDeleteFunction={handleSubmitDeleteMiscellaneous}
-              size='medium'
+              size="medium"
             />
           </Grid>
         </Grid>
       </Box>
       <Dialog
-        title={`${valueForm ? 'Edit' : 'Create'} Miscellaneous`}
+        title={`${valueForm ? "Edit" : "Create"} Miscellaneous`}
         fullWidth={true}
-        maxWidth='xs'
+        maxWidth="sm"
         initialValues={valueForm}
         isLoading={isLoading}
         open={openCreateUpdateMiscellaneous}
@@ -230,6 +254,30 @@ const ReadMiscellaneous = () => {
       >
         <CreateUpdateMiscellaneous />
       </Dialog>
+      <MessageDialogue
+        title="Confirm"
+        message="Are you sure you want to delete this miscellaneous item?"
+        button={
+          <>
+            <Button
+              size="small"
+              onClick={() => handleSubmitResult(false)}
+              color="primary"
+            >
+              No
+            </Button>
+            <Button
+              size="small"
+              onClick={() => handleSubmitResult(true)}
+              color="secondary"
+            >
+              Yes
+            </Button>
+          </>
+        }
+        openModal={openConfirmModal}
+        handleCloseModal={() => handleConfirmModal(false)}
+      />
     </>
   );
 };

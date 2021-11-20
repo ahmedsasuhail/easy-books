@@ -1,30 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
-import { Grid, Button, makeStyles } from '@material-ui/core';
-import Box from '@mui/material/Box';
+import { Grid, Button, makeStyles } from "@material-ui/core";
+import Box from "@mui/material/Box";
 
-import PageTitle from '../../components/PageTitle/PageTitle';
-import Dialog from '../../components/Dialog/Dialog';
-import CustomTable from '../../components/Table/CustomTable';
+import PageTitle from "../../components/PageTitle/PageTitle";
+import Dialog from "../../components/Dialog/Dialog";
+import CustomTable from "../../components/Table/CustomTable";
 
-import CreateUpdateSales from './CreateUpdateSales';
+import CreateUpdateSales from "./CreateUpdateSales";
+import MessageDialogue from "../../components/Dialog/MessageDialogue";
 
 import {
   salesCreate,
   salesUpdate,
   salesDelete,
   salesRead,
-} from '../../store/actions/sales';
-import { inventoryPurchaseActions } from '../../store/actions/inventory_purchase/inventoryPurchaseActions';
+  salesSearch,
+} from "../../store/actions/sales";
+import { inventoryPurchaseActions } from "../../store/actions/inventory_purchase/inventoryPurchaseActions";
 
-import { formattedDate } from '../../utils/helpers';
+import { formattedDate } from "../../utils/helpers";
 
 const useStyles = makeStyles((theme) => ({
   pageContainer: {
-    [theme.breakpoints.up('lg')]: {
-      width: '80%',
-      margin: 'auto',
+    [theme.breakpoints.up("lg")]: {
+      width: "80%",
+      margin: "auto",
     },
   },
 }));
@@ -33,58 +35,58 @@ const ReadSales = () => {
   let rows = [];
   const headCells = [
     {
-      id: 'sn',
-      label: 'SN',
+      id: "sn",
+      label: "SN",
       disableSort: true,
     },
     {
-      id: 'purchase_name',
-      label: 'Purchase Name',
+      id: "purchase_name",
+      label: "Purchase Name",
       disableSort: true,
     },
     {
-      id: 'purchase_id',
+      id: "purchase_id",
       display: false,
     },
     {
-      id: 'part_name',
-      label: 'Part Name',
+      id: "part_name",
+      label: "Part Name",
       disableSort: true,
     },
     {
-      id: 'inventory_id',
+      id: "inventory_id",
       display: false,
     },
     {
-      id: 'buyer',
-      label: 'Buyer',
+      id: "buyer",
+      label: "Buyer",
       disableSort: true,
     },
     {
-      id: 'relationship_id',
+      id: "relationship_id",
       display: false,
     },
     {
-      id: 'price',
-      label: 'Price',
+      id: "price",
+      label: "Price",
     },
     {
-      id: 'date',
-      label: 'Date',
+      id: "date",
+      label: "Date",
     },
     {
-      id: 'returned',
-      label: 'Returned',
+      id: "returned",
+      label: "Returned",
       checkbox: true,
       disableSort: true,
     },
     {
-      id: 'credit',
+      id: "credit",
       display: false,
     },
     {
-      id: 'credit_name',
-      label: 'Credit',
+      id: "credit_name",
+      label: "Credit",
       disableSort: true,
     },
   ];
@@ -94,7 +96,9 @@ const ReadSales = () => {
   const classes = useStyles();
 
   const [openCreateUpdateSales, setOpenCreateUpdateSales] = useState(false);
+  const [openConfirmModal, setOpenConfirmModal] = useState(false);
   const [valueForm, setValueForm] = useState(null);
+  const [id, setId] = useState("");
 
   const token = useSelector((state) => state.user.token);
   const salesItems = useSelector((state) => state.sales.sales);
@@ -112,42 +116,42 @@ const ReadSales = () => {
         id: sale.id,
         purchase_name: sale.purchases.id
           ? `${sale.purchases.company_name} - ${sale.purchases.vehicle_name}`
-          : 'Not Specified',
-        purchase_id: sale.purchases.id ? sale.purchases.id : 'Not Specified',
+          : "Not Specified",
+        purchase_id: sale.purchases.id ? sale.purchases.id : "Not Specified",
         part_name: sale.inventory.id
           ? sale.inventory.part_name
-          : 'Not Specified',
-        inventory_id: sale.inventory.id ? sale.inventory.id : 'Not Specified',
+          : "Not Specified",
+        inventory_id: sale.inventory.id ? sale.inventory.id : "Not Specified",
         buyer: sale.relationships.id
           ? sale.relationships.name
-          : 'Not Specified',
+          : "Not Specified",
         relationship_id: sale.relationships.id
           ? sale.relationships.id
-          : 'Not Specified',
-        price: sale.price ? sale.price : 'Not Specified',
-        date: sale.date ? formattedDate(sale.date) : 'Not Specified',
+          : "Not Specified",
+        price: sale.price ? sale.price : "Not Specified",
+        date: sale.date ? formattedDate(sale.date) : "Not Specified",
         returned: sale.returned ? true : false,
         credit: sale.credit,
-        credit_name: sale.credit ? 'Yes' : 'No',
+        credit_name: sale.credit ? "Yes" : "No",
       };
     });
   }
 
   useEffect(() => {
-    document.title = `Sales | ${process.env.REACT_APP_NAME}`;
+    document.title = `Sales | ${process.env.REACT_APP_NAME || "Easy Books"}`;
   }, []);
 
   const handleRequestSort = (property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    const direction = isAsc ? 'desc' : 'asc';
+    const isAsc = orderBy === property && order === "asc";
+    const direction = isAsc ? "desc" : "asc";
     dispatch(
       salesRead({
         token,
-        pageNo,
+        pageNo: 0,
         rowsPerPage,
         order: direction,
         orderBy: property,
-      }),
+      })
     );
   };
 
@@ -159,7 +163,7 @@ const ReadSales = () => {
         rowsPerPage,
         orderBy,
         order,
-      }),
+      })
     );
   };
 
@@ -167,12 +171,16 @@ const ReadSales = () => {
     dispatch(
       salesRead({
         token,
-        pageNo,
+        pageNo: 0,
         rowsPerPage: parseInt(event.target.value, 10),
         orderBy,
         order,
-      }),
+      })
     );
+  };
+
+  const handleRequestSearch = (value) => {
+    dispatch(salesSearch({ token, keyword: value }));
   };
 
   useEffect(() => {
@@ -184,9 +192,31 @@ const ReadSales = () => {
     setOpenCreateUpdateSales(true);
   };
 
+  const handleConfirmModal = (bool) => {
+    setOpenConfirmModal(bool);
+  };
+
   const handleOpenEditSales = (values) => {
     setValueForm(values);
     setOpenCreateUpdateSales(true);
+  };
+
+  const handleSubmitResult = (result) => {
+    if (result) {
+      let pageNumber =
+        totalCount % rowsPerPage === 1 &&
+        totalCount > rowsPerPage &&
+        pageNo === Math.floor(totalCount / rowsPerPage)
+          ? pageNo - 1
+          : pageNo;
+
+      dispatch(salesDelete({ id, token })).then((res) => {
+        if (res) {
+          handleChangePage(null, pageNumber);
+        }
+      });
+    }
+    handleConfirmModal(false);
   };
 
   const handleCloseCreateOrEditSales = () => {
@@ -196,7 +226,8 @@ const ReadSales = () => {
   };
 
   const handleSubmitCreateUpdateSales = (formValues) => {
-    formValues.date = new Date(formValues.date).toISOString();
+    if (formValues.date)
+      formValues.date = new Date(formValues.date).toISOString();
     if (formValues.id) {
       dispatch(salesUpdate({ formValues, token }));
     } else {
@@ -206,37 +237,32 @@ const ReadSales = () => {
   };
 
   const handleSubmitDeleteSales = (id) => {
-    const result = window.confirm(
-      `Are you sure you want to delete this sales item?`,
-    );
-    if (result) {
-      dispatch(salesDelete({ id, token }));
-    }
+    setId(id);
+    handleConfirmModal(true);
   };
 
-  const handleSubmitReturn = (value) => {
-    const result = window.confirm(
-      `Are you sure you want to return this sales item?`,
-    );
+  const handleSubmitReturn = (result) => {
     if (result) {
-      value['returned'] = true;
-
-      handleSubmitCreateUpdateSales(value);
-    } else {
-      return false;
+      handleSubmitCreateUpdateSales(valueForm);
     }
+    handleConfirmModal(false);
+  };
+
+  const handleSubmitReturnSales = (value) => {
+    setValueForm(value);
+    handleConfirmModal(true);
   };
 
   return (
     <>
       <Box className={classes.pageContainer}>
         <PageTitle
-          title={'Sales'}
+          title={"Sales"}
           button={
             <Button
-              variant='outlined'
-              size='medium'
-              color='secondary'
+              variant="outlined"
+              size="medium"
+              color="secondary"
               onClick={handleOpenCreateSales}
             >
               Add Sales
@@ -246,7 +272,7 @@ const ReadSales = () => {
         <Grid container spacing={4}>
           <Grid item xs={12}>
             <CustomTable
-              tableTitle='All Sales'
+              tableTitle="All Sales"
               pageNo={pageNo}
               rowsPerPage={rowsPerPage}
               order={order}
@@ -257,19 +283,20 @@ const ReadSales = () => {
               requestSort={handleRequestSort}
               changePage={handleChangePage}
               changeRowsPerPage={handleChangeRowsPerPage}
+              requestSearch={handleRequestSearch}
               actions={true}
               openEditFunction={handleOpenEditSales}
               submitDeleteFunction={handleSubmitDeleteSales}
-              submitReturnFunction={handleSubmitReturn}
-              size='medium'
+              submitReturnFunction={handleSubmitReturnSales}
+              size="medium"
             />
           </Grid>
         </Grid>
       </Box>
       <Dialog
-        title={`${valueForm ? 'Edit' : 'Create'} Sales`}
+        title={`${valueForm ? "Edit" : "Create"} Sales`}
         fullWidth={true}
-        maxWidth='sm'
+        maxWidth="sm"
         initialValues={valueForm}
         isLoading={isLoading}
         open={openCreateUpdateSales}
@@ -278,6 +305,56 @@ const ReadSales = () => {
       >
         <CreateUpdateSales initialValues={valueForm} />
       </Dialog>
+      <MessageDialogue
+        title="Confirm"
+        message="Are you sure you want to delete this sales item?"
+        button={
+          <>
+            <Button
+              size="small"
+              onClick={() => handleSubmitResult(false)}
+              color="primary"
+            >
+              No
+            </Button>
+            <Button
+              size="small"
+              onClick={() => handleSubmitResult(true)}
+              color="secondary"
+            >
+              Yes
+            </Button>
+          </>
+        }
+        openModal={openConfirmModal}
+        handleCloseModal={() => handleConfirmModal(false)}
+      />
+      <MessageDialogue
+        title="Confirm"
+        message={`Are you sure you want to ${
+          valueForm && valueForm.returned ? "return" : "unreturn"
+        } this sales item?`}
+        button={
+          <>
+            <Button
+              size="small"
+              onClick={() => handleSubmitReturn(false)}
+              color="primary"
+            >
+              No
+            </Button>
+            <Button
+              size="small"
+              onClick={() => handleSubmitReturn(true)}
+              color="secondary"
+            >
+              Yes
+            </Button>
+          </>
+        }
+        openModal={openConfirmModal}
+        handleCloseModal={() => handleConfirmModal(false)}
+      />
     </>
   );
 };

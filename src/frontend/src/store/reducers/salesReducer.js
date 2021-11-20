@@ -11,13 +11,16 @@ import {
   SALES_DELETE_REQUEST,
   SALES_DELETE_SUCCESS,
   SALES_DELETE_FAILURE,
-} from '../actions/actionTypes';
-import { mergeObjects } from '../../utils/helpers';
+  SALES_SEARCH_REQUEST,
+  SALES_SEARCH_SUCCESS,
+  SALES_SEARCH_FAILURE,
+} from "../actions/actionTypes";
+import { mergeObjects } from "../../utils/helpers";
 
 const initialState = {
   sales: [],
-  orderBy: 'date',
-  order: 'desc',
+  orderBy: "id",
+  order: "asc",
   pageNo: 0,
   rowsPerPage: 5,
   count: 0,
@@ -75,7 +78,7 @@ const salesReducer = (state = initialState, action) => {
       let modifySalesForUpdate = [...state.sales];
 
       const salesIndex = modifySalesForUpdate.findIndex(
-        (sales) => +action.payload.sales.id === +sales.id,
+        (sales) => +action.payload.sales.id === +sales.id
       );
 
       modifySalesForUpdate.splice(salesIndex, 1, action.payload.sales);
@@ -121,27 +124,32 @@ const salesReducer = (state = initialState, action) => {
       });
 
     case SALES_DELETE_SUCCESS:
-      let modifySalesForDelete = [...state.sales];
-
-      const modifiedSalesAfterDeleted = modifySalesForDelete.filter(
-        (sales) => +action.payload.salesId !== +sales.id,
-      );
-
-      let prevPageNo =
-        state.count % state.rowsPerPage === 1 &&
-        state.count > state.rowsPerPage &&
-        state.pageNo === Math.floor(state.count / state.rowsPerPage)
-          ? state.pageNo - 1
-          : state.pageNo;
-
       return mergeObjects(state, {
-        sales: modifiedSalesAfterDeleted,
         pageLoading: false,
-        pageNo: prevPageNo,
-        count: state.count - 1,
       });
 
     case SALES_DELETE_FAILURE:
+      return mergeObjects(state, {
+        pageLoading: false,
+      });
+
+    case SALES_SEARCH_REQUEST:
+      return mergeObjects(state, {
+        pageLoading: true,
+      });
+
+    case SALES_SEARCH_SUCCESS:
+      return mergeObjects(state, {
+        sales: action.payload.sales || [],
+        pageNo: action.payload.pageNo,
+        rowsPerPage: action.payload.rowsPerPage,
+        orderBy: action.payload.orderBy,
+        order: action.payload.order,
+        count: action.payload.count,
+        pageLoading: false,
+      });
+
+    case SALES_SEARCH_FAILURE:
       return mergeObjects(state, {
         pageLoading: false,
       });

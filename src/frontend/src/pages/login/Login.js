@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { withRouter } from "react-router-dom";
 
 import {
   Grid,
@@ -9,87 +9,102 @@ import {
   Button,
   TextField,
   Fade,
-} from '@material-ui/core';
+} from "@material-ui/core";
 
-import { userLogin } from '../../store/actions/user';
+import { userLogin } from "../../store/actions/user";
 
-import logo from '../../assets/images/logo.svg';
+import logo from "../../assets/images/logo.svg";
 
-import useStyles from './styles';
+import useStyles from "./styles";
 
 function Login() {
   var classes = useStyles();
 
   const dispatch = useDispatch();
 
-  var [loginValue, setLoginValue] = useState(''); // john.doe@example.com
-  var [passwordValue, setPasswordValue] = useState(''); // password
+  var [loginValue, setLoginValue] = useState(""); // john.doe@example.com
+  var [passwordValue, setPasswordValue] = useState(""); // password
 
   var isLoading = useSelector((state) => state.user.loading);
   var error = useSelector((state) => state.user.messageType);
   var message = useSelector((state) => state.user.message);
 
+  useEffect(() => {
+    document.title = `Login | ${process.env.REACT_APP_NAME || "Easy Books"}`;
+  }, []);
+
   return (
     <Grid container className={classes.container}>
       <div className={classes.logotypeContainer}>
-        <img src={logo} alt='logo' className={classes.logotypeImage} />
-        <Typography className={classes.logotypeText}>Easy Books</Typography>
+        <img src={logo} alt="logo" className={classes.logotypeImage} />
+        <Typography className={classes.logotypeText}>
+          {process.env.REACT_APP_NAME || "Easy Books"}
+        </Typography>
       </div>
       <div className={classes.formContainer}>
         <div className={classes.form}>
-          <Typography variant='h1' className={classes.greeting}>
+          <Typography variant="h1" className={classes.greeting}>
             Welcome!
           </Typography>
           <Fade in={error}>
-            <Typography color='error' className={classes.errorMessage}>
+            <Typography color="error" className={classes.errorMessage}>
               {message}
             </Typography>
           </Fade>
-          <TextField
-            id='email'
-            InputProps={{
-              classes: {
-                underline: classes.textFieldUnderline,
-                input: classes.textField,
-              },
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              dispatch(userLogin(loginValue, passwordValue));
             }}
-            value={loginValue}
-            onChange={(e) => setLoginValue(e.target.value)}
-            margin='normal'
-            placeholder='Email Address'
-            type='email'
-            fullWidth
-          />
-          <TextField
-            id='password'
-            InputProps={{
-              classes: {
-                underline: classes.textFieldUnderline,
-                input: classes.textField,
-              },
-            }}
-            value={passwordValue}
-            onChange={(e) => setPasswordValue(e.target.value)}
-            margin='normal'
-            placeholder='Password'
-            type='password'
-            fullWidth
-          />
-          <div className={classes.formButtons}>
-            {isLoading ? (
-              <CircularProgress size={26} className={classes.loginLoader} />
-            ) : (
-              <Button
-                disabled={loginValue.length === 0 || passwordValue.length === 0}
-                onClick={() => dispatch(userLogin(loginValue, passwordValue))}
-                variant='contained'
-                color='primary'
-                size='large'
-              >
-                Login
-              </Button>
-            )}
-          </div>
+          >
+            <TextField
+              id="email"
+              InputProps={{
+                classes: {
+                  underline: classes.textFieldUnderline,
+                  input: classes.textField,
+                },
+              }}
+              value={loginValue}
+              onChange={(e) => setLoginValue(e.target.value)}
+              margin="normal"
+              placeholder="Email Address"
+              type="email"
+              fullWidth
+            />
+            <TextField
+              id="password"
+              InputProps={{
+                classes: {
+                  underline: classes.textFieldUnderline,
+                  input: classes.textField,
+                },
+              }}
+              value={passwordValue}
+              onChange={(e) => setPasswordValue(e.target.value)}
+              margin="normal"
+              placeholder="Password"
+              type="password"
+              fullWidth
+            />
+            <div className={classes.formButtons}>
+              {isLoading ? (
+                <CircularProgress size={26} className={classes.loginLoader} />
+              ) : (
+                <Button
+                  disabled={
+                    loginValue.length === 0 || passwordValue.length === 0
+                  }
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                >
+                  Login
+                </Button>
+              )}
+            </div>
+          </form>
         </div>
       </div>
     </Grid>

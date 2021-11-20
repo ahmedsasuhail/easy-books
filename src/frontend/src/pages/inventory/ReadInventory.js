@@ -1,29 +1,31 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-import { Grid, Button, makeStyles } from '@material-ui/core';
-import Box from '@mui/material/Box';
+import { Grid, Button, makeStyles } from "@material-ui/core";
+import Box from "@mui/material/Box";
 
-import PageTitle from '../../components/PageTitle/PageTitle';
-import Dialog from '../../components/Dialog/Dialog';
-import CustomTable from '../../components/Table/CustomTable';
+import PageTitle from "../../components/PageTitle/PageTitle";
+import Dialog from "../../components/Dialog/Dialog";
+import CustomTable from "../../components/Table/CustomTable";
 
-import CreateUpdateInventory from './CreateUpdateInventory';
+import CreateUpdateInventory from "./CreateUpdateInventory";
+import MessageDialogue from "../../components/Dialog/MessageDialogue";
 
 import {
   inventoryCreate,
   inventoryRead,
   inventoryUpdate,
   inventoryDelete,
-} from '../../store/actions/inventory';
+  inventorySearch,
+} from "../../store/actions/inventory";
 
-import { formattedDate } from '../../utils/helpers';
+import { formattedDate } from "../../utils/helpers";
 
 const useStyles = makeStyles((theme) => ({
   pageContainer: {
-    [theme.breakpoints.up('lg')]: {
-      width: '80%',
-      margin: 'auto',
+    [theme.breakpoints.up("lg")]: {
+      width: "80%",
+      margin: "auto",
     },
   },
 }));
@@ -32,30 +34,30 @@ const ReadInventory = () => {
   let rows = [];
   const headCells = [
     {
-      id: 'sn',
-      label: 'SN',
+      id: "sn",
+      label: "SN",
       disableSort: true,
     },
     {
-      id: 'purchase_id',
+      id: "purchase_id",
       display: false,
     },
     {
-      id: 'purchase_name',
-      label: 'Purchase Name',
+      id: "purchase_name",
+      label: "Purchase Name",
       disableSort: true,
     },
     {
-      id: 'part_name',
-      label: 'Part Name',
+      id: "part_name",
+      label: "Part Name",
     },
     {
-      id: 'quantity',
-      label: 'Quantity',
+      id: "quantity",
+      label: "Quantity",
     },
     {
-      id: 'date',
-      label: 'Date',
+      id: "date",
+      label: "Date",
     },
   ];
 
@@ -65,7 +67,10 @@ const ReadInventory = () => {
 
   const [openCreateUpdateInventory, setOpenCreateUpdateInventory] =
     useState(false);
+  const [openConfirmModal, setOpenConfirmModal] = useState(false);
   const [valueForm, setValueForm] = useState(null);
+  const [id, setId] = useState("");
+  const [openAlertModal, setOpenAlertModal] = useState(false);
 
   const token = useSelector((state) => state.user.token);
   const inventoryItems = useSelector((state) => state.inventory.inventory);
@@ -83,32 +88,34 @@ const ReadInventory = () => {
         id: inventory.id,
         purchase_id: inventory.purchases.id
           ? inventory.purchases.id
-          : 'Not Specified',
+          : "Not Specified",
         purchase_name: inventory.purchases.id
           ? `${inventory.purchases.company_name} - ${inventory.purchases.vehicle_name}`
-          : 'Not Specified',
-        part_name: inventory.part_name ? inventory.part_name : 'Not Specified',
-        quantity: inventory.quantity ? inventory.quantity : 'Not Specified',
-        date: inventory.date ? formattedDate(inventory.date) : 'Not Specified',
+          : "Not Specified",
+        part_name: inventory.part_name ? inventory.part_name : "Not Specified",
+        quantity: inventory.quantity ? inventory.quantity : "Not Specified",
+        date: inventory.date ? formattedDate(inventory.date) : "Not Specified",
       };
     });
   }
 
   useEffect(() => {
-    document.title = `Inventory | ${process.env.REACT_APP_NAME}`;
+    document.title = `Inventory | ${
+      process.env.REACT_APP_NAME || "Easy Books"
+    }`;
   }, []);
 
   const handleRequestSort = (property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    const direction = isAsc ? 'desc' : 'asc';
+    const isAsc = orderBy === property && order === "asc";
+    const direction = isAsc ? "desc" : "asc";
     dispatch(
       inventoryRead({
         token,
-        pageNo,
+        pageNo: 0,
         rowsPerPage,
         order: direction,
         orderBy: property,
-      }),
+      })
     );
   };
 
@@ -120,7 +127,7 @@ const ReadInventory = () => {
         rowsPerPage,
         orderBy,
         order,
-      }),
+      })
     );
   };
 
@@ -128,12 +135,16 @@ const ReadInventory = () => {
     dispatch(
       inventoryRead({
         token,
-        pageNo,
+        pageNo: 0,
         rowsPerPage: parseInt(event.target.value, 10),
         orderBy,
         order,
-      }),
+      })
     );
+  };
+
+  const handleRequestSearch = (value) => {
+    dispatch(inventorySearch({ token, keyword: value }));
   };
 
   useEffect(() => {
@@ -145,9 +156,33 @@ const ReadInventory = () => {
     setOpenCreateUpdateInventory(true);
   };
 
+  const handleConfirmModal = (bool) => {
+    setOpenConfirmModal(bool);
+  };
+
   const handleOpenEditInventory = (values) => {
     setValueForm(values);
     setOpenCreateUpdateInventory(true);
+  };
+
+  const handleSubmitResult = (result) => {
+    if (result) {
+      let pageNumber =
+        totalCount % rowsPerPage === 1 &&
+        totalCount > rowsPerPage &&
+        pageNo === Math.floor(totalCount / rowsPerPage)
+          ? pageNo - 1
+          : pageNo;
+
+      dispatch(inventoryDelete({ id, token })).then((res) => {
+        if (res) {
+          handleChangePage(null, pageNumber);
+        } else {
+          setOpenAlertModal(true);
+        }
+      });
+    }
+    handleConfirmModal(false);
   };
 
   const handleCloseCreateOrEditInventory = () => {
@@ -166,24 +201,20 @@ const ReadInventory = () => {
   };
 
   const handleSubmitDeleteInventory = (id) => {
-    const result = window.confirm(
-      `Are you sure you want to delete this inventory item?`,
-    );
-    if (result) {
-      dispatch(inventoryDelete({ id, token }));
-    }
+    setId(id);
+    handleConfirmModal(true);
   };
 
   return (
     <>
       <Box className={classes.pageContainer}>
         <PageTitle
-          title={'Inventory'}
+          title={"Inventory"}
           button={
             <Button
-              variant='outlined'
-              size='medium'
-              color='secondary'
+              variant="outlined"
+              size="medium"
+              color="secondary"
               onClick={handleOpenCreateInventory}
             >
               Add Inventory
@@ -193,29 +224,30 @@ const ReadInventory = () => {
         <Grid container spacing={4}>
           <Grid item xs={12}>
             <CustomTable
-              tableTitle='All Inventory'
-              order={order}
-              orderBy={orderBy}
-              requestSort={handleRequestSort}
-              headCells={headCells}
-              rows={rows}
-              openEditFunction={handleOpenEditInventory}
-              submitDeleteFunction={handleSubmitDeleteInventory}
-              totalCount={totalCount}
+              tableTitle="All Inventory"
               pageNo={pageNo}
               rowsPerPage={rowsPerPage}
+              order={order}
+              orderBy={orderBy}
+              headCells={headCells}
+              rows={rows}
+              totalCount={totalCount}
+              requestSort={handleRequestSort}
+              requestSearch={handleRequestSearch}
+              openEditFunction={handleOpenEditInventory}
+              submitDeleteFunction={handleSubmitDeleteInventory}
+              actions={true}
               changePage={handleChangePage}
               changeRowsPerPage={handleChangeRowsPerPage}
-              size='medium'
-              actions={true}
+              size="medium"
             />
           </Grid>
         </Grid>
       </Box>
       <Dialog
-        title={`${valueForm ? 'Edit' : 'Create'} Inventory`}
+        title={`${valueForm ? "Edit" : "Create"} Inventory`}
         fullWidth={true}
-        maxWidth='xs'
+        maxWidth="sm"
         initialValues={valueForm}
         isLoading={isLoading}
         open={openCreateUpdateInventory}
@@ -224,6 +256,47 @@ const ReadInventory = () => {
       >
         <CreateUpdateInventory />
       </Dialog>
+      <MessageDialogue
+        title="Confirm"
+        message="Are you sure you want to delete this inventory item?"
+        button={
+          <>
+            <Button
+              size="small"
+              onClick={() => handleSubmitResult(false)}
+              color="primary"
+            >
+              No
+            </Button>
+            <Button
+              size="small"
+              onClick={() => handleSubmitResult(true)}
+              color="secondary"
+            >
+              Yes
+            </Button>
+          </>
+        }
+        openModal={openConfirmModal}
+        handleCloseModal={() => handleConfirmModal(false)}
+      />
+      <MessageDialogue
+        title="Alert"
+        message="Cannot delete this item."
+        button={
+          <>
+            <Button
+              size="small"
+              onClick={() => setOpenAlertModal(false)}
+              color="primary"
+            >
+              Close
+            </Button>
+          </>
+        }
+        openModal={openAlertModal}
+        handleCloseModal={() => setOpenAlertModal(false)}
+      />
     </>
   );
 };

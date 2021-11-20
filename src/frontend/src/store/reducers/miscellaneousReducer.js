@@ -11,13 +11,16 @@ import {
   MISCELLANEOUS_DELETE_REQUEST,
   MISCELLANEOUS_DELETE_SUCCESS,
   MISCELLANEOUS_DELETE_FAILURE,
-} from '../actions/actionTypes';
-import { mergeObjects } from '../../utils/helpers';
+  MISCELLANEOUS_SEARCH_REQUEST,
+  MISCELLANEOUS_SEARCH_SUCCESS,
+  MISCELLANEOUS_SEARCH_FAILURE,
+} from "../actions/actionTypes";
+import { mergeObjects } from "../../utils/helpers";
 
 const initialState = {
   miscellaneous: [],
-  orderBy: 'date',
-  order: 'desc',
+  orderBy: "id",
+  order: "asc",
   pageNo: 0,
   rowsPerPage: 5,
   count: 0,
@@ -76,13 +79,13 @@ const miscellaneousReducer = (state = initialState, action) => {
 
       const miscellaneousIndex = modifyMiscellaneousForUpdate.findIndex(
         (miscellaneous) =>
-          +action.payload.miscellaneous.id === +miscellaneous.id,
+          +action.payload.miscellaneous.id === +miscellaneous.id
       );
 
       modifyMiscellaneousForUpdate.splice(
         miscellaneousIndex,
         1,
-        action.payload.miscellaneous,
+        action.payload.miscellaneous
       );
 
       return mergeObjects(state, {
@@ -126,29 +129,33 @@ const miscellaneousReducer = (state = initialState, action) => {
       });
 
     case MISCELLANEOUS_DELETE_SUCCESS:
-      let modifyMiscellaneousForDelete = [...state.miscellaneous];
-
-      const modifiedMiscellaneousAfterDeleted =
-        modifyMiscellaneousForDelete.filter(
-          (miscellaneous) =>
-            +action.payload.miscellaneousId !== +miscellaneous.id,
-        );
-
-      let prevPageNo =
-        state.count % state.rowsPerPage === 1 &&
-        state.count > state.rowsPerPage &&
-        state.pageNo === Math.floor(state.count / state.rowsPerPage)
-          ? state.pageNo - 1
-          : state.pageNo;
-
       return mergeObjects(state, {
-        miscellaneous: modifiedMiscellaneousAfterDeleted,
         pageLoading: false,
-        pageNo: prevPageNo,
-        count: state.count - 1,
       });
 
     case MISCELLANEOUS_DELETE_FAILURE:
+      return mergeObjects(state, {
+        pageLoading: false,
+      });
+
+    case MISCELLANEOUS_SEARCH_REQUEST:
+      return mergeObjects(state, {
+        pageLoading: true,
+      });
+
+    case MISCELLANEOUS_SEARCH_SUCCESS:
+      console.log(action.payload.miscellaneous);
+      return mergeObjects(state, {
+        miscellaneous: action.payload.miscellaneous || [],
+        pageNo: action.payload.pageNo,
+        rowsPerPage: action.payload.rowsPerPage,
+        orderBy: action.payload.orderBy,
+        order: action.payload.order,
+        count: action.payload.count,
+        pageLoading: false,
+      });
+
+    case MISCELLANEOUS_SEARCH_FAILURE:
       return mergeObjects(state, {
         pageLoading: false,
       });

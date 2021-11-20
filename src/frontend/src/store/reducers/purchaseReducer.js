@@ -11,13 +11,16 @@ import {
   PURCHASE_DELETE_REQUEST,
   PURCHASE_DELETE_SUCCESS,
   PURCHASE_DELETE_FAILURE,
-} from '../actions/actionTypes';
-import { mergeObjects } from '../../utils/helpers';
+  PURCHASE_SEARCH_REQUEST,
+  PURCHASE_SEARCH_SUCCESS,
+  PURCHASE_SEARCH_FAILURE,
+} from "../actions/actionTypes";
+import { mergeObjects } from "../../utils/helpers";
 
 const initialState = {
   purchases: [],
-  orderBy: 'date',
-  order: 'desc',
+  orderBy: "id",
+  order: "asc",
   pageNo: 0,
   rowsPerPage: 5,
   count: 0,
@@ -75,13 +78,13 @@ const purchaseReducer = (state = initialState, action) => {
       let modifyPurchasesForUpdate = [...state.purchases];
 
       const purchaseIndex = modifyPurchasesForUpdate.findIndex(
-        (purchase) => +action.payload.purchase.id === +purchase.id,
+        (purchase) => +action.payload.purchase.id === +purchase.id
       );
 
       modifyPurchasesForUpdate.splice(
         purchaseIndex,
         1,
-        action.payload.purchase,
+        action.payload.purchase
       );
 
       return mergeObjects(state, {
@@ -125,27 +128,32 @@ const purchaseReducer = (state = initialState, action) => {
       });
 
     case PURCHASE_DELETE_SUCCESS:
-      let modifyPurchaseForDelete = [...state.purchases];
-
-      const modifiedPurchasesAfterDeleted = modifyPurchaseForDelete.filter(
-        (purchase) => +action.payload.purchaseId !== +purchase.id,
-      );
-
-      let prevPageNo =
-        state.count % state.rowsPerPage === 1 &&
-        state.count > state.rowsPerPage &&
-        state.pageNo === Math.floor(state.count / state.rowsPerPage)
-          ? state.pageNo - 1
-          : state.pageNo;
-
       return mergeObjects(state, {
-        purchases: modifiedPurchasesAfterDeleted,
         pageLoading: false,
-        pageNo: prevPageNo,
-        count: state.count - 1,
       });
 
     case PURCHASE_DELETE_FAILURE:
+      return mergeObjects(state, {
+        pageLoading: false,
+      });
+
+    case PURCHASE_SEARCH_REQUEST:
+      return mergeObjects(state, {
+        pageLoading: true,
+      });
+
+    case PURCHASE_SEARCH_SUCCESS:
+      return mergeObjects(state, {
+        purchases: action.payload.purchases || [],
+        pageNo: action.payload.pageNo,
+        rowsPerPage: action.payload.rowsPerPage,
+        orderBy: action.payload.orderBy,
+        order: action.payload.order,
+        count: action.payload.count,
+        pageLoading: false,
+      });
+
+    case PURCHASE_SEARCH_FAILURE:
       return mergeObjects(state, {
         pageLoading: false,
       });

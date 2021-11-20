@@ -1,19 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { Field, useFormState } from 'react-final-form';
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { Field, useFormState } from "react-final-form";
 
-import Button from '@mui/material/Button';
+import Button from "@mui/material/Button";
 
-import Input from '../../components/Input/Input';
-import Select from '../../components/Select/Select';
+import Input from "../../components/Input/Input";
+import Select from "../../components/Select/Select";
 
-import RelationshipModal from './RelationshipModal';
+import RelationshipModal from "./RelationshipModal";
+
+import { validateFloat } from "../../utils/helpers";
 
 const CreateUpdatePurchase = () => {
   const formState = useFormState();
 
   const relationshipItems = useSelector(
-    (state) => state.relationship.relationships,
+    (state) => state.relationship.relationships
   );
 
   const [relationshipId, setRelationshipId] = useState();
@@ -30,7 +32,7 @@ const CreateUpdatePurchase = () => {
       setRelationshipId(formState.values.relationship_id);
 
       const items = relationshipItems.filter(
-        (item) => item.id === formState.values.relationship_id,
+        (item) => item.id === formState.values.relationship_id
       );
 
       if (items.length > 0) {
@@ -41,8 +43,10 @@ const CreateUpdatePurchase = () => {
   }, [relationshipId]);
 
   const required = (value) => {
-    return value ? undefined : 'Required';
+    return value ? undefined : "Required";
   };
+  const validateString = (maxValue) => (value) =>
+    value && value.length <= maxValue ? undefined : "Invalid value";
 
   const handleSetRelationshipName = (value) => {
     setRelationshipId(value.id);
@@ -58,45 +62,45 @@ const CreateUpdatePurchase = () => {
     <>
       <Field
         component={Input}
-        id='company_name'
-        name='company_name'
-        label='Company Name'
-        type='text'
-        margin='normal'
+        id="company_name"
+        name="company_name"
+        label="Company Name"
+        type="text"
+        margin="normal"
         fullWidth
         autoFocus
         required
-        validate={required}
+        validate={validateString(100)}
       />
       <Field
         component={Input}
-        id='vehicle_name'
-        name='vehicle_name'
-        label='Vehicle Name'
-        type='text'
-        margin='normal'
+        id="vehicle_name"
+        name="vehicle_name"
+        label="Vehicle Name"
+        type="text"
+        margin="normal"
         fullWidth
         required
-        validate={required}
+        validate={validateString(100)}
       />
       <Field
         component={Input}
-        id='price'
-        name='price'
-        label='Price'
-        type='number'
-        margin='normal'
+        id="price"
+        name="price"
+        label="Price"
+        type="number"
+        margin="normal"
         fullWidth
         required
-        validate={required}
+        validate={validateFloat(8, 2)}
       />
       <Field
         component={Select}
         options={[{ id: relationshipId, name: relationshipName }]}
-        id='relationship_id'
-        name='relationship_id'
-        label='Relationship Id'
-        margin='normal'
+        id="relationship_id"
+        name="relationship_id"
+        label="Relationship Id"
+        margin="normal"
         hasEmptyOption={true}
         disabled={!relationshipId}
         InputLabelProps={{
@@ -110,10 +114,10 @@ const CreateUpdatePurchase = () => {
       <Field>
         {() => (
           <Button
-            variant='text'
+            variant="text"
             onClick={() => setOpenRelationshipModal(true)}
-            size='small'
-            color='primary'
+            size="small"
+            color="primary"
           >
             Add Seller
           </Button>
@@ -121,12 +125,12 @@ const CreateUpdatePurchase = () => {
       </Field>
       <Field
         component={Input}
-        id='date'
-        name='date'
-        label='Date'
-        type='date'
-        margin='normal'
-        defaultValue={new Date().toISOString().split('T')[0]}
+        id="date"
+        name="date"
+        label="Date"
+        type="date"
+        margin="normal"
+        defaultValue={new Date().toISOString().split("T")[0]}
         InputLabelProps={{
           shrink: true,
         }}

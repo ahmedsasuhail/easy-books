@@ -1,14 +1,16 @@
-import React from 'react';
+import React from "react";
 
-import MuiTable from '@mui/material/Table';
-import TableContainer from '@mui/material/TableContainer';
-import Paper from '@mui/material/Paper';
-import TableBody from '@mui/material/TableBody';
+import MuiTable from "@mui/material/Table";
+import TableContainer from "@mui/material/TableContainer";
+import Paper from "@mui/material/Paper";
+import TableBody from "@mui/material/TableBody";
 
-import EnhancedTableContent from './EnhancedTableContent';
-import EnhancedTableHead from './EnhancedTableHead';
-import EnhancedTableToolbar from './EnhancedTableToolbar';
-import EnhancedTablePagination from './EnhancedTablePagination';
+import EnhancedTableContent from "./EnhancedTableContent";
+import EnhancedTableHead from "./EnhancedTableHead";
+import EnhancedTableToolbar from "./EnhancedTableToolbar";
+import EnhancedTablePagination from "./EnhancedTablePagination";
+
+import useStyles from "./styles";
 
 const Table = (props) => {
   const {
@@ -23,6 +25,7 @@ const Table = (props) => {
     requestSort,
     changePage,
     changeRowsPerPage,
+    requestSearch,
     actions,
     openEditFunction,
     submitDeleteFunction,
@@ -31,13 +34,18 @@ const Table = (props) => {
     size,
   } = props;
 
+  const classes = useStyles();
+
   return (
-    <Paper sx={{ width: '100%', mb: 2, padding: '10px' }}>
-      <EnhancedTableToolbar title={tableTitle} />
+    <Paper sx={{ mb: 2 }} className={classes.paper}>
+      <EnhancedTableToolbar
+        title={tableTitle}
+        onRequestSearch={requestSearch}
+      />
       <TableContainer>
         <MuiTable
-          sx={{ minWidth: 750 }}
-          aria-labelledby='tableTitle'
+          className={classes.muitable}
+          aria-labelledby="tableTitle"
           size={size}
         >
           <EnhancedTableHead

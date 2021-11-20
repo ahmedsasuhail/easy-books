@@ -3,13 +3,13 @@ import {
   INVENTORY_PURCHASE_SUCCESS,
   INVENTORY_PURCHASE_FAILURE,
   INVENTORY_PURCHASE_CLEAR,
-} from '../actions/actionTypes';
-import { mergeObjects } from '../../utils/helpers';
+} from "../actions/actionTypes";
+import { mergeObjects } from "../../utils/helpers";
 
 const initialState = {
   data: [],
-  orderBy: 'date',
-  order: 'desc',
+  orderBy: "id",
+  order: "asc",
   pageNo: 0,
   rowsPerPage: 5,
   count: 0,

@@ -1,29 +1,31 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-import { Grid, Button, makeStyles } from '@material-ui/core';
-import Box from '@mui/material/Box';
+import { Grid, Button, makeStyles } from "@material-ui/core";
+import Box from "@mui/material/Box";
 
-import PageTitle from '../../components/PageTitle/PageTitle';
-import Dialog from '../../components/Dialog/Dialog';
-import CustomTable from '../../components/Table/CustomTable';
+import PageTitle from "../../components/PageTitle/PageTitle";
+import Dialog from "../../components/Dialog/Dialog";
+import CustomTable from "../../components/Table/CustomTable";
 
-import CreateUpdatePurchase from './CreateUpdatePurchase';
+import CreateUpdatePurchase from "./CreateUpdatePurchase";
+import MessageDialogue from "../../components/Dialog/MessageDialogue";
 
 import {
   purchaseCreate,
   purchaseRead,
   purchaseUpdate,
   purchaseDelete,
-} from '../../store/actions/purchase';
+  purchaseSearch,
+} from "../../store/actions/purchase";
 
-import { formattedDate } from '../../utils/helpers';
+import { formattedDate } from "../../utils/helpers";
 
 const useStyles = makeStyles((theme) => ({
   pageContainer: {
-    [theme.breakpoints.up('lg')]: {
-      width: '80%',
-      margin: 'auto',
+    [theme.breakpoints.up("lg")]: {
+      width: "80%",
+      margin: "auto",
     },
   },
 }));
@@ -39,16 +41,16 @@ export const CustomMuiTable = (props) => {
   const totalCount = useSelector((state) => state.purchase.count);
 
   const handleRequestSort = (property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    const direction = isAsc ? 'desc' : 'asc';
+    const isAsc = orderBy === property && order === "asc";
+    const direction = isAsc ? "desc" : "asc";
     dispatch(
       purchaseRead({
         token,
-        pageNo,
+        pageNo: 0,
         rowsPerPage,
         order: direction,
         orderBy: property,
-      }),
+      })
     );
   };
 
@@ -60,7 +62,7 @@ export const CustomMuiTable = (props) => {
         rowsPerPage,
         orderBy,
         order,
-      }),
+      })
     );
   };
 
@@ -68,12 +70,16 @@ export const CustomMuiTable = (props) => {
     dispatch(
       purchaseRead({
         token,
-        pageNo,
+        pageNo: 0,
         rowsPerPage: parseInt(event.target.value, 10),
         orderBy,
         order,
-      }),
+      })
     );
+  };
+
+  const handleRequestSearch = (value) => {
+    dispatch(purchaseSearch({ token, keyword: value }));
   };
 
   useEffect(() => {
@@ -83,7 +89,7 @@ export const CustomMuiTable = (props) => {
 
   return (
     <CustomTable
-      tableTitle='All Purchases'
+      tableTitle="All Purchases"
       pageNo={pageNo}
       rowsPerPage={rowsPerPage}
       order={order}
@@ -94,11 +100,12 @@ export const CustomMuiTable = (props) => {
       requestSort={handleRequestSort}
       changePage={handleChangePage}
       changeRowsPerPage={handleChangeRowsPerPage}
+      requestSearch={handleRequestSearch}
       actions={true}
       openEditFunction={props.openEditFunction}
       submitDeleteFunction={props.submitDeleteFunction}
       submitAddFunction={props.submitAddFunction}
-      size={props.submitAddFunction ? 'small' : 'medium'}
+      size={props.submitAddFunction ? "small" : "medium"}
     />
   );
 };
@@ -107,34 +114,34 @@ const ReadPurchase = (props) => {
   let rows = [];
   const headCells = [
     {
-      id: 'sn',
-      label: 'SN',
+      id: "sn",
+      label: "SN",
       disableSort: true,
     },
     {
-      id: 'relationship_id',
+      id: "relationship_id",
       display: false,
     },
     {
-      id: 'company_name',
-      label: 'Company Name',
+      id: "company_name",
+      label: "Company Name",
     },
     {
-      id: 'vehicle_name',
-      label: 'Vehicle Name',
+      id: "vehicle_name",
+      label: "Vehicle Name",
     },
     {
-      id: 'price',
-      label: 'Price',
+      id: "price",
+      label: "Price",
     },
     {
-      id: 'seller',
-      label: 'Seller',
+      id: "seller",
+      label: "Seller",
       disableSort: true,
     },
     {
-      id: 'date',
-      label: 'Date',
+      id: "date",
+      label: "Date",
     },
   ];
 
@@ -144,13 +151,19 @@ const ReadPurchase = (props) => {
 
   const [openCreateUpdatePurchase, setOpenCreateUpdatePurchase] =
     useState(false);
+  const [openConfirmModal, setOpenConfirmModal] = useState(false);
   const [valueForm, setValueForm] = useState(null);
+  const [id, setId] = useState("");
+  const [openAlertModal, setOpenAlertModal] = useState(false);
 
   const token = useSelector((state) => state.user.token);
   const purchaseItems = useSelector((state) => state.purchase.purchases);
   const pageNo = useSelector((state) => state.purchase.pageNo);
   const rowsPerPage = useSelector((state) => state.purchase.rowsPerPage);
   const isLoading = useSelector((state) => state.purchase.formLoading);
+  const orderBy = useSelector((state) => state.purchase.orderBy);
+  const order = useSelector((state) => state.purchase.order);
+  const totalCount = useSelector((state) => state.purchase.count);
 
   if (purchaseItems) {
     rows = purchaseItems.map((purchase, idx) => {
@@ -160,30 +173,64 @@ const ReadPurchase = (props) => {
         relationship_id: purchase.relationships.id,
         company_name: purchase.company_name
           ? purchase.company_name
-          : 'Not Specified',
+          : "Not Specified",
         vehicle_name: purchase.vehicle_name
           ? purchase.vehicle_name
-          : 'Not Specified',
-        price: purchase.price ? purchase.price : 'Not Specified',
+          : "Not Specified",
+        price: purchase.price ? purchase.price : "Not Specified",
         seller: purchase.relationships.id
           ? purchase.relationships.name
-          : 'Not Specified',
-        date: purchase.date ? formattedDate(purchase.date) : 'Not Specified',
+          : "Not Specified",
+        date: purchase.date ? formattedDate(purchase.date) : "Not Specified",
       };
     });
   }
 
   useEffect(() => {
-    document.title = `Purchases | ${process.env.REACT_APP_NAME}`;
+    document.title = `Purchases | ${
+      process.env.REACT_APP_NAME || "Easy Books"
+    }`;
   }, []);
 
   const handleOpenCreatePurchase = () => {
     setOpenCreateUpdatePurchase(true);
   };
 
+  const handleConfirmModal = (bool) => {
+    setOpenConfirmModal(bool);
+  };
+
   const handleOpenEditPurchase = (values) => {
     setValueForm(values);
     setOpenCreateUpdatePurchase(true);
+  };
+
+  const handleSubmitResult = (result) => {
+    if (result) {
+      let pageNumber =
+        totalCount % rowsPerPage === 1 &&
+        totalCount > rowsPerPage &&
+        pageNo === Math.floor(totalCount / rowsPerPage)
+          ? pageNo - 1
+          : pageNo;
+
+      dispatch(purchaseDelete({ id, token })).then((res) => {
+        if (res) {
+          dispatch(
+            purchaseRead({
+              token,
+              pageNo: pageNumber,
+              rowsPerPage,
+              orderBy,
+              order,
+            })
+          );
+        } else {
+          setOpenAlertModal(true);
+        }
+      });
+    }
+    handleConfirmModal(false);
   };
 
   const handleCloseCreateOrEditPurchase = () => {
@@ -202,24 +249,20 @@ const ReadPurchase = (props) => {
   };
 
   const handleSubmitDeletePurchase = (id) => {
-    const result = window.confirm(
-      `Are you sure you want to delete this purchase item?`,
-    );
-    if (result) {
-      dispatch(purchaseDelete({ id, token }));
-    }
+    setId(id);
+    handleConfirmModal(true);
   };
 
   return (
     <>
       <Box className={classes.pageContainer}>
         <PageTitle
-          title={'Purchases'}
+          title={"Purchases"}
           button={
             <Button
-              variant='outlined'
-              size='medium'
-              color='secondary'
+              variant="outlined"
+              size="medium"
+              color="secondary"
               onClick={handleOpenCreatePurchase}
             >
               Add Purchase
@@ -238,9 +281,9 @@ const ReadPurchase = (props) => {
         </Grid>
       </Box>
       <Dialog
-        title={`${valueForm ? 'Edit' : 'Create'} Purchase`}
+        title={`${valueForm ? "Edit" : "Create"} Purchase`}
         fullWidth={true}
-        maxWidth='xs'
+        maxWidth="sm"
         initialValues={valueForm}
         isLoading={isLoading}
         open={openCreateUpdatePurchase}
@@ -249,6 +292,47 @@ const ReadPurchase = (props) => {
       >
         <CreateUpdatePurchase />
       </Dialog>
+      <MessageDialogue
+        title="Confirm"
+        message="Are you sure you want to delete this purchase item?"
+        button={
+          <>
+            <Button
+              size="small"
+              onClick={() => handleSubmitResult(false)}
+              color="primary"
+            >
+              No
+            </Button>
+            <Button
+              size="small"
+              onClick={() => handleSubmitResult(true)}
+              color="secondary"
+            >
+              Yes
+            </Button>
+          </>
+        }
+        openModal={openConfirmModal}
+        handleCloseModal={() => handleConfirmModal(false)}
+      />
+      <MessageDialogue
+        title="Alert"
+        message="Cannot delete this item."
+        button={
+          <>
+            <Button
+              size="small"
+              onClick={() => setOpenAlertModal(false)}
+              color="primary"
+            >
+              Close
+            </Button>
+          </>
+        }
+        openModal={openAlertModal}
+        handleCloseModal={() => setOpenAlertModal(false)}
+      />
     </>
   );
 };

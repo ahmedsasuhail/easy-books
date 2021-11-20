@@ -1,9 +1,21 @@
-import React from 'react';
+import React, { useState } from "react";
 
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import SearchBar from "material-ui-search-bar";
 
 const EnhancedTableToolbar = (props) => {
+  const [searched, setSearched] = useState("");
+
+  const requestSearch = (value) => {
+    props.onRequestSearch(value);
+  };
+
+  const cancelSearch = () => {
+    setSearched("");
+    requestSearch(null);
+  };
+
   return (
     <Toolbar
       sx={{
@@ -12,13 +24,18 @@ const EnhancedTableToolbar = (props) => {
       }}
     >
       <Typography
-        sx={{ flex: '1 1 100%' }}
-        variant='h6'
-        id='tableTitle'
-        component='div'
+        sx={{ flex: "1 1 100%" }}
+        variant="h6"
+        id="tableTitle"
+        component="div"
       >
         {props.title}
       </Typography>
+      <SearchBar
+        value={searched}
+        onChange={(searchVal) => requestSearch(searchVal)}
+        onCancelSearch={() => cancelSearch()}
+      />
     </Toolbar>
   );
 };

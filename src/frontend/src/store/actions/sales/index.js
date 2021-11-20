@@ -1,6 +1,6 @@
-import { salesActions } from './salesActions';
-import axios from '../../../utils/axiosInstance';
-import { userActions } from '../user/userActions';
+import { salesActions } from "./salesActions";
+import axios from "../../../utils/axiosInstance";
+import { userActions } from "../user/userActions";
 
 // Action Creators
 export const salesCreate = (values) => {
@@ -8,7 +8,7 @@ export const salesCreate = (values) => {
     dispatch(salesActions.salesCreateRequest());
     try {
       const response = await axios.post(
-        'sales/',
+        "sales/",
         {
           purchase_id: +values.formValues.purchase_id,
           inventory_id: +values.formValues.inventory_id,
@@ -21,16 +21,16 @@ export const salesCreate = (values) => {
           headers: {
             Authorization: values.token,
           },
-        },
+        }
       );
       if (response.data.data) {
         dispatch(salesActions.salesCreateSuccess(response.data.data));
       } else {
-        console.log('Error: ', response);
+        console.log("Error: ", response);
         dispatch(salesActions.salesCreateFailure());
       }
     } catch (error) {
-      console.log('Catch Error: ', error);
+      console.log("Catch Error: ", error);
       dispatch(salesActions.salesCreateFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
@@ -44,7 +44,7 @@ export const salesUpdate = (values) => {
     dispatch(salesActions.salesUpdateRequest());
     try {
       const response = await axios.patch(
-        'sales/',
+        "sales/",
         {
           purchase_id: +values.formValues.purchase_id,
           inventory_id: +values.formValues.inventory_id,
@@ -62,16 +62,16 @@ export const salesUpdate = (values) => {
           headers: {
             Authorization: values.token,
           },
-        },
+        }
       );
       if (response.data.data) {
         dispatch(salesActions.salesUpdateSuccess(response.data.data));
       } else {
-        console.log('Error: ', response);
+        console.log("Error: ", response);
         dispatch(salesActions.salesUpdateFailure());
       }
     } catch (error) {
-      console.log('Catch Error: ', error);
+      console.log("Catch Error: ", error);
       dispatch(salesActions.salesUpdateFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
@@ -92,16 +92,16 @@ export const salesRead = (values) => {
           headers: {
             Authorization: values.token,
           },
-        },
+        }
       );
       if (response.data.data) {
         dispatch(salesActions.salesReadSuccess(response.data.data));
       } else {
-        console.log('Error: ', response);
+        console.log("Error: ", response);
         dispatch(salesActions.salesReadFailure());
       }
     } catch (error) {
-      console.log('Catch Error: ', error);
+      console.log("Catch Error: ", error);
       dispatch(salesActions.salesReadFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
@@ -112,9 +112,10 @@ export const salesRead = (values) => {
 
 export const salesDelete = (values) => {
   return async (dispatch) => {
+    let result;
     dispatch(salesActions.salesDeleteRequest());
     try {
-      const response = await axios.delete('sales/', {
+      const response = await axios.delete("sales/", {
         headers: {
           Authorization: values.token,
         },
@@ -124,17 +125,48 @@ export const salesDelete = (values) => {
       });
       if (response.data.data) {
         dispatch(salesActions.salesDeleteSuccess(response.data.data));
+        result = true;
       } else {
-        console.log('Error: ', response);
+        console.log("Error: ", response);
         dispatch(salesActions.salesDeleteFailure());
       }
     } catch (error) {
-      console.log('Catch Error: ', error);
+      console.log("Catch Error: ", error);
       dispatch(salesActions.salesDeleteFailure());
       if (error.response && error.response.status === 401) {
         dispatch(userActions.logoutUser());
-      } else if (error.response && error.response.status === 500) {
-        alert('Cannot delete this item!');
+      }
+    }
+    return result;
+  };
+};
+
+export const salesSearch = (values) => {
+  return async (dispatch) => {
+    dispatch(salesActions.salesSearchRequest());
+    try {
+      const response = await axios.post(
+        "sales/search",
+        {
+          search_term: values.keyword,
+        },
+        {
+          headers: {
+            Authorization: values.token,
+          },
+        }
+      );
+      if (response.data.data) {
+        dispatch(salesActions.salesSearchSuccess(response.data.data));
+      } else {
+        console.log("Error: ", response);
+        dispatch(salesActions.salesSearchFailure());
+      }
+    } catch (error) {
+      console.log("Catch Error: ", error);
+      dispatch(salesActions.salesSearchFailure());
+      if (error.response && error.response.status === 401) {
+        dispatch(userActions.logoutUser());
       }
     }
   };
