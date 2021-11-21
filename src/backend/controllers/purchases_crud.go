@@ -138,6 +138,7 @@ func ReadPurchases(c *gin.Context) {
 		"page_limit":          pagination.PageLimit,
 		"order_by":            pagination.OrderBy,
 		"sort_order":          pagination.SortOrder,
+		"query":               pagination.Query,
 		"total_count":         stats.NumberOfDocuments,
 		"records":             records.Hits,
 		"total_matched_count": len(records.Hits),

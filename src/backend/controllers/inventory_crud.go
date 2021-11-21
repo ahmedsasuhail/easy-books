@@ -148,6 +148,7 @@ func ReadInventory(c *gin.Context) {
 		"page_limit":          pagination.PageLimit,
 		"order_by":            pagination.OrderBy,
 		"sort_order":          pagination.SortOrder,
+		"query":               pagination.Query,
 		"total_count":         stats.NumberOfDocuments,
 		"records":             records.Hits,
 		"total_matched_count": len(records.Hits),
@@ -226,21 +227,23 @@ func GetInventoryByPurchaseID(c *gin.Context) {
 		return
 	}
 
-	records, err := inventoryIndex.Search("", &meilisearch.SearchRequest{
-		Limit:  int64(pagination.PageLimit),
-		Offset: int64(offset),
-		Sort: []string{
-			fmt.Sprintf("%s:%s", pagination.OrderBy, pagination.SortOrder),
-		},
-		AttributesToRetrieve: []string{
-			"id",
-			"part_name",
-			"quantity",
-			"date",
-			"purchases",
-		},
-		Filter: fmt.Sprintf("purchase_id = \"%d\"", record.PurchaseID),
-	})
+	records, err := inventoryIndex.Search(
+		pagination.Query,
+		&meilisearch.SearchRequest{
+			Limit:  int64(pagination.PageLimit),
+			Offset: int64(offset),
+			Sort: []string{
+				fmt.Sprintf("%s:%s", pagination.OrderBy, pagination.SortOrder),
+			},
+			AttributesToRetrieve: []string{
+				"id",
+				"part_name",
+				"quantity",
+				"date",
+				"purchases",
+			},
+			Filter: fmt.Sprintf("purchase_id = \"%d\"", record.PurchaseID),
+		})
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 
@@ -252,6 +255,7 @@ func GetInventoryByPurchaseID(c *gin.Context) {
 		"page_limit":          pagination.PageLimit,
 		"order_by":            pagination.OrderBy,
 		"sort_order":          pagination.SortOrder,
+		"query":               pagination.Query,
 		"total_count":         stats.NumberOfDocuments,
 		"records":             records.Hits,
 		"total_matched_count": len(records.Hits),
