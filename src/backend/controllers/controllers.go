@@ -160,6 +160,10 @@ func InitMeilisearch() {
 				"part_name",
 				"date",
 			},
+			SearchableAttributes: []string{
+				"part_name",
+				"purchases",
+			},
 			FilterableAttributes: []string{
 				"purchase_id",
 			},
@@ -172,6 +176,9 @@ func InitMeilisearch() {
 				"price",
 				"date",
 			},
+			SearchableAttributes: []string{
+				"description",
+			},
 		},
 		models.PurchasesTableName: {
 			Document:   filteredPurchases,
@@ -183,12 +190,20 @@ func InitMeilisearch() {
 				"price",
 				"date",
 			},
+			SearchableAttributes: []string{
+				"company_name",
+				"vehicle_name",
+				"relationships",
+			},
 		},
 		models.RelationshipsTableName: {
 			Document:   filteredRelationships,
 			PrimaryKey: "id",
 			SortableAttributes: []string{
 				"id",
+				"name",
+			},
+			SearchableAttributes: []string{
 				"name",
 			},
 		},
@@ -199,6 +214,11 @@ func InitMeilisearch() {
 				"id",
 				"price",
 				"date",
+			},
+			SearchableAttributes: []string{
+				"relationships",
+				"purchases",
+				"inventory",
 			},
 		},
 	}
