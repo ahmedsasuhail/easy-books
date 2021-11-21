@@ -150,20 +150,59 @@ func InitMeilisearch() {
 		})
 	}
 
-	indeces := map[string]interface{}{
-		models.InventoryTableName:     filteredInventory,
-		models.MiscellaneousTableName: filteredMiscellaneous,
-		models.PurchasesTableName:     filteredPurchases,
-		models.RelationshipsTableName: filteredRelationships,
-		models.SalesTableName:         filteredSales,
+	indeces := map[string]models.MeiliIndexConfig{
+		models.InventoryTableName: {
+			Document:   filteredInventory,
+			PrimaryKey: "id",
+			SortableAttributes: []string{
+				"id",
+				"part_name",
+			},
+		},
+		models.MiscellaneousTableName: {
+			Document:   filteredMiscellaneous,
+			PrimaryKey: "id",
+			SortableAttributes: []string{
+				"id",
+				"price",
+			},
+		},
+		models.PurchasesTableName: {
+			Document:   filteredPurchases,
+			PrimaryKey: "id",
+			SortableAttributes: []string{
+				"id",
+				"company_name",
+				"vehicle_name",
+				"price",
+			},
+		},
+		models.RelationshipsTableName: {
+			Document:   filteredRelationships,
+			PrimaryKey: "id",
+			SortableAttributes: []string{
+				"id",
+				"name",
+			},
+		},
+		models.SalesTableName: {
+			Document:   filteredSales,
+			PrimaryKey: "id",
+			SortableAttributes: []string{
+				"id",
+				"price",
+			},
+		},
 	}
 
-	for index, table := range indeces {
+	for index, config := range indeces {
 		msClient.DeleteIndexIfExists(index)
 		msClient.Index(index).AddDocumentsWithPrimaryKey(
-			table,
-			"id",
+			config.Document,
+			config.PrimaryKey,
 		)
+		msClient.Index(index).UpdateSortableAttributes(&config.SortableAttributes)
+		msClient.Index(index).UpdateSearchableAttributes(&config.SearchableAttributes)
 	}
 }
 

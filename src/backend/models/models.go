@@ -30,6 +30,13 @@ type SearchRequest struct {
 	SearchTerm string `json:"search_term"`
 }
 
+type MeiliIndexConfig struct {
+	Document             interface{}
+	PrimaryKey           string
+	SortableAttributes   []string
+	SearchableAttributes []string
+}
+
 // ----------------------------------------------------------------------------
 // DATABASE MODELS
 // ----------------------------------------------------------------------------

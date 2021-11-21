@@ -40,10 +40,7 @@ func CreateRelationships(c *gin.Context) {
 		"address":      record.Address,
 	}
 
-	_, err = relationshipsIndex.AddDocumentsWithPrimaryKey(
-		filteredRecord,
-		"id",
-	)
+	_, err = relationshipsIndex.AddDocuments(filteredRecord)
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 
@@ -80,10 +77,7 @@ func UpdateRelationships(c *gin.Context) {
 		"address":      record.Address,
 	}
 
-	_, err = relationshipsIndex.UpdateDocumentsWithPrimaryKey(
-		filteredRecord,
-		"id",
-	)
+	_, err = relationshipsIndex.UpdateDocuments(filteredRecord)
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 
@@ -216,6 +210,9 @@ func SearchRelationships(c *gin.Context) {
 			Limit:                 int64(pagination.PageLimit),
 			Offset:                int64(offset),
 			AttributesToHighlight: []string{"*"},
+			Sort: []string{
+				fmt.Sprintf("%s:%s", pagination.OrderBy, pagination.SortOrder),
+			},
 		},
 	)
 	if err != nil {

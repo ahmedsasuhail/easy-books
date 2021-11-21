@@ -66,10 +66,7 @@ func CreateSales(c *gin.Context) {
 		},
 	}
 
-	_, err = salesIndex.AddDocumentsWithPrimaryKey(
-		filteredRecord,
-		"id",
-	)
+	_, err = salesIndex.AddDocuments(filteredRecord)
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 
@@ -159,10 +156,7 @@ func UpdateSales(c *gin.Context) {
 		},
 	}
 
-	_, err = salesIndex.UpdateDocumentsWithPrimaryKey(
-		filteredRecord,
-		"id",
-	)
+	_, err = salesIndex.UpdateDocuments(filteredRecord)
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 
@@ -339,6 +333,9 @@ func SearchSales(c *gin.Context) {
 			Limit:                 int64(pagination.PageLimit),
 			Offset:                int64(offset),
 			AttributesToHighlight: []string{"*"},
+			Sort: []string{
+				fmt.Sprintf("%s:%s", pagination.OrderBy, pagination.SortOrder),
+			},
 		},
 	)
 	if err != nil {

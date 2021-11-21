@@ -49,10 +49,7 @@ func CreateInventory(c *gin.Context) {
 		},
 	}
 
-	_, err = inventoryIndex.AddDocumentsWithPrimaryKey(
-		filteredRecord,
-		"id",
-	)
+	_, err = inventoryIndex.AddDocuments(filteredRecord)
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 
@@ -98,10 +95,7 @@ func UpdateInventory(c *gin.Context) {
 		},
 	}
 
-	_, err = inventoryIndex.UpdateDocumentsWithPrimaryKey(
-		filteredRecord,
-		"id",
-	)
+	_, err = inventoryIndex.UpdateDocuments(filteredRecord)
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 
@@ -329,6 +323,9 @@ func SearchInventory(c *gin.Context) {
 			Limit:                 int64(pagination.PageLimit),
 			Offset:                int64(offset),
 			AttributesToHighlight: []string{"*"},
+			Sort: []string{
+				fmt.Sprintf("%s:%s", pagination.OrderBy, pagination.SortOrder),
+			},
 		},
 	)
 	if err != nil {

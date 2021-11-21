@@ -45,10 +45,7 @@ func CreatePurchases(c *gin.Context) {
 		},
 	}
 
-	_, err = purchasesIndex.AddDocumentsWithPrimaryKey(
-		filteredRecord,
-		"id",
-	)
+	_, err = purchasesIndex.AddDocuments(filteredRecord)
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 
@@ -90,10 +87,7 @@ func UpdatePurchases(c *gin.Context) {
 		},
 	}
 
-	_, err = purchasesIndex.UpdateDocumentsWithPrimaryKey(
-		filteredRecord,
-		"id",
-	)
+	_, err = purchasesIndex.UpdateDocuments(filteredRecord)
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 
@@ -237,6 +231,9 @@ func SearchPurchases(c *gin.Context) {
 			Limit:                 int64(pagination.PageLimit),
 			Offset:                int64(offset),
 			AttributesToHighlight: []string{"*"},
+			Sort: []string{
+				fmt.Sprintf("%s:%s", pagination.OrderBy, pagination.SortOrder),
+			},
 		},
 	)
 	if err != nil {

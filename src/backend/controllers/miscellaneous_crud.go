@@ -40,10 +40,7 @@ func CreateMiscellaneous(c *gin.Context) {
 		"date":        record.Date,
 	}
 
-	_, err = miscellaneousIndex.AddDocumentsWithPrimaryKey(
-		filteredRecord,
-		"id",
-	)
+	_, err = miscellaneousIndex.AddDocuments(filteredRecord)
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 
@@ -81,10 +78,7 @@ func UpdateMiscellaneous(c *gin.Context) {
 		"date":        record.Date,
 	}
 
-	_, err = miscellaneousIndex.UpdateDocumentsWithPrimaryKey(
-		filteredRecord,
-		"id",
-	)
+	_, err = miscellaneousIndex.UpdateDocuments(filteredRecord)
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 
@@ -218,6 +212,9 @@ func SearchMiscellaneous(c *gin.Context) {
 			Limit:                 int64(pagination.PageLimit),
 			Offset:                int64(offset),
 			AttributesToHighlight: []string{"*"},
+			Sort: []string{
+				fmt.Sprintf("%s:%s", pagination.OrderBy, pagination.SortOrder),
+			},
 		},
 	)
 	if err != nil {
