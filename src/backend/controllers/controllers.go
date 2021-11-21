@@ -158,6 +158,7 @@ func InitMeilisearch() {
 			SortableAttributes: []string{
 				"id",
 				"part_name",
+				"date",
 			},
 			FilterableAttributes: []string{
 				"purchase_id",
@@ -169,6 +170,7 @@ func InitMeilisearch() {
 			SortableAttributes: []string{
 				"id",
 				"price",
+				"date",
 			},
 		},
 		models.PurchasesTableName: {
@@ -179,6 +181,7 @@ func InitMeilisearch() {
 				"company_name",
 				"vehicle_name",
 				"price",
+				"date",
 			},
 		},
 		models.RelationshipsTableName: {
@@ -195,6 +198,7 @@ func InitMeilisearch() {
 			SortableAttributes: []string{
 				"id",
 				"price",
+				"date",
 			},
 		},
 	}
