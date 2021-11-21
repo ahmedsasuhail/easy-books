@@ -45,8 +45,6 @@ func Get() *gin.Engine {
 			miscellaneous.PATCH("/", controllers.UpdateMiscellaneous)
 			miscellaneous.GET("/", controllers.ReadMiscellaneous)
 			miscellaneous.DELETE("/", controllers.DeleteMiscellaneous)
-
-			miscellaneous.POST("/search", controllers.SearchMiscellaneous)
 		}
 
 		relationships := app.Group("/relationships")
@@ -56,8 +54,6 @@ func Get() *gin.Engine {
 			relationships.PATCH("/", controllers.UpdateRelationships)
 			relationships.GET("/", controllers.ReadRelationships)
 			relationships.DELETE("/", controllers.DeleteRelationships)
-
-			relationships.POST("/search", controllers.SearchRelationships)
 		}
 
 		purchases := app.Group("/purchases")
@@ -68,7 +64,6 @@ func Get() *gin.Engine {
 			purchases.GET("/", controllers.ReadPurchases)
 			purchases.DELETE("/", controllers.DeletePurchases)
 
-			purchases.POST("/search", controllers.SearchPurchases)
 		}
 
 		inventory := app.Group("/inventory")
@@ -79,7 +74,6 @@ func Get() *gin.Engine {
 			inventory.GET("/", controllers.ReadInventory)
 			inventory.DELETE("/", controllers.DeleteInventory)
 
-			inventory.POST("/search", controllers.SearchInventory)
 			inventory.POST("/get_by_purchase", controllers.GetInventoryByPurchaseID)
 		}
 
@@ -90,8 +84,6 @@ func Get() *gin.Engine {
 			sales.PATCH("/", controllers.UpdateSales)
 			sales.GET("/", controllers.ReadSales)
 			sales.DELETE("/", controllers.DeleteSales)
-
-			sales.POST("/search", controllers.SearchSales)
 		}
 
 		reports := app.Group("/reports")

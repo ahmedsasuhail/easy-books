@@ -187,13 +187,15 @@ func ReadSales(c *gin.Context) {
 		return
 	}
 
-	records, err := salesIndex.Search("", &meilisearch.SearchRequest{
-		Limit:  int64(pagination.PageLimit),
-		Offset: int64(offset),
-		Sort: []string{
-			fmt.Sprintf("%s:%s", pagination.OrderBy, pagination.SortOrder),
-		},
-	})
+	records, err := salesIndex.Search(
+		pagination.Query,
+		&meilisearch.SearchRequest{
+			Limit:  int64(pagination.PageLimit),
+			Offset: int64(offset),
+			Sort: []string{
+				fmt.Sprintf("%s:%s", pagination.OrderBy, pagination.SortOrder),
+			},
+		})
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 
@@ -259,63 +261,4 @@ func DeleteSales(c *gin.Context) {
 	}
 
 	successResponse(c, http.StatusOK, "Deleted record.", filteredRecord)
-}
-
-// SearchSales returns a paginated list of records based on a specified
-// search term.
-func SearchSales(c *gin.Context) {
-	pagination, err := parsePaginationRequest(c)
-	if err != nil {
-		errorResponse(
-			c,
-			http.StatusBadRequest,
-			err.Error(),
-		)
-
-		return
-	}
-
-	var searchRequest models.SearchRequest
-	err = parseRequestBody(c, &searchRequest)
-	if err != nil {
-		errorResponse(c, http.StatusInternalServerError, err.Error())
-
-		return
-	}
-
-	offset := (pagination.Page - 1) * pagination.PageLimit
-
-	searchRes, err := salesIndex.Search(
-		searchRequest.SearchTerm,
-		&meilisearch.SearchRequest{
-			Limit:                 int64(pagination.PageLimit),
-			Offset:                int64(offset),
-			AttributesToHighlight: []string{"*"},
-			Sort: []string{
-				fmt.Sprintf("%s:%s", pagination.OrderBy, pagination.SortOrder),
-			},
-		},
-	)
-	if err != nil {
-		errorResponse(c, http.StatusInternalServerError, err.Error())
-
-		return
-	}
-
-	stats, err := salesIndex.GetStats()
-	if err != nil {
-		errorResponse(c, http.StatusInternalServerError, err.Error())
-
-		return
-	}
-
-	successResponse(c, http.StatusOK, "", map[string]interface{}{
-		"page":                pagination.Page,
-		"page_limit":          pagination.PageLimit,
-		"order_by":            pagination.OrderBy,
-		"sort_order":          pagination.SortOrder,
-		"total_count":         stats.NumberOfDocuments,
-		"records":             searchRes.Hits,
-		"total_matched_count": len(searchRes.Hits),
-	})
 }

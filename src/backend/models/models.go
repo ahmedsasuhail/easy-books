@@ -19,15 +19,12 @@ type Response struct {
 }
 
 type Pagination struct {
+	Query     string `json:"q"`
 	GetAll    bool   `json:"get_all"`
 	Page      int    `json:"page"`
 	PageLimit int    `json:"page_limit"`
 	OrderBy   string `json:"order_by"`
 	SortOrder string `json:"sort_order"` // Can either be `"asc"` or `"desc"`.
-}
-
-type SearchRequest struct {
-	SearchTerm string `json:"search_term"`
 }
 
 type MeiliIndexConfig struct {

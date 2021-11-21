@@ -128,13 +128,15 @@ func ReadInventory(c *gin.Context) {
 		return
 	}
 
-	records, err := inventoryIndex.Search("", &meilisearch.SearchRequest{
-		Limit:  int64(pagination.PageLimit),
-		Offset: int64(offset),
-		Sort: []string{
-			fmt.Sprintf("%s:%s", pagination.OrderBy, pagination.SortOrder),
-		},
-	})
+	records, err := inventoryIndex.Search(
+		pagination.Query,
+		&meilisearch.SearchRequest{
+			Limit:  int64(pagination.PageLimit),
+			Offset: int64(offset),
+			Sort: []string{
+				fmt.Sprintf("%s:%s", pagination.OrderBy, pagination.SortOrder),
+			},
+		})
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 
@@ -253,71 +255,5 @@ func GetInventoryByPurchaseID(c *gin.Context) {
 		"total_count":         stats.NumberOfDocuments,
 		"records":             records.Hits,
 		"total_matched_count": len(records.Hits),
-	})
-}
-
-// SearchInventory returns a paginated list of records based on a specified
-// search term.
-func SearchInventory(c *gin.Context) {
-	pagination, err := parsePaginationRequest(c)
-	if err != nil {
-		errorResponse(
-			c,
-			http.StatusBadRequest,
-			err.Error(),
-		)
-
-		return
-	}
-
-	var searchRequest models.SearchRequest
-	err = parseRequestBody(c, &searchRequest)
-	if err != nil {
-		errorResponse(c, http.StatusInternalServerError, err.Error())
-
-		return
-	}
-
-	offset := (pagination.Page - 1) * pagination.PageLimit
-
-	searchRes, err := inventoryIndex.Search(
-		searchRequest.SearchTerm,
-		&meilisearch.SearchRequest{
-			Limit:                 int64(pagination.PageLimit),
-			Offset:                int64(offset),
-			AttributesToHighlight: []string{"*"},
-			Sort: []string{
-				fmt.Sprintf("%s:%s", pagination.OrderBy, pagination.SortOrder),
-			},
-			AttributesToRetrieve: []string{
-				"id",
-				"part_name",
-				"quantity",
-				"date",
-				"purchases",
-			},
-		},
-	)
-	if err != nil {
-		errorResponse(c, http.StatusInternalServerError, err.Error())
-
-		return
-	}
-
-	stats, err := inventoryIndex.GetStats()
-	if err != nil {
-		errorResponse(c, http.StatusInternalServerError, err.Error())
-
-		return
-	}
-
-	successResponse(c, http.StatusOK, "", map[string]interface{}{
-		"page":                pagination.Page,
-		"page_limit":          pagination.PageLimit,
-		"order_by":            pagination.OrderBy,
-		"sort_order":          pagination.SortOrder,
-		"total_count":         stats.NumberOfDocuments,
-		"records":             searchRes.Hits,
-		"total_matched_count": len(searchRes.Hits),
 	})
 }

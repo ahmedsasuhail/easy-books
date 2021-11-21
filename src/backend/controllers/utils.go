@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"strconv"
+	"strings"
 
 	"github.com/ahmedsasuhail/easy-books/models"
 	"github.com/gin-gonic/gin"
@@ -60,6 +61,7 @@ func parsePaginationRequest(c *gin.Context) (models.Pagination, error) {
 	query := c.Request.URL.Query()
 
 	// Pagination parameters.
+	q := ""
 	getAll := false
 	page := 1
 	pageLimit := 50
@@ -71,6 +73,11 @@ func parsePaginationRequest(c *gin.Context) (models.Pagination, error) {
 		var err error
 
 		switch key {
+		case "q":
+			if strings.TrimSpace(queryValue) != "" {
+				q = queryValue
+			}
+
 		case "get_all":
 			if queryValue == "true" {
 				getAll = true
@@ -107,6 +114,7 @@ func parsePaginationRequest(c *gin.Context) (models.Pagination, error) {
 	}
 
 	return models.Pagination{
+		Query:     q,
 		GetAll:    getAll,
 		Page:      page,
 		PageLimit: pageLimit,
