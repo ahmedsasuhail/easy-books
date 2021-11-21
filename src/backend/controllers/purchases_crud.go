@@ -141,7 +141,7 @@ func ReadPurchases(c *gin.Context) {
 		"query":               pagination.Query,
 		"total_count":         stats.NumberOfDocuments,
 		"records":             records.Hits,
-		"total_matched_count": len(records.Hits),
+		"total_matched_count": records.NbHits,
 	})
 }
 
