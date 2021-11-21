@@ -81,10 +81,11 @@ func InitMeilisearch() {
 
 	for _, record := range inventoryTable {
 		filteredInventory = append(filteredInventory, map[string]interface{}{
-			"id":        record.ID,
-			"part_name": record.PartName,
-			"quantity":  record.Quantity,
-			"date":      record.Date,
+			"id":          record.ID,
+			"part_name":   record.PartName,
+			"quantity":    record.Quantity,
+			"date":        record.Date,
+			"purchase_id": record.PurchaseID,
 			"purchases": map[string]interface{}{
 				"id":           record.Purchases.ID,
 				"company_name": record.Purchases.CompanyName,
@@ -158,6 +159,9 @@ func InitMeilisearch() {
 				"id",
 				"part_name",
 			},
+			FilterableAttributes: []string{
+				"purchase_id",
+			},
 		},
 		models.MiscellaneousTableName: {
 			Document:   filteredMiscellaneous,
@@ -203,6 +207,7 @@ func InitMeilisearch() {
 		)
 		msClient.Index(index).UpdateSortableAttributes(&config.SortableAttributes)
 		msClient.Index(index).UpdateSearchableAttributes(&config.SearchableAttributes)
+		msClient.Index(index).UpdateFilterableAttributes(&config.FilterableAttributes)
 	}
 }
 

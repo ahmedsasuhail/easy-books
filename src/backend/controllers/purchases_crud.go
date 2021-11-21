@@ -7,7 +7,6 @@ import (
 	"github.com/ahmedsasuhail/easy-books/models"
 	"github.com/gin-gonic/gin"
 	"github.com/meilisearch/meilisearch-go"
-	"gorm.io/gorm"
 )
 
 // Meilisearch index.
@@ -111,43 +110,25 @@ func ReadPurchases(c *gin.Context) {
 		return
 	}
 
-	var records []models.Purchases
-	var result *gorm.DB
-
-	if pagination.GetAll {
-		result = pgClient.Preload("Relationships").Find(&records)
-	} else {
-		offset := (pagination.Page - 1) * pagination.PageLimit
-		queryBuilder := pgClient.DB.Limit(
-			int(pagination.PageLimit),
-		).Offset(
-			int(offset),
-		).Order(
-			fmt.Sprintf("%s %s", pagination.OrderBy, pagination.SortOrder),
-		)
-		result = queryBuilder.Preload("Relationships").Find(&records)
-	}
-
-	if result.Error != nil {
-		errorResponse(c, http.StatusInternalServerError, result.Error.Error())
+	offset := (pagination.Page - 1) * pagination.PageLimit
+	stats, err := purchasesIndex.GetStats()
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
 
 		return
 	}
 
-	var filteredRecords []map[string]interface{}
+	records, err := purchasesIndex.Search("", &meilisearch.SearchRequest{
+		Limit:  int64(pagination.PageLimit),
+		Offset: int64(offset),
+		Sort: []string{
+			fmt.Sprintf("%s:%s", pagination.OrderBy, pagination.SortOrder),
+		},
+	})
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
 
-	for _, record := range records {
-		filteredRecords = append(filteredRecords, map[string]interface{}{
-			"id":           record.ID,
-			"company_name": record.CompanyName,
-			"vehicle_name": record.VehicleName,
-			"price":        record.Price,
-			"date":         record.Date,
-			"relationships": map[string]interface{}{
-				"id":   record.Relationships.ID,
-				"name": record.Relationships.Name,
-			},
-		})
+		return
 	}
 
 	successResponse(c, http.StatusOK, "", map[string]interface{}{
@@ -155,9 +136,9 @@ func ReadPurchases(c *gin.Context) {
 		"page_limit":          pagination.PageLimit,
 		"order_by":            pagination.OrderBy,
 		"sort_order":          pagination.SortOrder,
-		"total_count":         pgClient.Find(&records).RowsAffected,
-		"records":             filteredRecords,
-		"total_matched_count": len(filteredRecords),
+		"total_count":         stats.NumberOfDocuments,
+		"records":             records.Hits,
+		"total_matched_count": len(records.Hits),
 	})
 }
 

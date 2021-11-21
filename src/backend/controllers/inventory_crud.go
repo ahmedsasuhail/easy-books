@@ -7,7 +7,6 @@ import (
 	"github.com/ahmedsasuhail/easy-books/models"
 	"github.com/gin-gonic/gin"
 	"github.com/meilisearch/meilisearch-go"
-	"gorm.io/gorm"
 )
 
 // Meilisearch index.
@@ -38,10 +37,11 @@ func CreateInventory(c *gin.Context) {
 		"Purchases.Relationships",
 	).First(&record)
 	filteredRecord := map[string]interface{}{
-		"id":        record.ID,
-		"part_name": record.PartName,
-		"quantity":  record.Quantity,
-		"date":      record.Date,
+		"id":          record.ID,
+		"part_name":   record.PartName,
+		"quantity":    record.Quantity,
+		"date":        record.Date,
+		"purchase_id": record.PurchaseID,
 		"purchases": map[string]interface{}{
 			"id":           record.Purchases.ID,
 			"company_name": record.Purchases.CompanyName,
@@ -84,10 +84,11 @@ func UpdateInventory(c *gin.Context) {
 		"Purchases.Relationships",
 	).First(&record)
 	filteredRecord := map[string]interface{}{
-		"id":        record.ID,
-		"part_name": record.PartName,
-		"quantity":  record.Quantity,
-		"date":      record.Date,
+		"id":          record.ID,
+		"part_name":   record.PartName,
+		"quantity":    record.Quantity,
+		"date":        record.Date,
+		"purchase_id": record.PurchaseID,
 		"purchases": map[string]interface{}{
 			"id":           record.Purchases.ID,
 			"company_name": record.Purchases.CompanyName,
@@ -119,51 +120,25 @@ func ReadInventory(c *gin.Context) {
 		return
 	}
 
-	var records []models.Inventory
-	var result *gorm.DB
-
-	if pagination.GetAll {
-		result = pgClient.Preload(
-			"Purchases",
-		).Preload(
-			"Purchases.Relationships",
-		).Find(&records)
-	} else {
-		offset := (pagination.Page - 1) * pagination.PageLimit
-		queryBuilder := pgClient.DB.Limit(
-			int(pagination.PageLimit),
-		).Offset(
-			int(offset),
-		).Order(
-			fmt.Sprintf("%s %s", pagination.OrderBy, pagination.SortOrder),
-		)
-		result = queryBuilder.Preload(
-			"Purchases",
-		).Preload(
-			"Purchases.Relationships",
-		).Find(&records)
-	}
-
-	if result.Error != nil {
-		errorResponse(c, http.StatusInternalServerError, result.Error.Error())
+	offset := (pagination.Page - 1) * pagination.PageLimit
+	stats, err := inventoryIndex.GetStats()
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
 
 		return
 	}
 
-	var filteredRecords []map[string]interface{}
+	records, err := inventoryIndex.Search("", &meilisearch.SearchRequest{
+		Limit:  int64(pagination.PageLimit),
+		Offset: int64(offset),
+		Sort: []string{
+			fmt.Sprintf("%s:%s", pagination.OrderBy, pagination.SortOrder),
+		},
+	})
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
 
-	for _, record := range records {
-		filteredRecords = append(filteredRecords, map[string]interface{}{
-			"id":        record.ID,
-			"part_name": record.PartName,
-			"quantity":  record.Quantity,
-			"date":      record.Date,
-			"purchases": map[string]interface{}{
-				"id":           record.Purchases.ID,
-				"company_name": record.Purchases.CompanyName,
-				"vehicle_name": record.Purchases.VehicleName,
-			},
-		})
+		return
 	}
 
 	successResponse(c, http.StatusOK, "", map[string]interface{}{
@@ -171,9 +146,9 @@ func ReadInventory(c *gin.Context) {
 		"page_limit":          pagination.PageLimit,
 		"order_by":            pagination.OrderBy,
 		"sort_order":          pagination.SortOrder,
-		"total_count":         pgClient.Find(&records).RowsAffected,
-		"records":             filteredRecords,
-		"total_matched_count": len(filteredRecords),
+		"total_count":         stats.NumberOfDocuments,
+		"records":             records.Hits,
+		"total_matched_count": len(records.Hits),
 	})
 }
 
@@ -196,10 +171,11 @@ func DeleteInventory(c *gin.Context) {
 	}
 
 	filteredRecord := map[string]interface{}{
-		"id":        record.ID,
-		"part_name": record.PartName,
-		"quantity":  record.Quantity,
-		"date":      record.Date,
+		"id":          record.ID,
+		"part_name":   record.PartName,
+		"quantity":    record.Quantity,
+		"date":        record.Date,
+		"purchase_id": record.PurchaseID,
 		"purchases": map[string]interface{}{
 			"id":           record.Purchases.ID,
 			"company_name": record.Purchases.CompanyName,
@@ -232,8 +208,6 @@ func GetInventoryByPurchaseID(c *gin.Context) {
 	}
 
 	var record models.Inventory
-	var records []models.Inventory
-	var result *gorm.DB
 
 	err = parseRequestBody(c, &record)
 	if err != nil {
@@ -242,54 +216,43 @@ func GetInventoryByPurchaseID(c *gin.Context) {
 		return
 	}
 
-	if pagination.GetAll {
-		result = pgClient.Where(
-			"purchase_id = ?",
-			record.PurchaseID,
-		).Find(&records)
-	} else {
-		offset := (pagination.Page - 1) * pagination.PageLimit
-		queryBuilder := pgClient.DB.Limit(
-			int(pagination.PageLimit),
-		).Offset(
-			int(offset),
-		).Order(
-			fmt.Sprintf("%s %s", pagination.OrderBy, pagination.SortOrder),
-		)
-		result = queryBuilder.Where(
-			"purchase_id = ?",
-			record.PurchaseID,
-		).Find(&records)
-	}
-
-	if result.Error != nil {
-		errorResponse(c, http.StatusInternalServerError, result.Error.Error())
+	offset := (pagination.Page - 1) * pagination.PageLimit
+	stats, err := inventoryIndex.GetStats()
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
 
 		return
 	}
 
-	var filteredRecords []map[string]interface{}
+	records, err := inventoryIndex.Search("", &meilisearch.SearchRequest{
+		Limit:  int64(pagination.PageLimit),
+		Offset: int64(offset),
+		Sort: []string{
+			fmt.Sprintf("%s:%s", pagination.OrderBy, pagination.SortOrder),
+		},
+		AttributesToRetrieve: []string{
+			"id",
+			"part_name",
+			"quantity",
+			"date",
+			"purchases",
+		},
+		Filter: fmt.Sprintf("purchase_id = \"%d\"", record.PurchaseID),
+	})
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
 
-	for _, record := range records {
-		filteredRecords = append(filteredRecords, map[string]interface{}{
-			"id":        record.ID,
-			"part_name": record.PartName,
-			"quantity":  record.Quantity,
-			"date":      record.Date,
-		})
+		return
 	}
 
 	successResponse(c, http.StatusOK, "", map[string]interface{}{
-		"page":        pagination.Page,
-		"page_limit":  pagination.PageLimit,
-		"order_by":    pagination.OrderBy,
-		"sort_order":  pagination.SortOrder,
-		"total_count": pgClient.Find(&records).RowsAffected,
-		"records":     filteredRecords,
-		"total_matched_count": pgClient.Where(
-			"purchase_id = ?",
-			record.PurchaseID,
-		).Find(&records).RowsAffected,
+		"page":                pagination.Page,
+		"page_limit":          pagination.PageLimit,
+		"order_by":            pagination.OrderBy,
+		"sort_order":          pagination.SortOrder,
+		"total_count":         stats.NumberOfDocuments,
+		"records":             records.Hits,
+		"total_matched_count": len(records.Hits),
 	})
 }
 
@@ -325,6 +288,13 @@ func SearchInventory(c *gin.Context) {
 			AttributesToHighlight: []string{"*"},
 			Sort: []string{
 				fmt.Sprintf("%s:%s", pagination.OrderBy, pagination.SortOrder),
+			},
+			AttributesToRetrieve: []string{
+				"id",
+				"part_name",
+				"quantity",
+				"date",
+				"purchases",
 			},
 		},
 	)

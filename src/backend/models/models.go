@@ -35,6 +35,7 @@ type MeiliIndexConfig struct {
 	PrimaryKey           string
 	SortableAttributes   []string
 	SearchableAttributes []string
+	FilterableAttributes []string
 }
 
 // ----------------------------------------------------------------------------
