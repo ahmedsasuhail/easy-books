@@ -164,7 +164,8 @@ func InitMeilisearch() {
 			},
 			SearchableAttributes: []string{
 				"part_name",
-				"purchases",
+				"purchases.company_name",
+				"purchases.vehicle_name",
 			},
 			FilterableAttributes: []string{
 				"purchase_id",
@@ -196,7 +197,7 @@ func InitMeilisearch() {
 			SearchableAttributes: []string{
 				"company_name",
 				"vehicle_name",
-				"relationships",
+				"relationships.name",
 			},
 		},
 		models.RelationshipsTableName: {
@@ -208,6 +209,8 @@ func InitMeilisearch() {
 			},
 			SearchableAttributes: []string{
 				"name",
+				"phone_number",
+				"address",
 			},
 		},
 		models.SalesTableName: {
@@ -223,9 +226,10 @@ func InitMeilisearch() {
 				"inventory.part_name",
 			},
 			SearchableAttributes: []string{
-				"relationships",
-				"purchases",
-				"inventory",
+				"relationships.name",
+				"purchases.company_name",
+				"purchases.vehicle_name",
+				"inventory.part_name",
 			},
 		},
 	}
