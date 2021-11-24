@@ -33,11 +33,12 @@ func CreatePurchases(c *gin.Context) {
 
 	pgClient.Preload("Relationships").First(&record)
 	filteredRecord := map[string]interface{}{
-		"id":           record.ID,
-		"company_name": record.CompanyName,
-		"vehicle_name": record.VehicleName,
-		"price":        record.Price,
-		"date":         record.Date,
+		"id":                 record.ID,
+		"company_name":       record.CompanyName,
+		"vehicle_name":       record.VehicleName,
+		"price":              record.Price,
+		"date":               record.Date,
+		"relationships.name": record.Relationships.Name,
 		"relationships": map[string]interface{}{
 			"id":   record.Relationships.ID,
 			"name": record.Relationships.Name,
@@ -50,6 +51,9 @@ func CreatePurchases(c *gin.Context) {
 
 		return
 	}
+
+	// Remove unnecessary keys from response.
+	delete(filteredRecord, "relationships.name")
 
 	successResponse(c, http.StatusOK, "", filteredRecord)
 }
@@ -75,11 +79,12 @@ func UpdatePurchases(c *gin.Context) {
 
 	pgClient.Preload("Relationships").First(&record)
 	filteredRecord := map[string]interface{}{
-		"id":           record.ID,
-		"company_name": record.CompanyName,
-		"vehicle_name": record.VehicleName,
-		"price":        record.Price,
-		"date":         record.Date,
+		"id":                 record.ID,
+		"company_name":       record.CompanyName,
+		"vehicle_name":       record.VehicleName,
+		"price":              record.Price,
+		"date":               record.Date,
+		"relationships.name": record.Relationships.Name,
 		"relationships": map[string]interface{}{
 			"id":   record.Relationships.ID,
 			"name": record.Relationships.Name,
@@ -92,6 +97,9 @@ func UpdatePurchases(c *gin.Context) {
 
 		return
 	}
+
+	// Remove unnecessary keys from response.
+	delete(filteredRecord, "relationships.name")
 
 	successResponse(c, http.StatusOK, "", filteredRecord)
 }
@@ -125,6 +133,14 @@ func ReadPurchases(c *gin.Context) {
 			Offset: int64(offset),
 			Sort: []string{
 				fmt.Sprintf("%s:%s", pagination.OrderBy, pagination.SortOrder),
+			},
+			AttributesToRetrieve: []string{
+				"id",
+				"company_name",
+				"vehicle_name",
+				"price",
+				"date",
+				"relationships",
 			},
 		})
 	if err != nil {
