@@ -56,6 +56,9 @@ func CreateInventory(c *gin.Context) {
 		return
 	}
 
+	// Remove unnecessary keys from response.
+	delete(filteredRecord, "purchase_id")
+
 	successResponse(c, http.StatusOK, "", filteredRecord)
 }
 
@@ -135,6 +138,13 @@ func ReadInventory(c *gin.Context) {
 			Offset: int64(offset),
 			Sort: []string{
 				fmt.Sprintf("%s:%s", pagination.OrderBy, pagination.SortOrder),
+			},
+			AttributesToRetrieve: []string{
+				"id",
+				"part_name",
+				"quantity",
+				"date",
+				"purchases",
 			},
 		})
 	if err != nil {
