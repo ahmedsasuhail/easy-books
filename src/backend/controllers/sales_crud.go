@@ -43,11 +43,15 @@ func CreateSales(c *gin.Context) {
 		"Inventory.Purchases.Relationships",
 	).First(&record)
 	filteredRecord := map[string]interface{}{
-		"id":       record.ID,
-		"price":    record.Price,
-		"date":     record.Date,
-		"credit":   record.Credit,
-		"returned": record.Returned,
+		"id":                     record.ID,
+		"price":                  record.Price,
+		"date":                   record.Date,
+		"credit":                 record.Credit,
+		"returned":               record.Returned,
+		"relationships.name":     record.Relationships.Name,
+		"purchases.company_name": record.Purchases.CompanyName,
+		"purchases.vehicle_name": record.Purchases.VehicleName,
+		"inventory.part_name":    record.Inventory.PartName,
 		"relationships": map[string]interface{}{
 			"id":   record.Relationships.ID,
 			"name": record.Relationships.Name,
@@ -71,6 +75,12 @@ func CreateSales(c *gin.Context) {
 
 		return
 	}
+
+	// Remove unnecessary keys from response.
+	delete(filteredRecord, "relationships.name")
+	delete(filteredRecord, "purchases.company_name")
+	delete(filteredRecord, "purchases.vehicle_name")
+	delete(filteredRecord, "inventory.part_name")
 
 	successResponse(c, http.StatusOK, "", filteredRecord)
 }
@@ -133,11 +143,15 @@ func UpdateSales(c *gin.Context) {
 		"Inventory.Purchases.Relationships",
 	).First(&record)
 	filteredRecord := map[string]interface{}{
-		"id":       record.ID,
-		"price":    record.Price,
-		"date":     record.Date,
-		"credit":   record.Credit,
-		"returned": record.Returned,
+		"id":                     record.ID,
+		"price":                  record.Price,
+		"date":                   record.Date,
+		"credit":                 record.Credit,
+		"returned":               record.Returned,
+		"relationships.name":     record.Relationships.Name,
+		"purchases.company_name": record.Purchases.CompanyName,
+		"purchases.vehicle_name": record.Purchases.VehicleName,
+		"inventory.part_name":    record.Inventory.PartName,
 		"relationships": map[string]interface{}{
 			"id":   record.Relationships.ID,
 			"name": record.Relationships.Name,
@@ -161,6 +175,12 @@ func UpdateSales(c *gin.Context) {
 
 		return
 	}
+
+	// Remove unnecessary keys from response.
+	delete(filteredRecord, "relationships.name")
+	delete(filteredRecord, "purchases.company_name")
+	delete(filteredRecord, "purchases.vehicle_name")
+	delete(filteredRecord, "inventory.part_name")
 
 	successResponse(c, http.StatusOK, "", filteredRecord)
 }
@@ -194,6 +214,16 @@ func ReadSales(c *gin.Context) {
 			Offset: int64(offset),
 			Sort: []string{
 				fmt.Sprintf("%s:%s", pagination.OrderBy, pagination.SortOrder),
+			},
+			AttributesToRetrieve: []string{
+				"id",
+				"price",
+				"date",
+				"credit",
+				"returned",
+				"relationships",
+				"purchases",
+				"inventory",
 			},
 		})
 	if err != nil {
