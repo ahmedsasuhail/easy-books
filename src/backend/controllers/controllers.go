@@ -159,8 +159,8 @@ func InitMeilisearch() {
 				"id",
 				"part_name",
 				"date",
-				"company_name",
-				"vehicle_name",
+				"purchases.company_name",
+				"purchases.vehicle_name",
 			},
 			SearchableAttributes: []string{
 				"part_name",
