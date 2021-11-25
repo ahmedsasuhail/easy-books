@@ -84,6 +84,7 @@ func InitMeilisearch() {
 			"id":          record.ID,
 			"part_name":   record.PartName,
 			"quantity":    record.Quantity,
+			"sold_out":    record.SoldOut,
 			"date":        record.Date,
 			"purchase_id": record.PurchaseID,
 			"purchases": map[string]interface{}{
@@ -147,6 +148,7 @@ func InitMeilisearch() {
 				"id":        record.Inventory.ID,
 				"part_name": record.Inventory.PartName,
 				"quantity":  record.Inventory.Quantity,
+				"sold_out":  record.Inventory.SoldOut,
 			},
 		})
 	}
@@ -169,6 +171,7 @@ func InitMeilisearch() {
 			},
 			FilterableAttributes: []string{
 				"purchase_id",
+				"sold_out",
 			},
 		},
 		models.MiscellaneousTableName: {

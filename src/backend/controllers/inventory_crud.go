@@ -156,7 +156,9 @@ func ReadInventory(c *gin.Context) {
 				"quantity",
 				"date",
 				"purchases",
+				"sold_out",
 			},
+			Filter: "sold_out = false",
 		})
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())

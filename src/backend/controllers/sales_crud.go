@@ -16,9 +16,45 @@ var salesIndex = msClient.Index(models.SalesTableName)
 func CreateSales(c *gin.Context) {
 	// Read and parse request body.
 	var record models.Sales
+	var inventory models.Inventory
 	err := parseRequestBody(c, &record)
 	if err != nil {
 		errorResponse(c, http.StatusBadRequest, err.Error())
+
+		return
+	}
+
+	// Validate specified quantity.
+	quantity := record.Quantity
+	pgClient.Where("id = ?", record.InventoryID).Find(&inventory)
+	if quantity > inventory.Quantity {
+		errorResponse(
+			c,
+			http.StatusBadRequest,
+			fmt.Sprintf(
+				"Invalid quantity specified. Cannot be greater than %d",
+				inventory.Quantity,
+			),
+		)
+
+		return
+	}
+
+	// Update available inventory quantity.
+	var revisedQuantity uint32
+	if record.Returned {
+		revisedQuantity = inventory.Quantity + quantity
+	} else {
+		revisedQuantity = inventory.Quantity - quantity
+	}
+	err = pgClient.Model(&inventory).Select("Quantity", "SoldOut").Updates(
+		models.Inventory{
+			Quantity: revisedQuantity,
+			SoldOut:  (revisedQuantity == 0),
+		},
+	).Error
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
 
 		return
 	}
@@ -48,6 +84,7 @@ func CreateSales(c *gin.Context) {
 		"date":                   record.Date,
 		"credit":                 record.Credit,
 		"returned":               record.Returned,
+		"quantity":               record.Quantity,
 		"relationships.name":     record.Relationships.Name,
 		"purchases.company_name": record.Purchases.CompanyName,
 		"purchases.vehicle_name": record.Purchases.VehicleName,
@@ -66,6 +103,7 @@ func CreateSales(c *gin.Context) {
 			"id":        record.Inventory.ID,
 			"part_name": record.Inventory.PartName,
 			"quantity":  record.Inventory.Quantity,
+			"sold_out":  record.Inventory.SoldOut,
 		},
 	}
 
@@ -89,9 +127,45 @@ func CreateSales(c *gin.Context) {
 func UpdateSales(c *gin.Context) {
 	// Read and parse request body.
 	var record models.Sales
+	var inventory models.Inventory
 	err := parseRequestBody(c, &record)
 	if err != nil {
 		errorResponse(c, http.StatusBadRequest, err.Error())
+
+		return
+	}
+
+	// Validate specified quantity.
+	quantity := record.Quantity
+	pgClient.Where("id = ?", record.InventoryID).Find(&inventory)
+	if quantity > inventory.Quantity {
+		errorResponse(
+			c,
+			http.StatusBadRequest,
+			fmt.Sprintf(
+				"Invalid quantity specified. Cannot be greater than %d",
+				inventory.Quantity,
+			),
+		)
+
+		return
+	}
+
+	// Update available inventory quantity.
+	var revisedQuantity uint32
+	if record.Returned {
+		revisedQuantity = inventory.Quantity + quantity
+	} else {
+		revisedQuantity = inventory.Quantity - quantity
+	}
+	err = pgClient.Model(&inventory).Select("Quantity", "SoldOut").Updates(
+		models.Inventory{
+			Quantity: revisedQuantity,
+			SoldOut:  (revisedQuantity == 0),
+		},
+	).Error
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
 
 		return
 	}
@@ -148,6 +222,7 @@ func UpdateSales(c *gin.Context) {
 		"date":                   record.Date,
 		"credit":                 record.Credit,
 		"returned":               record.Returned,
+		"quantity":               record.Quantity,
 		"relationships.name":     record.Relationships.Name,
 		"purchases.company_name": record.Purchases.CompanyName,
 		"purchases.vehicle_name": record.Purchases.VehicleName,
@@ -166,6 +241,7 @@ func UpdateSales(c *gin.Context) {
 			"id":        record.Inventory.ID,
 			"part_name": record.Inventory.PartName,
 			"quantity":  record.Inventory.Quantity,
+			"sold_out":  record.Inventory.SoldOut,
 		},
 	}
 
@@ -221,6 +297,7 @@ func ReadSales(c *gin.Context) {
 				"date",
 				"credit",
 				"returned",
+				"quantity",
 				"relationships",
 				"purchases",
 				"inventory",

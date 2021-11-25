@@ -65,6 +65,7 @@ type Sales struct {
 	ID             uint64         `gorm:"primaryKey" json:"id"`
 	Price          float64        `gorm:"type:decimal(8,2)" json:"price"`
 	Date           datatypes.Date `json:"date"`
+	Quantity       uint32         `json:"quantity"`
 	RelationshipID uint64         `json:"relationship_id"`
 	PurchaseID     uint64         `json:"purchase_id"`
 	InventoryID    uint64         `json:"inventory_id"`
@@ -106,6 +107,7 @@ type Inventory struct {
 	PurchaseID uint64         `json:"purchase_id"`
 	Date       datatypes.Date `json:"date"`
 	Purchases  Purchases      `gorm:"foreignKey:PurchaseID" json:"purchases"`
+	SoldOut    bool           `json:"sold_out"`
 }
 
 func (Inventory) TableName() string {
