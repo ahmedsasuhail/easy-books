@@ -18,6 +18,7 @@ func ReportByPurchaseID(c *gin.Context) {
 	var totalSales float64
 	var totalReturned float64
 	var totalCredit float64
+	var totalNotSold float64
 
 	err := parseRequestBody(c, &record)
 	if err != nil {
@@ -70,6 +71,7 @@ func ReportByPurchaseID(c *gin.Context) {
 	var sales []map[string]interface{}
 	var returned []map[string]interface{}
 	var credit []map[string]interface{}
+	var notSold []map[string]interface{}
 
 	for _, record := range records {
 		if record.Returned {
@@ -79,9 +81,10 @@ func ReportByPurchaseID(c *gin.Context) {
 				"id":        record.ID,
 				"price":     record.Price,
 				"date":      record.Date,
+				"credit":    record.Credit,
 				"returned":  record.Returned,
 				"part_name": record.Inventory.PartName,
-				"credit":    record.Credit,
+				"sold_out":  record.Inventory.SoldOut,
 			})
 		} else if record.Credit {
 			totalCredit += record.Price
@@ -93,6 +96,19 @@ func ReportByPurchaseID(c *gin.Context) {
 				"credit":    record.Credit,
 				"returned":  record.Returned,
 				"part_name": record.Inventory.PartName,
+				"sold_out":  record.Inventory.SoldOut,
+			})
+		} else if !record.Inventory.SoldOut {
+			totalNotSold += record.Price
+
+			notSold = append(notSold, map[string]interface{}{
+				"id":        record.ID,
+				"price":     record.Price,
+				"date":      record.Date,
+				"credit":    record.Credit,
+				"returned":  record.Returned,
+				"part_name": record.Inventory.PartName,
+				"sold_out":  record.Inventory.SoldOut,
 			})
 		} else {
 			totalSales += record.Price
@@ -104,6 +120,7 @@ func ReportByPurchaseID(c *gin.Context) {
 				"credit":    record.Credit,
 				"returned":  record.Returned,
 				"part_name": record.Inventory.PartName,
+				"sold_out":  record.Inventory.SoldOut,
 			})
 		}
 	}
@@ -119,6 +136,8 @@ func ReportByPurchaseID(c *gin.Context) {
 		"sales_total":          totalSales,
 		"credited_sales_total": totalCredit,
 		"sales_returned_total": totalReturned,
+		"not_sold":             notSold,
+		"total_not_sold":       totalNotSold,
 		"total":                totalSales - record.Purchases.Price,
 	})
 }
