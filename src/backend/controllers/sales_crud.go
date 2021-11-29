@@ -158,7 +158,10 @@ func UpdateSales(c *gin.Context) {
 	} else {
 		revisedQuantity = inventory.Quantity - quantity
 	}
-	err = pgClient.Model(&inventory).Select("Quantity", "SoldOut").Updates(
+	err = pgClient.Model(&inventory).Where(
+		"id = ?",
+		record.ID,
+	).Select("Quantity", "SoldOut").Updates(
 		models.Inventory{
 			Quantity: revisedQuantity,
 			SoldOut:  (revisedQuantity == 0),
@@ -180,7 +183,10 @@ func UpdateSales(c *gin.Context) {
 
 	// Dirty fix to toggle boolean fields.
 	if !record.Returned {
-		err = pgClient.Model(&record).Select("Returned").Updates(
+		err = pgClient.Model(&record).Where(
+			"id = ?",
+			record.ID,
+		).Select("Returned").Updates(
 			models.Sales{Returned: false},
 		).Error
 
@@ -192,7 +198,10 @@ func UpdateSales(c *gin.Context) {
 	}
 
 	if !record.Credit {
-		err = pgClient.Model(&record).Select("Credit").Updates(
+		err = pgClient.Model(&record).Where(
+			"id = ?",
+			record.ID,
+		).Select("Credit").Updates(
 			models.Sales{Credit: false},
 		).Error
 
