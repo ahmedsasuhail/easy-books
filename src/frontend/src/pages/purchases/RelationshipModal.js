@@ -1,5 +1,5 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
 import {
   Dialog,
@@ -10,9 +10,13 @@ import {
 import TableContainer from "@mui/material/TableContainer";
 import Paper from "@mui/material/Paper";
 
+import { relationshipActions } from "../../store/actions/relationship/relationshipActions";
+
 import { CustomMuiTable } from "../relationships/ReadRelationships";
 
 const RelationshipModal = (props) => {
+  const dispatch = useDispatch();
+
   const {
     relationshipItems,
     openRelationshipModal,
@@ -42,6 +46,11 @@ const RelationshipModal = (props) => {
       disableSort: true,
     },
   ];
+
+  useEffect(() => {
+    dispatch(relationshipActions.relationshipReadClear());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const pageNo = useSelector((state) => state.relationship.pageNo);
   const rowsPerPage = useSelector((state) => state.relationship.rowsPerPage);

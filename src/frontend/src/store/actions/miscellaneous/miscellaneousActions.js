@@ -11,9 +11,6 @@ import {
   MISCELLANEOUS_DELETE_REQUEST,
   MISCELLANEOUS_DELETE_SUCCESS,
   MISCELLANEOUS_DELETE_FAILURE,
-  MISCELLANEOUS_SEARCH_REQUEST,
-  MISCELLANEOUS_SEARCH_SUCCESS,
-  MISCELLANEOUS_SEARCH_FAILURE,
 } from "../actionTypes";
 
 export const miscellaneousActions = {
@@ -74,7 +71,8 @@ export const miscellaneousActions = {
         rowsPerPage: values.page_limit,
         orderBy: values.order_by,
         order: values.sort_order,
-        count: values.total_count,
+        count: values.query ? values.total_matched_count : values.total_count,
+        query: values.query,
       },
     };
   },
@@ -100,32 +98,6 @@ export const miscellaneousActions = {
   miscellaneousDeleteFailure: () => {
     return {
       type: MISCELLANEOUS_DELETE_FAILURE,
-    };
-  },
-
-  miscellaneousSearchRequest: () => {
-    return {
-      type: MISCELLANEOUS_SEARCH_REQUEST,
-    };
-  },
-
-  miscellaneousSearchSuccess: (values) => {
-    return {
-      type: MISCELLANEOUS_SEARCH_SUCCESS,
-      payload: {
-        miscellaneous: values.records,
-        pageNo: values.page - 1,
-        rowsPerPage: values.page_limit,
-        orderBy: values.order_by,
-        order: values.sort_order,
-        count: values.total_count,
-      },
-    };
-  },
-
-  miscellaneousSearchFailure: () => {
-    return {
-      type: MISCELLANEOUS_SEARCH_FAILURE,
     };
   },
 };

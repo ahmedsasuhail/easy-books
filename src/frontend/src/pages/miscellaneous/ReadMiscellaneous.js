@@ -16,7 +16,6 @@ import {
   miscellaneousCreate,
   miscellaneousUpdate,
   miscellaneousDelete,
-  miscellaneousSearch,
 } from "../../store/actions/miscellaneous";
 
 import { formattedDate } from "../../utils/helpers";
@@ -71,6 +70,7 @@ const ReadMiscellaneous = () => {
   const orderBy = useSelector((state) => state.miscellaneous.orderBy);
   const order = useSelector((state) => state.miscellaneous.order);
   const totalCount = useSelector((state) => state.miscellaneous.count);
+  const query = useSelector((state) => state.miscellaneous.query);
   const isLoading = useSelector((state) => state.miscellaneous.formLoading);
 
   if (miscellaneousItems) {
@@ -105,6 +105,7 @@ const ReadMiscellaneous = () => {
         rowsPerPage,
         order: direction,
         orderBy: property,
+        query,
       })
     );
   };
@@ -117,6 +118,7 @@ const ReadMiscellaneous = () => {
         rowsPerPage,
         orderBy,
         order,
+        query,
       })
     );
   };
@@ -129,12 +131,22 @@ const ReadMiscellaneous = () => {
         rowsPerPage: parseInt(event.target.value, 10),
         orderBy,
         order,
+        query,
       })
     );
   };
 
   const handleRequestSearch = (value) => {
-    dispatch(miscellaneousSearch({ token, keyword: value }));
+    dispatch(
+      miscellaneousRead({
+        token,
+        pageNo: 0,
+        rowsPerPage,
+        orderBy,
+        order,
+        query: value,
+      })
+    );
   };
 
   useEffect(() => {

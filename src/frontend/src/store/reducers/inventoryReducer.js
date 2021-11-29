@@ -8,6 +8,7 @@ import {
   INVENTORY_READ_REQUEST,
   INVENTORY_READ_SUCCESS,
   INVENTORY_READ_FAILURE,
+  INVENTORY_READ_CLEAR,
   INVENTORY_DELETE_REQUEST,
   INVENTORY_DELETE_SUCCESS,
   INVENTORY_DELETE_FAILURE,
@@ -120,6 +121,15 @@ const inventoryReducer = (state = initialState, action) => {
     case INVENTORY_READ_FAILURE:
       return mergeObjects(state, {
         pageLoading: false,
+      });
+
+    case INVENTORY_READ_CLEAR:
+      return mergeObjects(state, {
+        pageLoading: false,
+        orderBy: "id",
+        order: "asc",
+        pageNo: 0,
+        rowsPerPage: 5,
       });
 
     case INVENTORY_DELETE_REQUEST:

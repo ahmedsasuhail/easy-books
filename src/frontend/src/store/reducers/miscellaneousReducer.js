@@ -11,9 +11,6 @@ import {
   MISCELLANEOUS_DELETE_REQUEST,
   MISCELLANEOUS_DELETE_SUCCESS,
   MISCELLANEOUS_DELETE_FAILURE,
-  MISCELLANEOUS_SEARCH_REQUEST,
-  MISCELLANEOUS_SEARCH_SUCCESS,
-  MISCELLANEOUS_SEARCH_FAILURE,
 } from "../actions/actionTypes";
 import { mergeObjects } from "../../utils/helpers";
 
@@ -24,6 +21,7 @@ const initialState = {
   pageNo: 0,
   rowsPerPage: 5,
   count: 0,
+  query: "",
   formLoading: false,
   pageLoading: false,
 };
@@ -115,6 +113,7 @@ const miscellaneousReducer = (state = initialState, action) => {
         orderBy: action.payload.orderBy,
         order: action.payload.order,
         count: action.payload.count,
+        query: action.payload.query,
         pageLoading: false,
       });
 
@@ -134,28 +133,6 @@ const miscellaneousReducer = (state = initialState, action) => {
       });
 
     case MISCELLANEOUS_DELETE_FAILURE:
-      return mergeObjects(state, {
-        pageLoading: false,
-      });
-
-    case MISCELLANEOUS_SEARCH_REQUEST:
-      return mergeObjects(state, {
-        pageLoading: true,
-      });
-
-    case MISCELLANEOUS_SEARCH_SUCCESS:
-      console.log(action.payload.miscellaneous);
-      return mergeObjects(state, {
-        miscellaneous: action.payload.miscellaneous || [],
-        pageNo: action.payload.pageNo,
-        rowsPerPage: action.payload.rowsPerPage,
-        orderBy: action.payload.orderBy,
-        order: action.payload.order,
-        count: action.payload.count,
-        pageLoading: false,
-      });
-
-    case MISCELLANEOUS_SEARCH_FAILURE:
       return mergeObjects(state, {
         pageLoading: false,
       });

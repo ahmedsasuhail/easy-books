@@ -8,6 +8,7 @@ import {
   INVENTORY_READ_REQUEST,
   INVENTORY_READ_SUCCESS,
   INVENTORY_READ_FAILURE,
+  INVENTORY_READ_CLEAR,
   INVENTORY_DELETE_REQUEST,
   INVENTORY_DELETE_SUCCESS,
   INVENTORY_DELETE_FAILURE,
@@ -82,6 +83,12 @@ export const inventoryActions = {
   inventoryReadFailure: () => {
     return {
       type: INVENTORY_READ_FAILURE,
+    };
+  },
+
+  inventoryReadClear: () => {
+    return {
+      type: INVENTORY_READ_CLEAR,
     };
   },
 

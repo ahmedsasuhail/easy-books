@@ -39,10 +39,12 @@ const CreateUpdateSales = (props) => {
     (state) => state.inventoryPurchase.data
   );
   const isLoading = useSelector((state) => state.inventoryPurchase.loading);
-  const pageNo = useSelector((state) => state.inventory.pageNo);
-  const rowsPerPage = useSelector((state) => state.inventory.rowsPerPage);
-  const orderBy = useSelector((state) => state.inventory.orderBy);
-  const order = useSelector((state) => state.inventory.order);
+  const pageNo = useSelector((state) => state.inventoryPurchase.pageNo);
+  const rowsPerPage = useSelector(
+    (state) => state.inventoryPurchase.rowsPerPage
+  );
+  const orderBy = useSelector((state) => state.inventoryPurchase.orderBy);
+  const order = useSelector((state) => state.inventoryPurchase.order);
 
   const [purchaseId, setPurchaseId] = useState();
   const [purchaseName, setPurchaseName] = useState();

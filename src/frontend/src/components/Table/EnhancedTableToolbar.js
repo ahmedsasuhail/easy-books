@@ -7,13 +7,13 @@ import SearchBar from "material-ui-search-bar";
 const EnhancedTableToolbar = (props) => {
   const [searched, setSearched] = useState("");
 
-  const requestSearch = (value) => {
-    props.onRequestSearch(value);
+  const requestSearch = () => {
+    props.onRequestSearch(searched);
   };
 
   const cancelSearch = () => {
     setSearched("");
-    requestSearch(null);
+    props.onRequestSearch("");
   };
 
   return (
@@ -31,11 +31,19 @@ const EnhancedTableToolbar = (props) => {
       >
         {props.title}
       </Typography>
-      <SearchBar
-        value={searched}
-        onChange={(searchVal) => requestSearch(searchVal)}
-        onCancelSearch={() => cancelSearch()}
-      />
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          requestSearch();
+        }}
+      >
+        <SearchBar
+          id="search"
+          value={searched}
+          onChange={(searchVal) => setSearched(searchVal)}
+          onCancelSearch={cancelSearch}
+        />
+      </form>
     </Toolbar>
   );
 };

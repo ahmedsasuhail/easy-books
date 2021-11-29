@@ -8,6 +8,7 @@ import {
   PURCHASE_READ_REQUEST,
   PURCHASE_READ_SUCCESS,
   PURCHASE_READ_FAILURE,
+  PURCHASE_READ_CLEAR,
   PURCHASE_DELETE_REQUEST,
   PURCHASE_DELETE_SUCCESS,
   PURCHASE_DELETE_FAILURE,
@@ -120,6 +121,15 @@ const purchaseReducer = (state = initialState, action) => {
     case PURCHASE_READ_FAILURE:
       return mergeObjects(state, {
         pageLoading: false,
+      });
+
+    case PURCHASE_READ_CLEAR:
+      return mergeObjects(state, {
+        pageLoading: false,
+        pageNo: 0,
+        rowsPerPage: 5,
+        orderBy: "id",
+        order: "asc",
       });
 
     case PURCHASE_DELETE_REQUEST:

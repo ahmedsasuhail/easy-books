@@ -24,6 +24,7 @@ const initialState = {
   pageNo: 0,
   rowsPerPage: 5,
   count: 0,
+  search: "",
   formLoading: false,
   pageLoading: false,
 };
@@ -110,6 +111,7 @@ const salesReducer = (state = initialState, action) => {
         orderBy: action.payload.orderBy,
         order: action.payload.order,
         count: action.payload.count,
+        search: action.payload.search,
         pageLoading: false,
       });
 

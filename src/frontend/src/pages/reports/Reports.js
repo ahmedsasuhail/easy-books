@@ -276,6 +276,7 @@ const Reports = () => {
             name="from_date"
             label="From Date"
             type="date"
+            variant="standard"
             defaultValue={new Date().toISOString().split("T")[0]}
             onChange={(e) =>
               setFromDate(new Date(e.target.value).toISOString())
@@ -290,6 +291,7 @@ const Reports = () => {
             name="to_date"
             label="To Date"
             type="date"
+            variant="standard"
             defaultValue={new Date().toISOString().split("T")[0]}
             onChange={(e) => setToDate(new Date(e.target.value).toISOString())}
             className={classes.formInput}
@@ -297,11 +299,7 @@ const Reports = () => {
               shrink: true,
             }}
           />
-          <Button
-            variant="outlined"
-            size="large"
-            onClick={() => handleRelationshipsChange()}
-          >
+          <Button size="small" onClick={() => handleRelationshipsChange()}>
             Submit
           </Button>
           <SpanningTable
@@ -317,6 +315,7 @@ const Reports = () => {
             name="from_date"
             label="From Date"
             type="date"
+            variant="standard"
             defaultValue={new Date().toISOString().split("T")[0]}
             onChange={(e) =>
               setFromDate(new Date(e.target.value).toISOString())
@@ -331,6 +330,7 @@ const Reports = () => {
             name="to_date"
             label="To Date"
             type="date"
+            variant="standard"
             defaultValue={new Date().toISOString().split("T")[0]}
             onChange={(e) => setToDate(new Date(e.target.value).toISOString())}
             className={classes.formInput}
@@ -338,11 +338,7 @@ const Reports = () => {
               shrink: true,
             }}
           />
-          <Button
-            variant="outlined"
-            size="medium"
-            onClick={() => handleRangeChange()}
-          >
+          <Button size="small" onClick={() => handleRangeChange()}>
             Submit
           </Button>
         </Grid>

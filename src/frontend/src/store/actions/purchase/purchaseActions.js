@@ -8,6 +8,7 @@ import {
   PURCHASE_READ_REQUEST,
   PURCHASE_READ_SUCCESS,
   PURCHASE_READ_FAILURE,
+  PURCHASE_READ_CLEAR,
   PURCHASE_DELETE_REQUEST,
   PURCHASE_DELETE_SUCCESS,
   PURCHASE_DELETE_FAILURE,
@@ -82,6 +83,12 @@ export const purchaseActions = {
   purchaseReadFailure: () => {
     return {
       type: PURCHASE_READ_FAILURE,
+    };
+  },
+
+  purchaseReadClear: () => {
+    return {
+      type: PURCHASE_READ_CLEAR,
     };
   },
 

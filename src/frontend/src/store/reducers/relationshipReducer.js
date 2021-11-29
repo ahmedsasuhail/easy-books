@@ -8,6 +8,7 @@ import {
   RELATIONSHIP_READ_REQUEST,
   RELATIONSHIP_READ_SUCCESS,
   RELATIONSHIP_READ_FAILURE,
+  RELATIONSHIP_READ_CLEAR,
   RELATIONSHIP_DELETE_REQUEST,
   RELATIONSHIP_DELETE_SUCCESS,
   RELATIONSHIP_DELETE_FAILURE,
@@ -120,6 +121,15 @@ const relationshipReducer = (state = initialState, action) => {
     case RELATIONSHIP_READ_FAILURE:
       return mergeObjects(state, {
         pageLoading: false,
+      });
+
+    case RELATIONSHIP_READ_CLEAR:
+      return mergeObjects(state, {
+        pageLoading: false,
+        orderBy: "id",
+        order: "asc",
+        pageNo: 0,
+        rowsPerPage: 5,
       });
 
     case RELATIONSHIP_DELETE_REQUEST:

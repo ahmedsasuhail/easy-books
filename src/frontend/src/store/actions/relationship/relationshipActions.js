@@ -8,6 +8,7 @@ import {
   RELATIONSHIP_READ_REQUEST,
   RELATIONSHIP_READ_SUCCESS,
   RELATIONSHIP_READ_FAILURE,
+  RELATIONSHIP_READ_CLEAR,
   RELATIONSHIP_DELETE_REQUEST,
   RELATIONSHIP_DELETE_SUCCESS,
   RELATIONSHIP_DELETE_FAILURE,
@@ -82,6 +83,12 @@ export const relationshipActions = {
   relationshipReadFailure: () => {
     return {
       type: RELATIONSHIP_READ_FAILURE,
+    };
+  },
+
+  relationshipReadClear: () => {
+    return {
+      type: RELATIONSHIP_READ_CLEAR,
     };
   },
 
