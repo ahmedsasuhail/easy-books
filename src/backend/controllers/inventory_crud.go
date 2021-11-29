@@ -37,11 +37,13 @@ func CreateInventory(c *gin.Context) {
 		"Purchases.Relationships",
 	).First(&record)
 	filteredRecord := map[string]interface{}{
-		"id":          record.ID,
-		"part_name":   record.PartName,
-		"quantity":    record.Quantity,
-		"date":        record.Date,
-		"purchase_id": record.PurchaseID,
+		"id":                     record.ID,
+		"part_name":              record.PartName,
+		"quantity":               record.Quantity,
+		"date":                   record.Date,
+		"purchase_id":            record.PurchaseID,
+		"purchases.company_name": record.Purchases.CompanyName,
+		"purchases.vehicle_name": record.Purchases.VehicleName,
 		"purchases": map[string]interface{}{
 			"id":           record.Purchases.ID,
 			"company_name": record.Purchases.CompanyName,
@@ -55,6 +57,11 @@ func CreateInventory(c *gin.Context) {
 
 		return
 	}
+
+	// Remove unnecessary keys from response.
+	delete(filteredRecord, "purchase_id")
+	delete(filteredRecord, "purchases.company_name")
+	delete(filteredRecord, "purchases.vehicle_name")
 
 	successResponse(c, http.StatusOK, "", filteredRecord)
 }
@@ -84,11 +91,13 @@ func UpdateInventory(c *gin.Context) {
 		"Purchases.Relationships",
 	).First(&record)
 	filteredRecord := map[string]interface{}{
-		"id":          record.ID,
-		"part_name":   record.PartName,
-		"quantity":    record.Quantity,
-		"date":        record.Date,
-		"purchase_id": record.PurchaseID,
+		"id":                     record.ID,
+		"part_name":              record.PartName,
+		"quantity":               record.Quantity,
+		"date":                   record.Date,
+		"purchase_id":            record.PurchaseID,
+		"purchases.company_name": record.Purchases.CompanyName,
+		"purchases.vehicle_name": record.Purchases.VehicleName,
 		"purchases": map[string]interface{}{
 			"id":           record.Purchases.ID,
 			"company_name": record.Purchases.CompanyName,
@@ -102,6 +111,11 @@ func UpdateInventory(c *gin.Context) {
 
 		return
 	}
+
+	// Remove unnecessary keys from response.
+	delete(filteredRecord, "purchase_id")
+	delete(filteredRecord, "purchases.company_name")
+	delete(filteredRecord, "purchases.vehicle_name")
 
 	successResponse(c, http.StatusOK, "", filteredRecord)
 }
@@ -136,6 +150,15 @@ func ReadInventory(c *gin.Context) {
 			Sort: []string{
 				fmt.Sprintf("%s:%s", pagination.OrderBy, pagination.SortOrder),
 			},
+			AttributesToRetrieve: []string{
+				"id",
+				"part_name",
+				"quantity",
+				"date",
+				"purchases",
+				"sold_out",
+			},
+			Filter: "sold_out = false",
 		})
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())

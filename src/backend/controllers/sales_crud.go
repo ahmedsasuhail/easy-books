@@ -16,9 +16,45 @@ var salesIndex = msClient.Index(models.SalesTableName)
 func CreateSales(c *gin.Context) {
 	// Read and parse request body.
 	var record models.Sales
+	var inventory models.Inventory
 	err := parseRequestBody(c, &record)
 	if err != nil {
 		errorResponse(c, http.StatusBadRequest, err.Error())
+
+		return
+	}
+
+	// Validate specified quantity.
+	quantity := record.Quantity
+	pgClient.Where("id = ?", record.InventoryID).Find(&inventory)
+	if quantity > inventory.Quantity {
+		errorResponse(
+			c,
+			http.StatusBadRequest,
+			fmt.Sprintf(
+				"Invalid quantity specified. Cannot be greater than %d",
+				inventory.Quantity,
+			),
+		)
+
+		return
+	}
+
+	// Update available inventory quantity.
+	var revisedQuantity uint32
+	if record.Returned {
+		revisedQuantity = inventory.Quantity + quantity
+	} else {
+		revisedQuantity = inventory.Quantity - quantity
+	}
+	err = pgClient.Model(&inventory).Select("Quantity", "SoldOut").Updates(
+		models.Inventory{
+			Quantity: revisedQuantity,
+			SoldOut:  (revisedQuantity == 0),
+		},
+	).Error
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
 
 		return
 	}
@@ -43,11 +79,16 @@ func CreateSales(c *gin.Context) {
 		"Inventory.Purchases.Relationships",
 	).First(&record)
 	filteredRecord := map[string]interface{}{
-		"id":       record.ID,
-		"price":    record.Price,
-		"date":     record.Date,
-		"credit":   record.Credit,
-		"returned": record.Returned,
+		"id":                     record.ID,
+		"price":                  record.Price,
+		"date":                   record.Date,
+		"credit":                 record.Credit,
+		"returned":               record.Returned,
+		"quantity":               record.Quantity,
+		"relationships.name":     record.Relationships.Name,
+		"purchases.company_name": record.Purchases.CompanyName,
+		"purchases.vehicle_name": record.Purchases.VehicleName,
+		"inventory.part_name":    record.Inventory.PartName,
 		"relationships": map[string]interface{}{
 			"id":   record.Relationships.ID,
 			"name": record.Relationships.Name,
@@ -62,6 +103,7 @@ func CreateSales(c *gin.Context) {
 			"id":        record.Inventory.ID,
 			"part_name": record.Inventory.PartName,
 			"quantity":  record.Inventory.Quantity,
+			"sold_out":  record.Inventory.SoldOut,
 		},
 	}
 
@@ -72,6 +114,12 @@ func CreateSales(c *gin.Context) {
 		return
 	}
 
+	// Remove unnecessary keys from response.
+	delete(filteredRecord, "relationships.name")
+	delete(filteredRecord, "purchases.company_name")
+	delete(filteredRecord, "purchases.vehicle_name")
+	delete(filteredRecord, "inventory.part_name")
+
 	successResponse(c, http.StatusOK, "", filteredRecord)
 }
 
@@ -79,9 +127,45 @@ func CreateSales(c *gin.Context) {
 func UpdateSales(c *gin.Context) {
 	// Read and parse request body.
 	var record models.Sales
+	var inventory models.Inventory
 	err := parseRequestBody(c, &record)
 	if err != nil {
 		errorResponse(c, http.StatusBadRequest, err.Error())
+
+		return
+	}
+
+	// Validate specified quantity.
+	quantity := record.Quantity
+	pgClient.Where("id = ?", record.InventoryID).Find(&inventory)
+	if quantity > inventory.Quantity {
+		errorResponse(
+			c,
+			http.StatusBadRequest,
+			fmt.Sprintf(
+				"Invalid quantity specified. Cannot be greater than %d",
+				inventory.Quantity,
+			),
+		)
+
+		return
+	}
+
+	// Update available inventory quantity.
+	var revisedQuantity uint32
+	if record.Returned {
+		revisedQuantity = inventory.Quantity + quantity
+	} else {
+		revisedQuantity = inventory.Quantity - quantity
+	}
+	err = pgClient.Model(&inventory).Select("Quantity", "SoldOut").Updates(
+		models.Inventory{
+			Quantity: revisedQuantity,
+			SoldOut:  (revisedQuantity == 0),
+		},
+	).Error
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
 
 		return
 	}
@@ -133,11 +217,16 @@ func UpdateSales(c *gin.Context) {
 		"Inventory.Purchases.Relationships",
 	).First(&record)
 	filteredRecord := map[string]interface{}{
-		"id":       record.ID,
-		"price":    record.Price,
-		"date":     record.Date,
-		"credit":   record.Credit,
-		"returned": record.Returned,
+		"id":                     record.ID,
+		"price":                  record.Price,
+		"date":                   record.Date,
+		"credit":                 record.Credit,
+		"returned":               record.Returned,
+		"quantity":               record.Quantity,
+		"relationships.name":     record.Relationships.Name,
+		"purchases.company_name": record.Purchases.CompanyName,
+		"purchases.vehicle_name": record.Purchases.VehicleName,
+		"inventory.part_name":    record.Inventory.PartName,
 		"relationships": map[string]interface{}{
 			"id":   record.Relationships.ID,
 			"name": record.Relationships.Name,
@@ -152,6 +241,7 @@ func UpdateSales(c *gin.Context) {
 			"id":        record.Inventory.ID,
 			"part_name": record.Inventory.PartName,
 			"quantity":  record.Inventory.Quantity,
+			"sold_out":  record.Inventory.SoldOut,
 		},
 	}
 
@@ -161,6 +251,12 @@ func UpdateSales(c *gin.Context) {
 
 		return
 	}
+
+	// Remove unnecessary keys from response.
+	delete(filteredRecord, "relationships.name")
+	delete(filteredRecord, "purchases.company_name")
+	delete(filteredRecord, "purchases.vehicle_name")
+	delete(filteredRecord, "inventory.part_name")
 
 	successResponse(c, http.StatusOK, "", filteredRecord)
 }
@@ -194,6 +290,17 @@ func ReadSales(c *gin.Context) {
 			Offset: int64(offset),
 			Sort: []string{
 				fmt.Sprintf("%s:%s", pagination.OrderBy, pagination.SortOrder),
+			},
+			AttributesToRetrieve: []string{
+				"id",
+				"price",
+				"date",
+				"credit",
+				"returned",
+				"quantity",
+				"relationships",
+				"purchases",
+				"inventory",
 			},
 		})
 	if err != nil {
