@@ -137,6 +137,7 @@ func InitMeilisearch() {
 			"date":                   record.Date,
 			"credit":                 record.Credit,
 			"returned":               record.Returned,
+			"quantity":               record.Quantity,
 			"relationships.name":     record.Relationships.Name,
 			"purchases.company_name": record.Purchases.CompanyName,
 			"purchases.vehicle_name": record.Purchases.VehicleName,
