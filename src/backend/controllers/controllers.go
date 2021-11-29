@@ -81,12 +81,14 @@ func InitMeilisearch() {
 
 	for _, record := range inventoryTable {
 		filteredInventory = append(filteredInventory, map[string]interface{}{
-			"id":          record.ID,
-			"part_name":   record.PartName,
-			"quantity":    record.Quantity,
-			"sold_out":    record.SoldOut,
-			"date":        record.Date,
-			"purchase_id": record.PurchaseID,
+			"id":                     record.ID,
+			"part_name":              record.PartName,
+			"quantity":               record.Quantity,
+			"sold_out":               record.SoldOut,
+			"date":                   record.Date,
+			"purchase_id":            record.PurchaseID,
+			"purchases.company_name": record.Purchases.CompanyName,
+			"purchases.vehicle_name": record.Purchases.VehicleName,
 			"purchases": map[string]interface{}{
 				"id":           record.Purchases.ID,
 				"company_name": record.Purchases.CompanyName,
@@ -106,11 +108,12 @@ func InitMeilisearch() {
 
 	for _, record := range purchasesTable {
 		filteredPurchases = append(filteredPurchases, map[string]interface{}{
-			"id":           record.ID,
-			"company_name": record.CompanyName,
-			"vehicle_name": record.VehicleName,
-			"price":        record.Price,
-			"date":         record.Date,
+			"id":                 record.ID,
+			"company_name":       record.CompanyName,
+			"vehicle_name":       record.VehicleName,
+			"price":              record.Price,
+			"date":               record.Date,
+			"relationships.name": record.Relationships.Name,
 			"relationships": map[string]interface{}{
 				"id":   record.Relationships.ID,
 				"name": record.Relationships.Name,
@@ -129,11 +132,15 @@ func InitMeilisearch() {
 
 	for _, record := range salesTable {
 		filteredSales = append(filteredSales, map[string]interface{}{
-			"id":       record.ID,
-			"price":    record.Price,
-			"date":     record.Date,
-			"credit":   record.Credit,
-			"returned": record.Returned,
+			"id":                     record.ID,
+			"price":                  record.Price,
+			"date":                   record.Date,
+			"credit":                 record.Credit,
+			"returned":               record.Returned,
+			"relationships.name":     record.Relationships.Name,
+			"purchases.company_name": record.Purchases.CompanyName,
+			"purchases.vehicle_name": record.Purchases.VehicleName,
+			"inventory.part_name":    record.Inventory.PartName,
 			"relationships": map[string]interface{}{
 				"id":   record.Relationships.ID,
 				"name": record.Relationships.Name,
