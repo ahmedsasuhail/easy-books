@@ -78,12 +78,12 @@ func CreateSales(c *gin.Context) {
 		"sold_out":               inventory.SoldOut,
 		"date":                   inventory.Date,
 		"purchase_id":            inventory.PurchaseID,
-		"purchases.company_name": record.Purchases.CompanyName,
-		"purchases.vehicle_name": record.Purchases.VehicleName,
+		"purchases.company_name": inventory.Purchases.CompanyName,
+		"purchases.vehicle_name": inventory.Purchases.VehicleName,
 		"purchases": map[string]interface{}{
-			"id":           record.Purchases.ID,
-			"company_name": record.Purchases.CompanyName,
-			"vehicle_name": record.Purchases.VehicleName,
+			"id":           inventory.Purchases.ID,
+			"company_name": inventory.Purchases.CompanyName,
+			"vehicle_name": inventory.Purchases.VehicleName,
 		},
 	}
 
@@ -245,12 +245,12 @@ func UpdateSales(c *gin.Context) {
 		"sold_out":               inventory.SoldOut,
 		"date":                   inventory.Date,
 		"purchase_id":            inventory.PurchaseID,
-		"purchases.company_name": record.Purchases.CompanyName,
-		"purchases.vehicle_name": record.Purchases.VehicleName,
+		"purchases.company_name": inventory.Purchases.CompanyName,
+		"purchases.vehicle_name": inventory.Purchases.VehicleName,
 		"purchases": map[string]interface{}{
-			"id":           record.Purchases.ID,
-			"company_name": record.Purchases.CompanyName,
-			"vehicle_name": record.Purchases.VehicleName,
+			"id":           inventory.Purchases.ID,
+			"company_name": inventory.Purchases.CompanyName,
+			"vehicle_name": inventory.Purchases.VehicleName,
 		},
 	}
 
