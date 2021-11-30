@@ -70,6 +70,30 @@ func CreateSales(c *gin.Context) {
 		return
 	}
 
+	// Update corresponding cached inventory record.
+	updatedInventory := map[string]interface{}{
+		"id":                     inventory.ID,
+		"part_name":              inventory.PartName,
+		"quantity":               inventory.Quantity,
+		"sold_out":               inventory.SoldOut,
+		"date":                   inventory.Date,
+		"purchase_id":            inventory.PurchaseID,
+		"purchases.company_name": record.Purchases.CompanyName,
+		"purchases.vehicle_name": record.Purchases.VehicleName,
+		"purchases": map[string]interface{}{
+			"id":           record.Purchases.ID,
+			"company_name": record.Purchases.CompanyName,
+			"vehicle_name": record.Purchases.VehicleName,
+		},
+	}
+
+	_, err = inventoryIndex.UpdateDocuments(updatedInventory)
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+
 	pgClient.Preload(
 		"Relationships",
 	).Preload(
@@ -102,39 +126,10 @@ func CreateSales(c *gin.Context) {
 			"vehicle_name": record.Purchases.VehicleName,
 			"price":        record.Purchases.Price,
 		},
-		"inventory": map[string]interface{}{
-			"id":        record.Inventory.ID,
-			"part_name": record.Inventory.PartName,
-			"quantity":  record.Inventory.Quantity,
-			"sold_out":  record.Inventory.SoldOut,
-		},
+		"inventory": updatedInventory,
 	}
 
 	_, err = salesIndex.AddDocuments(filteredRecord)
-	if err != nil {
-		errorResponse(c, http.StatusInternalServerError, err.Error())
-
-		return
-	}
-
-	// Update corresponding cached inventory record.
-	updatedInventory := map[string]interface{}{
-		"id":                     inventory.ID,
-		"part_name":              inventory.PartName,
-		"quantity":               inventory.Quantity,
-		"sold_out":               inventory.SoldOut,
-		"date":                   inventory.Date,
-		"purchase_id":            inventory.PurchaseID,
-		"purchases.company_name": record.Purchases.CompanyName,
-		"purchases.vehicle_name": record.Purchases.VehicleName,
-		"purchases": map[string]interface{}{
-			"id":           record.Purchases.ID,
-			"company_name": record.Purchases.CompanyName,
-			"vehicle_name": record.Purchases.VehicleName,
-		},
-	}
-
-	_, err = salesIndex.UpdateDocuments(updatedInventory)
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 
@@ -164,7 +159,10 @@ func UpdateSales(c *gin.Context) {
 
 	// Validate specified quantity.
 	quantity := record.Quantity
-	pgClient.Where("id = ?", record.InventoryID).Find(&inventory)
+	pgClient.Where(
+		"id = ?",
+		record.InventoryID,
+	).Preload("Purchases").Find(&inventory)
 	if quantity > inventory.Quantity {
 		errorResponse(
 			c,
@@ -239,6 +237,30 @@ func UpdateSales(c *gin.Context) {
 		}
 	}
 
+	// Update corresponding cached inventory record.
+	updatedInventory := map[string]interface{}{
+		"id":                     inventory.ID,
+		"part_name":              inventory.PartName,
+		"quantity":               inventory.Quantity,
+		"sold_out":               inventory.SoldOut,
+		"date":                   inventory.Date,
+		"purchase_id":            inventory.PurchaseID,
+		"purchases.company_name": record.Purchases.CompanyName,
+		"purchases.vehicle_name": record.Purchases.VehicleName,
+		"purchases": map[string]interface{}{
+			"id":           record.Purchases.ID,
+			"company_name": record.Purchases.CompanyName,
+			"vehicle_name": record.Purchases.VehicleName,
+		},
+	}
+
+	_, err = inventoryIndex.UpdateDocuments(updatedInventory)
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+
 	pgClient.Preload(
 		"Relationships",
 	).Preload(
@@ -273,39 +295,10 @@ func UpdateSales(c *gin.Context) {
 			"vehicle_name": record.Purchases.VehicleName,
 			"price":        record.Purchases.Price,
 		},
-		"inventory": map[string]interface{}{
-			"id":        record.Inventory.ID,
-			"part_name": record.Inventory.PartName,
-			"quantity":  record.Inventory.Quantity,
-			"sold_out":  record.Inventory.SoldOut,
-		},
+		"inventory": updatedInventory,
 	}
 
 	_, err = salesIndex.UpdateDocuments(filteredRecord)
-	if err != nil {
-		errorResponse(c, http.StatusInternalServerError, err.Error())
-
-		return
-	}
-
-	// Update corresponding cached inventory record.
-	updatedInventory := map[string]interface{}{
-		"id":                     inventory.ID,
-		"part_name":              inventory.PartName,
-		"quantity":               inventory.Quantity,
-		"sold_out":               inventory.SoldOut,
-		"date":                   inventory.Date,
-		"purchase_id":            inventory.PurchaseID,
-		"purchases.company_name": record.Purchases.CompanyName,
-		"purchases.vehicle_name": record.Purchases.VehicleName,
-		"purchases": map[string]interface{}{
-			"id":           record.Purchases.ID,
-			"company_name": record.Purchases.CompanyName,
-			"vehicle_name": record.Purchases.VehicleName,
-		},
-	}
-
-	_, err = salesIndex.UpdateDocuments(updatedInventory)
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 
