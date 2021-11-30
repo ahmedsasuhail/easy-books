@@ -98,10 +98,10 @@ func ReportByPurchaseID(c *gin.Context) {
 				"part_name": record.Inventory.PartName,
 				"sold_out":  record.Inventory.SoldOut,
 			})
-		} else if !record.Inventory.SoldOut {
-			totalNotSold += record.Price
+		} else {
+			totalSales += record.Price
 
-			notSold = append(notSold, map[string]interface{}{
+			sales = append(sales, map[string]interface{}{
 				"id":        record.ID,
 				"price":     record.Price,
 				"date":      record.Date,
@@ -110,10 +110,12 @@ func ReportByPurchaseID(c *gin.Context) {
 				"part_name": record.Inventory.PartName,
 				"sold_out":  record.Inventory.SoldOut,
 			})
-		} else {
-			totalSales += record.Price
+		}
 
-			sales = append(sales, map[string]interface{}{
+		if !record.Inventory.SoldOut {
+			totalNotSold += record.Price
+
+			notSold = append(notSold, map[string]interface{}{
 				"id":        record.ID,
 				"price":     record.Price,
 				"date":      record.Date,
