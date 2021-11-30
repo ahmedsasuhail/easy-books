@@ -83,6 +83,7 @@ func ReportByPurchaseID(c *gin.Context) {
 				"date":      record.Date,
 				"credit":    record.Credit,
 				"returned":  record.Returned,
+				"quantity":  record.Quantity,
 				"part_name": record.Inventory.PartName,
 				"sold_out":  record.Inventory.SoldOut,
 			})
@@ -95,6 +96,7 @@ func ReportByPurchaseID(c *gin.Context) {
 				"date":      record.Date,
 				"credit":    record.Credit,
 				"returned":  record.Returned,
+				"quantity":  record.Quantity,
 				"part_name": record.Inventory.PartName,
 				"sold_out":  record.Inventory.SoldOut,
 			})
@@ -107,6 +109,7 @@ func ReportByPurchaseID(c *gin.Context) {
 				"date":      record.Date,
 				"credit":    record.Credit,
 				"returned":  record.Returned,
+				"quantity":  record.Quantity,
 				"part_name": record.Inventory.PartName,
 				"sold_out":  record.Inventory.SoldOut,
 			})
@@ -121,6 +124,7 @@ func ReportByPurchaseID(c *gin.Context) {
 				"date":      record.Date,
 				"credit":    record.Credit,
 				"returned":  record.Returned,
+				"quantity":  record.Inventory.Quantity,
 				"part_name": record.Inventory.PartName,
 				"sold_out":  record.Inventory.SoldOut,
 			})
