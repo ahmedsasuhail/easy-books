@@ -29,15 +29,8 @@ const CreateUpdatePurchase = () => {
       !relationshipId &&
       !relationshipName
     ) {
-      setRelationshipId(formState.values.relationship_id);
-
-      const items = relationshipItems.filter(
-        (item) => item.id === formState.values.relationship_id
-      );
-
-      if (items.length > 0) {
-        setRelationshipName(items[0].name);
-      }
+      setRelationshipId(+formState.values.relationship_id);
+      setRelationshipName(formState.values.seller);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [relationshipId]);

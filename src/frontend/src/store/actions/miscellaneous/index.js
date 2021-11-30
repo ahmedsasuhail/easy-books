@@ -32,7 +32,7 @@ export const miscellaneousCreate = (values) => {
       console.log("Catch Error: ", error);
       dispatch(miscellaneousActions.miscellaneousCreateFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.logoutUser());
+        dispatch(userActions.userAuthFailure(error.response.message));
       }
     }
   };
@@ -68,7 +68,7 @@ export const miscellaneousUpdate = (values) => {
       console.log("Catch Error: ", error);
       dispatch(miscellaneousActions.miscellaneousUpdateFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.logoutUser());
+        dispatch(userActions.userAuthFailure(error.response.message));
       }
     }
   };
@@ -102,7 +102,7 @@ export const miscellaneousRead = (values) => {
       console.log("Catch Error: ", error);
       dispatch(miscellaneousActions.miscellaneousReadFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.logoutUser());
+        dispatch(userActions.userAuthFailure(error.response.message));
       }
     }
   };
@@ -132,7 +132,7 @@ export const miscellaneousDelete = (values) => {
       console.log("Catch Error: ", error);
       dispatch(miscellaneousActions.miscellaneousDeleteFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.logoutUser());
+        dispatch(userActions.userAuthFailure(error.response.message));
       }
     }
     return result;

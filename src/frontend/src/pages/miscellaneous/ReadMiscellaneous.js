@@ -40,6 +40,7 @@ const ReadMiscellaneous = () => {
     {
       id: "description",
       label: "Description",
+      disableSort: true,
     },
     {
       id: "price",

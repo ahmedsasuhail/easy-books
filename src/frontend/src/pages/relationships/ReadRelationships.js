@@ -7,16 +7,15 @@ import Box from "@mui/material/Box";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import Dialog from "../../components/Dialog/Dialog";
 import CustomTable from "../../components/Table/CustomTable";
+import MessageDialogue from "../../components/Dialog/MessageDialogue";
 
 import CreateUpdateRelationship from "./CreateUpdateRelationship";
-import MessageDialogue from "../../components/Dialog/MessageDialogue";
 
 import {
   relationshipRead,
   relationshipCreate,
   relationshipUpdate,
   relationshipDelete,
-  relationshipSearch,
 } from "../../store/actions/relationship";
 
 const useStyles = makeStyles((theme) => ({
@@ -37,6 +36,7 @@ export const CustomMuiTable = (props) => {
   const orderBy = useSelector((state) => state.relationship.orderBy);
   const order = useSelector((state) => state.relationship.order);
   const totalCount = useSelector((state) => state.relationship.count);
+  const query = useSelector((state) => state.relationship.query);
 
   const handleRequestSort = (property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -48,6 +48,7 @@ export const CustomMuiTable = (props) => {
         rowsPerPage,
         order: direction,
         orderBy: property,
+        query,
       })
     );
   };
@@ -60,6 +61,7 @@ export const CustomMuiTable = (props) => {
         rowsPerPage,
         orderBy,
         order,
+        query,
       })
     );
   };
@@ -72,12 +74,22 @@ export const CustomMuiTable = (props) => {
         rowsPerPage: parseInt(event.target.value, 10),
         orderBy,
         order,
+        query,
       })
     );
   };
 
   const handleRequestSearch = (value) => {
-    dispatch(relationshipSearch({ token, keyword: value }));
+    dispatch(
+      relationshipRead({
+        token,
+        pageNo: 0,
+        rowsPerPage,
+        orderBy,
+        order,
+        query: value,
+      })
+    );
   };
 
   useEffect(() => {
@@ -153,6 +165,7 @@ const ReadRelationship = () => {
   const orderBy = useSelector((state) => state.relationship.orderBy);
   const order = useSelector((state) => state.relationship.order);
   const totalCount = useSelector((state) => state.relationship.count);
+  const query = useSelector((state) => state.relationship.query);
 
   if (relationshipItems) {
     rows = relationshipItems.map((relationship, idx) => {
@@ -205,6 +218,7 @@ const ReadRelationship = () => {
               rowsPerPage,
               orderBy,
               order,
+              query,
             })
           );
         } else {

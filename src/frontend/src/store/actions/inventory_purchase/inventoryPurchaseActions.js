@@ -3,7 +3,7 @@ import {
   INVENTORY_PURCHASE_SUCCESS,
   INVENTORY_PURCHASE_FAILURE,
   INVENTORY_PURCHASE_CLEAR,
-} from '../actionTypes';
+} from "../actionTypes";
 
 export const inventoryPurchaseActions = {
   inventoryPurchaseRequest: () => {

@@ -137,7 +137,7 @@ const Reports = () => {
       console.log("Catch Error: ", error);
       dispatch({ type: "CLEAR" });
       if (error.response && error.response.status === 401) {
-        userDispatch(userActions.logoutUser());
+        userDispatch(userActions.userAuthFailure(error.response.message));
       }
     }
   };
@@ -163,13 +163,12 @@ const Reports = () => {
       console.log("Catch Error: ", error);
       dispatch({ type: "CLEAR" });
       if (error.response && error.response.status === 401) {
-        userDispatch(userActions.logoutUser());
+        userDispatch(userActions.userAuthFailure(error.response.message));
       }
     }
   };
 
   const handleRangeChange = async () => {
-    console.log(fromDate, toDate);
     dispatch({ type: "LOADING" });
     try {
       const response = await axios.post(
@@ -189,7 +188,7 @@ const Reports = () => {
       console.log("Catch Error: ", error);
       dispatch({ type: "CLEAR" });
       if (error.response && error.response.status === 401) {
-        userDispatch(userActions.logoutUser());
+        userDispatch(userActions.userAuthFailure(error.response.message));
       }
     }
   };

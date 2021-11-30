@@ -40,3 +40,11 @@ export const validateFloat = (maxDecimal, maxFloat) => (value) => {
   }
   return result ? undefined : "Invalid value";
 };
+
+export const validateLimit = (min, max) => (value) => {
+  let result;
+  if (!isNaN(value)) {
+    result = value >= min && value <= max;
+  }
+  return result ? undefined : "Invalid value";
+};

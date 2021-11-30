@@ -24,7 +24,7 @@ const initialState = {
   pageNo: 0,
   rowsPerPage: 5,
   count: 0,
-  search: "",
+  query: "",
   formLoading: false,
   pageLoading: false,
 };
@@ -33,6 +33,7 @@ const salesReducer = (state = initialState, action) => {
   switch (action.type) {
     case SALES_CREATE_REQUEST:
       return mergeObjects(state, {
+        query: "",
         formLoading: true,
         pageLoading: true,
       });
@@ -111,7 +112,7 @@ const salesReducer = (state = initialState, action) => {
         orderBy: action.payload.orderBy,
         order: action.payload.order,
         count: action.payload.count,
-        search: action.payload.search,
+        query: action.payload.query,
         pageLoading: false,
       });
 

@@ -75,7 +75,8 @@ export const relationshipActions = {
         rowsPerPage: values.page_limit,
         orderBy: values.order_by,
         order: values.sort_order,
-        count: values.total_count,
+        count: values.query ? values.total_matched_count : values.total_count,
+        query: values.query,
       },
     };
   },

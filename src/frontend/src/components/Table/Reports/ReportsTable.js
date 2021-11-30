@@ -51,198 +51,14 @@ export default function SpanningTable(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          <TableRow className={classes.rowBgColor}>
-            <TableCell className={classes.cellBold}>
-              <span>
-                <IconButton
-                  aria-label="expand row"
-                  size="small"
-                  onClick={() => setSalesOpen(!salesOpen)}
-                >
-                  {salesOpen ? (
-                    <KeyboardArrowUpIcon />
-                  ) : (
-                    <KeyboardArrowDownIcon />
-                  )}
-                </IconButton>
-              </span>
-              Sales
-            </TableCell>
-            <TableCell className={classes.headCellSuccess} align="right">
-              {props.purchaseRows
-                ? props.purchaseRows.sales_total +
-                  props.purchaseRows.sales_returned_total +
-                  props.purchaseRows.credited_sales_total
-                : props.relationshipRows
-                ? props.relationshipRows.sales_total +
-                  props.relationshipRows.sales_returned_total +
-                  props.relationshipRows.credited_sales_total
-                : props.rangeRows && props.rangeRows.sales_total}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell className={classes.cellPadding} colSpan={2}>
-              <Collapse in={salesOpen} timeout="auto" unmountOnExit>
-                <Box className={classes.box}>
-                  <Typography variant="h6" gutterBottom component="div">
-                    Items
-                  </Typography>
-                  <Table size="small" aria-label="purchases">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell className={classes.cellBold}>
-                          Part Name
-                        </TableCell>
-                        <TableCell className={classes.cellBold} align="right">
-                          Date
-                        </TableCell>
-                        <TableCell className={classes.cellBold}>
-                          Returned
-                        </TableCell>
-                        <TableCell className={classes.cellBold}>
-                          Credited
-                        </TableCell>
-                        <TableCell className={classes.cellBold} align="right">
-                          Price
-                        </TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {props.purchaseRows &&
-                        !props.purchaseRows.sales &&
-                        !props.purchaseRows.sales_returned &&
-                        !props.purchaseRows.credited_sales && (
-                          <TableRow>
-                            <TableCell colSpan={3}>No data found</TableCell>
-                          </TableRow>
-                        )}
-                      {props.relationshipRows &&
-                        !props.relationshipRows.sales &&
-                        !props.relationshipRows.sales_returned &&
-                        !props.relationshipRows.credited_sales && (
-                          <TableRow>
-                            <TableCell colSpan={3}>No data found</TableCell>
-                          </TableRow>
-                        )}
-                      {props.rangeRows && !props.rangeRows.sales && (
-                        <TableRow>
-                          <TableCell colSpan={3}>No data found</TableCell>
-                        </TableRow>
-                      )}
-                      {props.purchaseRows &&
-                        props.purchaseRows.sales &&
-                        props.purchaseRows.sales.map((item, idx) => (
-                          <TableRow key={idx}>
-                            <TableCell>{item.part_name}</TableCell>
-                            <TableCell align="right">
-                              {new Date(item.date).toISOString().split("T")[0]}
-                            </TableCell>
-                            <TableCell>No</TableCell>
-                            <TableCell>No</TableCell>
-                            <TableCell align="right">{item.price}</TableCell>
-                          </TableRow>
-                        ))}
-                      {props.purchaseRows &&
-                        props.purchaseRows.sales_returned &&
-                        props.purchaseRows.sales_returned.map((item, idx) => (
-                          <TableRow key={idx}>
-                            <TableCell>{item.part_name}</TableCell>
-                            <TableCell align="right">
-                              {new Date(item.date).toISOString().split("T")[0]}
-                            </TableCell>
-                            <TableCell>Yes</TableCell>
-                            <TableCell>{item.credit ? "Yes" : "No"}</TableCell>
-                            <TableCell align="right">{item.price}</TableCell>
-                          </TableRow>
-                        ))}
-                      {props.purchaseRows &&
-                        props.purchaseRows.credited_sales &&
-                        props.purchaseRows.credited_sales.map((item, idx) => (
-                          <TableRow key={idx}>
-                            <TableCell>{item.part_name}</TableCell>
-                            <TableCell align="right">
-                              {new Date(item.date).toISOString().split("T")[0]}
-                            </TableCell>
-                            <TableCell>No</TableCell>
-                            <TableCell>Yes</TableCell>
-                            <TableCell align="right">{item.price}</TableCell>
-                          </TableRow>
-                        ))}
-                      {props.relationshipRows &&
-                        props.relationshipRows.sales &&
-                        props.relationshipRows.sales.map((item, idx) => (
-                          <TableRow key={idx}>
-                            <TableCell>{item.part_name}</TableCell>
-                            <TableCell align="right">
-                              {new Date(item.date).toISOString().split("T")[0]}
-                            </TableCell>
-                            <TableCell>No</TableCell>
-                            <TableCell>No</TableCell>
-                            <TableCell align="right">{item.price}</TableCell>
-                          </TableRow>
-                        ))}
-                      {props.relationshipRows &&
-                        props.relationshipRows.sales_returned &&
-                        props.relationshipRows.sales_returned.map(
-                          (item, idx) => (
-                            <TableRow key={idx}>
-                              <TableCell>{item.part_name}</TableCell>
-                              <TableCell align="right">
-                                {
-                                  new Date(item.date)
-                                    .toISOString()
-                                    .split("T")[0]
-                                }
-                              </TableCell>
-                              <TableCell>Yes</TableCell>
-                              <TableCell>
-                                {item.credit ? "Yes" : "No"}
-                              </TableCell>
-                              <TableCell align="right">{item.price}</TableCell>
-                            </TableRow>
-                          )
-                        )}
-                      {props.relationshipRows &&
-                        props.relationshipRows.credited_sales &&
-                        props.relationshipRows.credited_sales.map(
-                          (item, idx) => (
-                            <TableRow key={idx}>
-                              <TableCell>{item.part_name}</TableCell>
-                              <TableCell align="right">
-                                {
-                                  new Date(item.date)
-                                    .toISOString()
-                                    .split("T")[0]
-                                }
-                              </TableCell>
-                              <TableCell>No</TableCell>
-                              <TableCell>Yes</TableCell>
-                              <TableCell align="right">{item.price}</TableCell>
-                            </TableRow>
-                          )
-                        )}
-                      {props.rangeRows &&
-                        props.rangeRows.sales &&
-                        props.rangeRows.sales.map((item, idx) => (
-                          <TableRow key={idx}>
-                            <TableCell>{item.part_name}</TableCell>
-                            <TableCell align="right">
-                              {new Date(item.date).toISOString().split("T")[0]}
-                            </TableCell>
-                            <TableCell>
-                              {item.returned ? "Yes" : "No"}
-                            </TableCell>
-                            <TableCell>{item.credit ? "Yes" : "No"}</TableCell>
-                            <TableCell align="right">{item.price}</TableCell>
-                          </TableRow>
-                        ))}
-                    </TableBody>
-                  </Table>
-                </Box>
-              </Collapse>
-            </TableCell>
-          </TableRow>
-          {(props.relationshipRows || props.rangeRows) && (
+          {(props.relationshipRows
+            ? props.relationshipRows.sales_total +
+                props.relationshipRows.sales_returned_total +
+                props.relationshipRows.credited_sales_total >
+              0
+            : props.rangeRows
+            ? props.rangeRows.sales_total > 0
+            : true) && (
             <>
               <TableRow className={classes.rowBgColor}>
                 <TableCell className={classes.cellBold}>
@@ -250,238 +66,32 @@ export default function SpanningTable(props) {
                     <IconButton
                       aria-label="expand row"
                       size="small"
-                      onClick={() => {
-                        setPurchasedOpen(!purchasedOpen);
-                      }}
+                      onClick={() => setSalesOpen(!salesOpen)}
                     >
-                      {purchasedOpen ? (
+                      {salesOpen ? (
                         <KeyboardArrowUpIcon />
                       ) : (
                         <KeyboardArrowDownIcon />
                       )}
                     </IconButton>
                   </span>
-                  Purchased
+                  Sales
                 </TableCell>
-                <TableCell className={classes.headCellError} align="right">
-                  {props.relationshipRows
-                    ? props.relationshipRows.purchased_total
-                    : props.rangeRows && props.rangeRows.purchased_total}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className={classes.cellPadding} colSpan={2}>
-                  <Collapse in={purchasedOpen} timeout="auto" unmountOnExit>
-                    <Box className={classes.box}>
-                      <Typography variant="h6" gutterBottom component="div">
-                        Items
-                      </Typography>
-                      <Table size="small" aria-label="purchases">
-                        <TableHead>
-                          <TableRow>
-                            <TableCell className={classes.cellBold}>
-                              Purchase Name
-                            </TableCell>
-                            <TableCell
-                              className={classes.cellBold}
-                              align="right"
-                            >
-                              Date
-                            </TableCell>
-                            <TableCell
-                              className={classes.cellBold}
-                              align="right"
-                            >
-                              Price
-                            </TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {props.relationshipRows &&
-                          props.relationshipRows.purchases ? (
-                            props.relationshipRows.purchases.map(
-                              (item, idx) => (
-                                <TableRow key={idx}>
-                                  <TableCell>
-                                    {item.company_name} - {item.vehicle_name}
-                                  </TableCell>
-                                  <TableCell align="right">
-                                    {
-                                      new Date(item.date)
-                                        .toISOString()
-                                        .split("T")[0]
-                                    }
-                                  </TableCell>
-                                  <TableCell align="right">
-                                    {item.price}
-                                  </TableCell>
-                                </TableRow>
-                              )
-                            )
-                          ) : props.rangeRows && props.rangeRows.purchases ? (
-                            props.rangeRows.purchases.map((item, idx) => (
-                              <TableRow key={idx}>
-                                <TableCell>
-                                  {item.company_name} - {item.vehicle_name}
-                                </TableCell>
-                                <TableCell align="right">
-                                  {
-                                    new Date(item.date)
-                                      .toISOString()
-                                      .split("T")[0]
-                                  }
-                                </TableCell>
-                                <TableCell align="right">
-                                  {item.price}
-                                </TableCell>
-                              </TableRow>
-                            ))
-                          ) : (
-                            <TableRow>
-                              <TableCell colSpan={3}>No data found</TableCell>
-                            </TableRow>
-                          )}
-                        </TableBody>
-                      </Table>
-                    </Box>
-                  </Collapse>
-                </TableCell>
-              </TableRow>
-            </>
-          )}
-
-          {!props.rangeRows && (
-            <>
-              <TableRow className={classes.rowBgColor}>
-                <TableCell className={classes.cellBold}>
-                  <span>
-                    <IconButton
-                      aria-label="expand row"
-                      size="small"
-                      onClick={() => setReturnedOpen(!returnedOpen)}
-                    >
-                      {returnedOpen ? (
-                        <KeyboardArrowUpIcon />
-                      ) : (
-                        <KeyboardArrowDownIcon />
-                      )}
-                    </IconButton>
-                  </span>
-                  Returned
-                </TableCell>
-                <TableCell className={classes.headCellError} align="right">
-                  {props.purchaseRows &&
-                    props.purchaseRows.sales_returned_total}
-                  {props.relationshipRows &&
-                    props.relationshipRows.sales_returned_total}
+                <TableCell className={classes.headCellSuccess} align="right">
+                  {props.purchaseRows
+                    ? props.purchaseRows.sales_total +
+                      props.purchaseRows.sales_returned_total +
+                      props.purchaseRows.credited_sales_total
+                    : props.relationshipRows
+                    ? props.relationshipRows.sales_total +
+                      props.relationshipRows.sales_returned_total +
+                      props.relationshipRows.credited_sales_total
+                    : props.rangeRows && props.rangeRows.sales_total}
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell className={classes.cellPadding} colSpan={2}>
-                  <Collapse in={returnedOpen} timeout="auto" unmountOnExit>
-                    <Box className={classes.box}>
-                      <Typography variant="h6" gutterBottom component="div">
-                        Items
-                      </Typography>
-                      <Table size="small" aria-label="purchases">
-                        <TableHead>
-                          <TableRow>
-                            <TableCell className={classes.cellBold}>
-                              {props.purchaseRows && "Part Name"}
-                              {props.relationshipRows && "Purchase Name"}
-                            </TableCell>
-                            <TableCell
-                              className={classes.cellBold}
-                              align="right"
-                            >
-                              Date
-                            </TableCell>
-                            <TableCell
-                              className={classes.cellBold}
-                              align="right"
-                            >
-                              Price
-                            </TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {props.purchaseRows &&
-                          props.purchaseRows.sales_returned ? (
-                            props.purchaseRows.sales_returned.map(
-                              (item, idx) =>
-                                !item.credit && (
-                                  <TableRow key={idx}>
-                                    <TableCell>{item.part_name}</TableCell>
-                                    <TableCell align="right">
-                                      {
-                                        new Date(item.date)
-                                          .toISOString()
-                                          .split("T")[0]
-                                      }
-                                    </TableCell>
-                                    <TableCell align="right">
-                                      {item.price}
-                                    </TableCell>
-                                  </TableRow>
-                                )
-                            )
-                          ) : props.relationshipRows &&
-                            props.relationshipRows.sales_returned ? (
-                            props.relationshipRows.sales_returned.map(
-                              (item, idx) => (
-                                <TableRow key={idx}>
-                                  <TableCell>{item.part_name}</TableCell>
-                                  <TableCell align="right">
-                                    {
-                                      new Date(item.date)
-                                        .toISOString()
-                                        .split("T")[0]
-                                    }
-                                  </TableCell>
-                                  <TableCell align="right">
-                                    {item.price}
-                                  </TableCell>
-                                </TableRow>
-                              )
-                            )
-                          ) : (
-                            <TableRow>
-                              <TableCell colSpan={3}>No data found</TableCell>
-                            </TableRow>
-                          )}
-                        </TableBody>
-                      </Table>
-                    </Box>
-                  </Collapse>
-                </TableCell>
-              </TableRow>
-              <TableRow className={classes.rowBgColor}>
-                <TableCell className={classes.cellBold}>
-                  <span>
-                    <IconButton
-                      aria-label="expand row"
-                      size="small"
-                      onClick={() => setCreditedOpen(!creditedOpen)}
-                    >
-                      {creditedOpen ? (
-                        <KeyboardArrowUpIcon />
-                      ) : (
-                        <KeyboardArrowDownIcon />
-                      )}
-                    </IconButton>
-                  </span>
-                  Credited
-                </TableCell>
-                <TableCell className={classes.headCellError} align="right">
-                  {props.purchaseRows &&
-                    props.purchaseRows.credited_sales_total}
-                  {props.relationshipRows &&
-                    props.relationshipRows.credited_sales_total}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className={classes.cellPadding} colSpan={2}>
-                  <Collapse in={creditedOpen} timeout="auto" unmountOnExit>
+                  <Collapse in={salesOpen} timeout="auto" unmountOnExit>
                     <Box className={classes.box}>
                       <Typography variant="h6" gutterBottom component="div">
                         Items
@@ -498,17 +108,77 @@ export default function SpanningTable(props) {
                             >
                               Date
                             </TableCell>
+                            <TableCell className={classes.cellBold}>
+                              Returned
+                            </TableCell>
+                            <TableCell className={classes.cellBold}>
+                              Credited
+                            </TableCell>
                             <TableCell
                               className={classes.cellBold}
                               align="right"
                             >
                               Price
                             </TableCell>
+                            <TableCell
+                              className={classes.cellBold}
+                              align="right"
+                            >
+                              Quantity
+                            </TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
                           {props.purchaseRows &&
-                          props.purchaseRows.credited_sales ? (
+                            props.purchaseRows.sales &&
+                            props.purchaseRows.sales.map((item, idx) => (
+                              <TableRow key={idx}>
+                                <TableCell>{item.part_name}</TableCell>
+                                <TableCell align="right">
+                                  {
+                                    new Date(item.date)
+                                      .toISOString()
+                                      .split("T")[0]
+                                  }
+                                </TableCell>
+                                <TableCell>No</TableCell>
+                                <TableCell>No</TableCell>
+                                <TableCell align="right">
+                                  {item.price}
+                                </TableCell>
+                                <TableCell align="right">
+                                  {item.quantity}
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          {props.purchaseRows &&
+                            props.purchaseRows.sales_returned &&
+                            props.purchaseRows.sales_returned.map(
+                              (item, idx) => (
+                                <TableRow key={idx}>
+                                  <TableCell>{item.part_name}</TableCell>
+                                  <TableCell align="right">
+                                    {
+                                      new Date(item.date)
+                                        .toISOString()
+                                        .split("T")[0]
+                                    }
+                                  </TableCell>
+                                  <TableCell>Yes</TableCell>
+                                  <TableCell>
+                                    {item.credit ? "Yes" : "No"}
+                                  </TableCell>
+                                  <TableCell align="right">
+                                    {item.price}
+                                  </TableCell>
+                                  <TableCell align="right">
+                                    {item.quantity}
+                                  </TableCell>
+                                </TableRow>
+                              )
+                            )}
+                          {props.purchaseRows &&
+                            props.purchaseRows.credited_sales &&
                             props.purchaseRows.credited_sales.map(
                               (item, idx) => (
                                 <TableRow key={idx}>
@@ -520,14 +190,67 @@ export default function SpanningTable(props) {
                                         .split("T")[0]
                                     }
                                   </TableCell>
+                                  <TableCell>No</TableCell>
+                                  <TableCell>Yes</TableCell>
                                   <TableCell align="right">
                                     {item.price}
                                   </TableCell>
+                                  <TableCell align="right">
+                                    {item.quantity}
+                                  </TableCell>
                                 </TableRow>
                               )
-                            )
-                          ) : props.relationshipRows &&
-                            props.relationshipRows.credited_sales ? (
+                            )}
+                          {props.relationshipRows &&
+                            props.relationshipRows.sales &&
+                            props.relationshipRows.sales.map((item, idx) => (
+                              <TableRow key={idx}>
+                                <TableCell>{item.part_name}</TableCell>
+                                <TableCell align="right">
+                                  {
+                                    new Date(item.date)
+                                      .toISOString()
+                                      .split("T")[0]
+                                  }
+                                </TableCell>
+                                <TableCell>No</TableCell>
+                                <TableCell>No</TableCell>
+                                <TableCell align="right">
+                                  {item.price}
+                                </TableCell>
+                                <TableCell align="right">
+                                  {item.quantity}
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          {props.relationshipRows &&
+                            props.relationshipRows.sales_returned &&
+                            props.relationshipRows.sales_returned.map(
+                              (item, idx) => (
+                                <TableRow key={idx}>
+                                  <TableCell>{item.part_name}</TableCell>
+                                  <TableCell align="right">
+                                    {
+                                      new Date(item.date)
+                                        .toISOString()
+                                        .split("T")[0]
+                                    }
+                                  </TableCell>
+                                  <TableCell>Yes</TableCell>
+                                  <TableCell>
+                                    {item.credit ? "Yes" : "No"}
+                                  </TableCell>
+                                  <TableCell align="right">
+                                    {item.price}
+                                  </TableCell>
+                                  <TableCell align="right">
+                                    {item.quantity}
+                                  </TableCell>
+                                </TableRow>
+                              )
+                            )}
+                          {props.relationshipRows &&
+                            props.relationshipRows.credited_sales &&
                             props.relationshipRows.credited_sales.map(
                               (item, idx) => (
                                 <TableRow key={idx}>
@@ -539,17 +262,43 @@ export default function SpanningTable(props) {
                                         .split("T")[0]
                                     }
                                   </TableCell>
+                                  <TableCell>No</TableCell>
+                                  <TableCell>Yes</TableCell>
                                   <TableCell align="right">
                                     {item.price}
                                   </TableCell>
+                                  <TableCell align="right">
+                                    {item.quantity}
+                                  </TableCell>
                                 </TableRow>
                               )
-                            )
-                          ) : (
-                            <TableRow>
-                              <TableCell colSpan={3}>No data found</TableCell>
-                            </TableRow>
-                          )}
+                            )}
+                          {props.rangeRows &&
+                            props.rangeRows.sales &&
+                            props.rangeRows.sales.map((item, idx) => (
+                              <TableRow key={idx}>
+                                <TableCell>{item.part_name}</TableCell>
+                                <TableCell align="right">
+                                  {
+                                    new Date(item.date)
+                                      .toISOString()
+                                      .split("T")[0]
+                                  }
+                                </TableCell>
+                                <TableCell>
+                                  {item.returned ? "Yes" : "No"}
+                                </TableCell>
+                                <TableCell>
+                                  {item.credit ? "Yes" : "No"}
+                                </TableCell>
+                                <TableCell align="right">
+                                  {item.price}
+                                </TableCell>
+                                <TableCell align="right">
+                                  {item.quantity}
+                                </TableCell>
+                              </TableRow>
+                            ))}
                         </TableBody>
                       </Table>
                     </Box>
@@ -558,7 +307,318 @@ export default function SpanningTable(props) {
               </TableRow>
             </>
           )}
-          {props.rangeRows && (
+          {(props.relationshipRows || props.rangeRows) &&
+            (props.rangeRows ? props.rangeRows.purchased_total > 0 : true) && (
+              <>
+                <TableRow className={classes.rowBgColor}>
+                  <TableCell className={classes.cellBold}>
+                    <span>
+                      <IconButton
+                        aria-label="expand row"
+                        size="small"
+                        onClick={() => {
+                          setPurchasedOpen(!purchasedOpen);
+                        }}
+                      >
+                        {purchasedOpen ? (
+                          <KeyboardArrowUpIcon />
+                        ) : (
+                          <KeyboardArrowDownIcon />
+                        )}
+                      </IconButton>
+                    </span>
+                    Purchased
+                  </TableCell>
+                  <TableCell className={classes.headCellError} align="right">
+                    {props.relationshipRows
+                      ? props.relationshipRows.purchased_total
+                      : props.rangeRows && props.rangeRows.purchased_total}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className={classes.cellPadding} colSpan={2}>
+                    <Collapse in={purchasedOpen} timeout="auto" unmountOnExit>
+                      <Box className={classes.box}>
+                        <Typography variant="h6" gutterBottom component="div">
+                          Items
+                        </Typography>
+                        <Table size="small" aria-label="purchases">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell className={classes.cellBold}>
+                                Purchase Name
+                              </TableCell>
+                              <TableCell
+                                className={classes.cellBold}
+                                align="right"
+                              >
+                                Date
+                              </TableCell>
+                              <TableCell
+                                className={classes.cellBold}
+                                align="right"
+                              >
+                                Price
+                              </TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {props.relationshipRows &&
+                            props.relationshipRows.purchases
+                              ? props.relationshipRows.purchases.map(
+                                  (item, idx) => (
+                                    <TableRow key={idx}>
+                                      <TableCell>
+                                        {item.company_name} -{" "}
+                                        {item.vehicle_name}
+                                      </TableCell>
+                                      <TableCell align="right">
+                                        {
+                                          new Date(item.date)
+                                            .toISOString()
+                                            .split("T")[0]
+                                        }
+                                      </TableCell>
+                                      <TableCell align="right">
+                                        {item.price}
+                                      </TableCell>
+                                    </TableRow>
+                                  )
+                                )
+                              : props.rangeRows &&
+                                props.rangeRows.purchases &&
+                                props.rangeRows.purchases.map((item, idx) => (
+                                  <TableRow key={idx}>
+                                    <TableCell>
+                                      {item.company_name} - {item.vehicle_name}
+                                    </TableCell>
+                                    <TableCell align="right">
+                                      {
+                                        new Date(item.date)
+                                          .toISOString()
+                                          .split("T")[0]
+                                      }
+                                    </TableCell>
+                                    <TableCell align="right">
+                                      {item.price}
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
+                          </TableBody>
+                        </Table>
+                      </Box>
+                    </Collapse>
+                  </TableCell>
+                </TableRow>
+              </>
+            )}
+
+          {!props.rangeRows &&
+            ((props.purchaseRows &&
+              props.purchaseRows.sales_returned_total > 0) ||
+              (props.relationshipRows &&
+                props.relationshipRows.sales_returned_total > 0)) && (
+              <>
+                <TableRow className={classes.rowBgColor}>
+                  <TableCell className={classes.cellBold}>
+                    <span>
+                      <IconButton
+                        aria-label="expand row"
+                        size="small"
+                        onClick={() => setReturnedOpen(!returnedOpen)}
+                      >
+                        {returnedOpen ? (
+                          <KeyboardArrowUpIcon />
+                        ) : (
+                          <KeyboardArrowDownIcon />
+                        )}
+                      </IconButton>
+                    </span>
+                    Returned
+                  </TableCell>
+                  <TableCell className={classes.headCellError} align="right">
+                    {props.purchaseRows &&
+                      props.purchaseRows.sales_returned_total}
+                    {props.relationshipRows &&
+                      props.relationshipRows.sales_returned_total}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className={classes.cellPadding} colSpan={2}>
+                    <Collapse in={returnedOpen} timeout="auto" unmountOnExit>
+                      <Box className={classes.box}>
+                        <Typography variant="h6" gutterBottom component="div">
+                          Items
+                        </Typography>
+                        <Table size="small" aria-label="purchases">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell className={classes.cellBold}>
+                                {props.purchaseRows && "Part Name"}
+                                {props.relationshipRows && "Purchase Name"}
+                              </TableCell>
+                              <TableCell
+                                className={classes.cellBold}
+                                align="right"
+                              >
+                                Date
+                              </TableCell>
+                              <TableCell
+                                className={classes.cellBold}
+                                align="right"
+                              >
+                                Price
+                              </TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {console.log(
+                              props.purchaseRows &&
+                                props.purchaseRows.sales_returned
+                            )}
+                            {props.purchaseRows &&
+                            props.purchaseRows.sales_returned
+                              ? props.purchaseRows.sales_returned.map(
+                                  (item, idx) => (
+                                    <TableRow key={idx}>
+                                      <TableCell>{item.part_name}</TableCell>
+                                      <TableCell align="right">
+                                        {
+                                          new Date(item.date)
+                                            .toISOString()
+                                            .split("T")[0]
+                                        }
+                                      </TableCell>
+                                      <TableCell align="right">
+                                        {item.price}
+                                      </TableCell>
+                                    </TableRow>
+                                  )
+                                )
+                              : props.relationshipRows &&
+                                props.relationshipRows.sales_returned &&
+                                props.relationshipRows.sales_returned.map(
+                                  (item, idx) => (
+                                    <TableRow key={idx}>
+                                      <TableCell>{item.part_name}</TableCell>
+                                      <TableCell align="right">
+                                        {
+                                          new Date(item.date)
+                                            .toISOString()
+                                            .split("T")[0]
+                                        }
+                                      </TableCell>
+                                      <TableCell align="right">
+                                        {item.price}
+                                      </TableCell>
+                                    </TableRow>
+                                  )
+                                )}
+                          </TableBody>
+                        </Table>
+                      </Box>
+                    </Collapse>
+                  </TableCell>
+                </TableRow>
+                <TableRow className={classes.rowBgColor}>
+                  <TableCell className={classes.cellBold}>
+                    <span>
+                      <IconButton
+                        aria-label="expand row"
+                        size="small"
+                        onClick={() => setCreditedOpen(!creditedOpen)}
+                      >
+                        {creditedOpen ? (
+                          <KeyboardArrowUpIcon />
+                        ) : (
+                          <KeyboardArrowDownIcon />
+                        )}
+                      </IconButton>
+                    </span>
+                    Credited
+                  </TableCell>
+                  <TableCell className={classes.headCellError} align="right">
+                    {props.purchaseRows &&
+                      props.purchaseRows.credited_sales_total}
+                    {props.relationshipRows &&
+                      props.relationshipRows.credited_sales_total}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className={classes.cellPadding} colSpan={2}>
+                    <Collapse in={creditedOpen} timeout="auto" unmountOnExit>
+                      <Box className={classes.box}>
+                        <Typography variant="h6" gutterBottom component="div">
+                          Items
+                        </Typography>
+                        <Table size="small" aria-label="purchases">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell className={classes.cellBold}>
+                                Part Name
+                              </TableCell>
+                              <TableCell
+                                className={classes.cellBold}
+                                align="right"
+                              >
+                                Date
+                              </TableCell>
+                              <TableCell
+                                className={classes.cellBold}
+                                align="right"
+                              >
+                                Price
+                              </TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {props.purchaseRows &&
+                            props.purchaseRows.credited_sales
+                              ? props.purchaseRows.credited_sales.map(
+                                  (item, idx) => (
+                                    <TableRow key={idx}>
+                                      <TableCell>{item.part_name}</TableCell>
+                                      <TableCell align="right">
+                                        {
+                                          new Date(item.date)
+                                            .toISOString()
+                                            .split("T")[0]
+                                        }
+                                      </TableCell>
+                                      <TableCell align="right">
+                                        {item.price}
+                                      </TableCell>
+                                    </TableRow>
+                                  )
+                                )
+                              : props.relationshipRows &&
+                                props.relationshipRows.credited_sales &&
+                                props.relationshipRows.credited_sales.map(
+                                  (item, idx) => (
+                                    <TableRow key={idx}>
+                                      <TableCell>{item.part_name}</TableCell>
+                                      <TableCell align="right">
+                                        {
+                                          new Date(item.date)
+                                            .toISOString()
+                                            .split("T")[0]
+                                        }
+                                      </TableCell>
+                                      <TableCell align="right">
+                                        {item.price}
+                                      </TableCell>
+                                    </TableRow>
+                                  )
+                                )}
+                          </TableBody>
+                        </Table>
+                      </Box>
+                    </Collapse>
+                  </TableCell>
+                </TableRow>
+              </>
+            )}
+          {props.rangeRows && props.rangeRows.expenses_total > 0 && (
             <>
               <TableRow className={classes.rowBgColor}>
                 <TableCell className={classes.cellBold}>
@@ -579,7 +639,7 @@ export default function SpanningTable(props) {
                   </span>
                   Expenses
                 </TableCell>
-                <TableCell className={classes.cellBold} align="right">
+                <TableCell className={classes.headCellError} align="right">
                   {props.rangeRows.expenses_total}
                 </TableCell>
               </TableRow>
@@ -611,7 +671,7 @@ export default function SpanningTable(props) {
                           </TableRow>
                         </TableHead>
                         <TableBody>
-                          {props.rangeRows.expenses ? (
+                          {props.rangeRows.expenses &&
                             props.rangeRows.expenses.map((item, idx) => (
                               <TableRow key={idx}>
                                 <TableCell>{item.description}</TableCell>
@@ -626,12 +686,7 @@ export default function SpanningTable(props) {
                                   {item.price}
                                 </TableCell>
                               </TableRow>
-                            ))
-                          ) : (
-                            <TableRow>
-                              <TableCell colSpan={3}>No data found</TableCell>
-                            </TableRow>
-                          )}
+                            ))}
                         </TableBody>
                       </Table>
                     </Box>
@@ -640,7 +695,7 @@ export default function SpanningTable(props) {
               </TableRow>
             </>
           )}
-          {props.purchaseRows && (
+          {props.purchaseRows && props.purchaseRows.total_not_sold > 0 && (
             <>
               <TableRow className={classes.rowBgColor}>
                 <TableCell className={classes.cellBold}>
@@ -660,7 +715,7 @@ export default function SpanningTable(props) {
                   Not Sold
                 </TableCell>
                 <TableCell className={classes.headCellError} align="right">
-                  #69
+                  {props.purchaseRows.total_not_sold}
                 </TableCell>
               </TableRow>
               <TableRow>
@@ -688,34 +743,35 @@ export default function SpanningTable(props) {
                             >
                               Price
                             </TableCell>
+                            <TableCell
+                              className={classes.cellBold}
+                              align="right"
+                            >
+                              Quantity
+                            </TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
                           {props.purchaseRows &&
-                          props.purchaseRows.sales_returned ? (
-                            props.purchaseRows.sales_returned.map(
-                              (item, idx) =>
-                                item.credit && (
-                                  <TableRow key={idx}>
-                                    <TableCell>{item.part_name}</TableCell>
-                                    <TableCell align="right">
-                                      {
-                                        new Date(item.date)
-                                          .toISOString()
-                                          .split("T")[0]
-                                      }
-                                    </TableCell>
-                                    <TableCell align="right">
-                                      {item.price}
-                                    </TableCell>
-                                  </TableRow>
-                                )
-                            )
-                          ) : (
-                            <TableRow>
-                              <TableCell colSpan={3}>No data found</TableCell>
-                            </TableRow>
-                          )}
+                            props.purchaseRows.not_sold &&
+                            props.purchaseRows.not_sold.map((item, idx) => (
+                              <TableRow key={idx}>
+                                <TableCell>{item.part_name}</TableCell>
+                                <TableCell align="right">
+                                  {
+                                    new Date(item.date)
+                                      .toISOString()
+                                      .split("T")[0]
+                                  }
+                                </TableCell>
+                                <TableCell align="right">
+                                  {item.price}
+                                </TableCell>
+                                <TableCell align="right">
+                                  {item.quantity}
+                                </TableCell>
+                              </TableRow>
+                            ))}
                         </TableBody>
                       </Table>
                     </Box>

@@ -75,7 +75,8 @@ export const inventoryActions = {
         rowsPerPage: values.page_limit,
         orderBy: values.order_by,
         order: values.sort_order,
-        count: values.total_count,
+        count: values.total_matched_count,
+        query: values.query,
       },
     };
   },

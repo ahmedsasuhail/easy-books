@@ -30,7 +30,7 @@ const CreateUpdateInventory = () => {
       const items = purchaseItems.filter(
         (item) => item.id === formState.values.purchase_id
       );
-
+      // TODO: Change below code like rest
       if (items.length > 0) {
         setPurchaseName(`${items[0].company_name}-${items[0].vehicle_name}`);
       }

@@ -30,6 +30,7 @@ const miscellaneousReducer = (state = initialState, action) => {
   switch (action.type) {
     case MISCELLANEOUS_CREATE_REQUEST:
       return mergeObjects(state, {
+        query: "",
         formLoading: true,
         pageLoading: true,
       });

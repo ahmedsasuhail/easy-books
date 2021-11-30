@@ -25,6 +25,7 @@ const initialState = {
   pageNo: 0,
   rowsPerPage: 5,
   count: 0,
+  query: "",
   formLoading: false,
   pageLoading: false,
 };
@@ -33,6 +34,7 @@ const inventoryReducer = (state = initialState, action) => {
   switch (action.type) {
     case INVENTORY_CREATE_REQUEST:
       return mergeObjects(state, {
+        query: "",
         formLoading: true,
         pageLoading: true,
       });
@@ -115,6 +117,7 @@ const inventoryReducer = (state = initialState, action) => {
         orderBy: action.payload.orderBy,
         order: action.payload.order,
         count: action.payload.count,
+        query: action.payload.query,
         pageLoading: false,
       });
 
@@ -130,6 +133,7 @@ const inventoryReducer = (state = initialState, action) => {
         order: "asc",
         pageNo: 0,
         rowsPerPage: 5,
+        query: "",
       });
 
     case INVENTORY_DELETE_REQUEST:

@@ -16,7 +16,7 @@ import MessageDialogue from "../../components/Dialog/MessageDialogue";
 
 import { getInventoryPurchase } from "../../store/actions/inventory_purchase";
 
-import { validateFloat } from "../../utils/helpers";
+import { validateFloat, validateLimit } from "../../utils/helpers";
 
 const useStyles = makeStyles((theme) => ({
   switchMargin: {
@@ -34,7 +34,6 @@ const CreateUpdateSales = (props) => {
   const relationshipItems = useSelector(
     (state) => state.relationship.relationships
   );
-  const inventoryItems = useSelector((state) => state.inventory.inventory);
   const inventoryPurchaseData = useSelector(
     (state) => state.inventoryPurchase.data
   );
@@ -50,6 +49,7 @@ const CreateUpdateSales = (props) => {
   const [purchaseName, setPurchaseName] = useState();
   const [inventoryId, setInventoryId] = useState();
   const [inventoryName, setInventoryName] = useState();
+  const [inventoryQuantity, setInventoryQuantity] = useState();
   const [relationshipId, setRelationshipId] = useState();
   const [relationshipName, setRelationshipName] = useState();
   const [openPurchasesModal, setOpenPurchasesModal] = useState(false);
@@ -65,14 +65,7 @@ const CreateUpdateSales = (props) => {
       !purchaseName
     ) {
       setPurchaseId(+formState.values.purchase_id);
-
-      const items = purchaseItems.filter(
-        (item) => item.id === formState.values.purchase_id
-      );
-
-      if (items.length > 0) {
-        setPurchaseName(`${items[0].company_name}-${items[0].vehicle_name}`);
-      }
+      setPurchaseName(formState.values.purchase_name);
     } else if (
       formState.values.id &&
       purchaseItems.length > 0 &&
@@ -80,14 +73,7 @@ const CreateUpdateSales = (props) => {
       !inventoryName
     ) {
       setInventoryId(+formState.values.inventory_id);
-
-      const items = inventoryItems.filter(
-        (item) => item.id === formState.values.inventory_id
-      );
-
-      if (items.length > 0) {
-        setInventoryName(items[0].part_name);
-      }
+      setInventoryName(formState.values.part_name);
     } else if (
       formState.values.id &&
       relationshipItems.length > 0 &&
@@ -95,14 +81,7 @@ const CreateUpdateSales = (props) => {
       !relationshipName
     ) {
       setRelationshipId(+formState.values.relationship_id);
-
-      const items = relationshipItems.filter(
-        (item) => item.id === formState.values.relationship_id
-      );
-
-      if (items.length > 0) {
-        setRelationshipName(items[0].name);
-      }
+      setRelationshipName(formState.values.buyer);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [purchaseId, inventoryId, relationshipId]);
@@ -120,6 +99,7 @@ const CreateUpdateSales = (props) => {
   const handleSetInventoryName = (value) => {
     setInventoryId(value.id);
     setInventoryName(value.part_name);
+    setInventoryQuantity(value.quantity);
     handleCloseInventoryModal();
   };
 
@@ -146,7 +126,6 @@ const CreateUpdateSales = (props) => {
       getInventoryPurchase({ id, token, pageNo, rowsPerPage, orderBy, order })
     ).then((res) => {
       if (!res) {
-        // alert("There are no inventory items with the current purchase item.");
         setOpenAlertModal(true);
       }
     });
@@ -155,6 +134,7 @@ const CreateUpdateSales = (props) => {
   useEffect(() => {
     if (props.initialValues && props.initialValues.purchase_id) {
       inventoryPurchaseHandler(props.initialValues.purchase_id);
+      setInventoryQuantity(props.initialValues.inventory_quantity);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -254,6 +234,17 @@ const CreateUpdateSales = (props) => {
           </Button>
         )}
       </Field>
+      <Field
+        component={Input}
+        id="quantity"
+        name="quantity"
+        label={`Quantity (Max: ${inventoryQuantity || 1})`}
+        type="number"
+        margin="normal"
+        fullWidth
+        required
+        validate={validateLimit(1, inventoryQuantity || 1)}
+      />
       <Field
         component={Input}
         id="price"

@@ -32,7 +32,7 @@ export const purchaseCreate = (values) => {
       console.log("Catch Error: ", error);
       dispatch(purchaseActions.purchaseCreateFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.logoutUser());
+        dispatch(userActions.userAuthFailure(error.response.message));
       }
     }
   };
@@ -68,7 +68,7 @@ export const purchaseUpdate = (values) => {
       console.log("Catch Error: ", error);
       dispatch(purchaseActions.purchaseUpdateFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.logoutUser());
+        dispatch(userActions.userAuthFailure(error.response.message));
       }
     }
   };
@@ -81,7 +81,9 @@ export const purchaseRead = (values) => {
       const response = await axios.get(
         `purchases/?page=${values.pageNo + 1}&page_limit=${
           values.rowsPerPage
-        }&order_by=${values.orderBy}&sort_order=${values.order}`,
+        }&order_by=${values.orderBy}&sort_order=${values.order}&q=${
+          values.query
+        }`,
         {
           headers: {
             Authorization: values.token,
@@ -98,7 +100,7 @@ export const purchaseRead = (values) => {
       console.log("Catch Error: ", error);
       dispatch(purchaseActions.purchaseReadFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.logoutUser());
+        dispatch(userActions.userAuthFailure(error.response.message));
       }
     }
   };
@@ -128,7 +130,7 @@ export const purchaseDelete = (values) => {
       console.log("Catch Error: ", error);
       dispatch(purchaseActions.purchaseDeleteFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.logoutUser());
+        dispatch(userActions.userAuthFailure(error.response.message));
       } else if (error.response && error.response.status === 500) {
         result = false;
       }
@@ -162,7 +164,7 @@ export const purchaseSearch = (values) => {
       console.log("Catch Error: ", error);
       dispatch(purchaseActions.purchaseSearchFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.logoutUser());
+        dispatch(userActions.userAuthFailure(error.response.message));
       }
     }
   };

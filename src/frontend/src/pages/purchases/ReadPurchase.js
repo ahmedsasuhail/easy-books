@@ -7,16 +7,15 @@ import Box from "@mui/material/Box";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import Dialog from "../../components/Dialog/Dialog";
 import CustomTable from "../../components/Table/CustomTable";
+import MessageDialogue from "../../components/Dialog/MessageDialogue";
 
 import CreateUpdatePurchase from "./CreateUpdatePurchase";
-import MessageDialogue from "../../components/Dialog/MessageDialogue";
 
 import {
   purchaseCreate,
   purchaseRead,
   purchaseUpdate,
   purchaseDelete,
-  purchaseSearch,
 } from "../../store/actions/purchase";
 
 import { formattedDate } from "../../utils/helpers";
@@ -39,6 +38,7 @@ export const CustomMuiTable = (props) => {
   const orderBy = useSelector((state) => state.purchase.orderBy);
   const order = useSelector((state) => state.purchase.order);
   const totalCount = useSelector((state) => state.purchase.count);
+  const query = useSelector((state) => state.purchase.query);
 
   const handleRequestSort = (property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -50,6 +50,7 @@ export const CustomMuiTable = (props) => {
         rowsPerPage,
         order: direction,
         orderBy: property,
+        query,
       })
     );
   };
@@ -62,6 +63,7 @@ export const CustomMuiTable = (props) => {
         rowsPerPage,
         orderBy,
         order,
+        query,
       })
     );
   };
@@ -74,12 +76,22 @@ export const CustomMuiTable = (props) => {
         rowsPerPage: parseInt(event.target.value, 10),
         orderBy,
         order,
+        query,
       })
     );
   };
 
   const handleRequestSearch = (value) => {
-    dispatch(purchaseSearch({ token, keyword: value }));
+    dispatch(
+      purchaseRead({
+        token,
+        pageNo: 0,
+        rowsPerPage,
+        orderBy,
+        order,
+        query: value,
+      })
+    );
   };
 
   useEffect(() => {
@@ -137,7 +149,7 @@ const ReadPurchase = (props) => {
     {
       id: "seller",
       label: "Seller",
-      disableSort: true,
+      sortName: "relationships.name",
     },
     {
       id: "date",
@@ -164,6 +176,7 @@ const ReadPurchase = (props) => {
   const orderBy = useSelector((state) => state.purchase.orderBy);
   const order = useSelector((state) => state.purchase.order);
   const totalCount = useSelector((state) => state.purchase.count);
+  const query = useSelector((state) => state.purchase.query);
 
   if (purchaseItems) {
     rows = purchaseItems.map((purchase, idx) => {
@@ -223,6 +236,7 @@ const ReadPurchase = (props) => {
               rowsPerPage,
               orderBy,
               order,
+              query,
             })
           );
         } else {

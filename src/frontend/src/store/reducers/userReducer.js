@@ -6,12 +6,13 @@ import {
   USER_LOGIN_SUCCESS,
   USER_LOGIN_FAILURE,
   USER_LOGOUT,
-} from '../actions/actionTypes';
-import { mergeObjects } from '../../utils/helpers';
+  USER_AUTH_FAILURE,
+} from "../actions/actionTypes";
+import { mergeObjects } from "../../utils/helpers";
 
-let data_store = localStorage.getItem('easyBooksAuth')
-  ? JSON.parse(localStorage.getItem('easyBooksAuth'))
-  : '';
+let data_store = localStorage.getItem("easyBooksAuth")
+  ? JSON.parse(localStorage.getItem("easyBooksAuth"))
+  : "";
 
 const initialState = {
   isAuthenticated: data_store && data_store.token ? true : false,
@@ -21,6 +22,7 @@ const initialState = {
   loading: false,
   message: null,
   messageType: null,
+  modelOpen: false,
 };
 
 const userReducer = (state = initialState, action) => {
@@ -54,8 +56,8 @@ const userReducer = (state = initialState, action) => {
       });
     case USER_LOGIN_FAILURE:
       return mergeObjects(state, {
-        message: 'Something is wrong with your login or password :(',
-        messageType: true,
+        message: "Something is wrong with your login or password :(",
+        messageType: "LOGIN",
         loading: false,
       });
 
@@ -65,6 +67,16 @@ const userReducer = (state = initialState, action) => {
         token: null,
         name: null,
         email: null,
+        message: null,
+        messageType: null,
+        modelOpen: false,
+      });
+
+    case USER_AUTH_FAILURE:
+      return mergeObjects(state, {
+        message: action.payload,
+        messageType: "AUTH",
+        modelOpen: true,
       });
 
     default:

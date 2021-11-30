@@ -16,6 +16,7 @@ export const salesCreate = (values) => {
           price: +values.formValues.price,
           date: values.formValues.date,
           credit: values.formValues.credit,
+          quantity: +values.formValues.quantity,
         },
         {
           headers: {
@@ -33,7 +34,7 @@ export const salesCreate = (values) => {
       console.log("Catch Error: ", error);
       dispatch(salesActions.salesCreateFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.logoutUser());
+        dispatch(userActions.userAuthFailure(error.response.message));
       }
     }
   };
@@ -56,6 +57,7 @@ export const salesUpdate = (values) => {
               ? values.formValues.returned
               : false,
           credit: values.formValues.credit && values.formValues.credit,
+          quantity: +values.formValues.quantity,
           id: +values.formValues.id,
         },
         {
@@ -74,7 +76,7 @@ export const salesUpdate = (values) => {
       console.log("Catch Error: ", error);
       dispatch(salesActions.salesUpdateFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.logoutUser());
+        dispatch(userActions.userAuthFailure(error.response.message));
       }
     }
   };
@@ -87,7 +89,9 @@ export const salesRead = (values) => {
       const response = await axios.get(
         `sales/?page=${values.pageNo + 1}&page_limit=${
           values.rowsPerPage
-        }&order_by=${values.orderBy}&sort_order=${values.order}`,
+        }&order_by=${values.orderBy}&sort_order=${values.order}&q=${
+          values.query
+        }`,
         {
           headers: {
             Authorization: values.token,
@@ -104,7 +108,7 @@ export const salesRead = (values) => {
       console.log("Catch Error: ", error);
       dispatch(salesActions.salesReadFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.logoutUser());
+        dispatch(userActions.userAuthFailure(error.response.message));
       }
     }
   };
@@ -134,7 +138,7 @@ export const salesDelete = (values) => {
       console.log("Catch Error: ", error);
       dispatch(salesActions.salesDeleteFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.logoutUser());
+        dispatch(userActions.userAuthFailure(error.response.message));
       }
     }
     return result;
@@ -166,7 +170,7 @@ export const salesSearch = (values) => {
       console.log("Catch Error: ", error);
       dispatch(salesActions.salesSearchFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.logoutUser());
+        dispatch(userActions.userAuthFailure(error.response.message));
       }
     }
   };

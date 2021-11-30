@@ -31,7 +31,7 @@ export const inventoryCreate = (values) => {
       console.log("Catch Error: ", error);
       dispatch(inventoryActions.inventoryCreateFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.logoutUser());
+        dispatch(userActions.userAuthFailure(error.response.message));
       }
     }
   };
@@ -66,7 +66,7 @@ export const inventoryUpdate = (values) => {
       console.log("Catch Error: ", error);
       dispatch(inventoryActions.inventoryUpdateFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.logoutUser());
+        dispatch(userActions.userAuthFailure(error.response.message));
       }
     }
   };
@@ -79,7 +79,9 @@ export const inventoryRead = (values) => {
       const response = await axios.get(
         `inventory/?page=${values.pageNo + 1}&page_limit=${
           values.rowsPerPage
-        }&order_by=${values.orderBy}&sort_order=${values.order}`,
+        }&order_by=${values.orderBy}&sort_order=${values.order}&q=${
+          values.query
+        }`,
         {
           headers: {
             Authorization: values.token,
@@ -96,7 +98,7 @@ export const inventoryRead = (values) => {
       console.log("Catch Error: ", error);
       dispatch(inventoryActions.inventoryReadFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.logoutUser());
+        dispatch(userActions.userAuthFailure(error.response.message));
       }
     }
   };
@@ -126,7 +128,7 @@ export const inventoryDelete = (values) => {
       console.log("Catch Error: ", error);
       dispatch(inventoryActions.inventoryDeleteFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.logoutUser());
+        dispatch(userActions.userAuthFailure(error.response.message));
       } else if (error.response && error.response.status === 500) {
         result = false;
       }
@@ -160,7 +162,7 @@ export const inventorySearch = (values) => {
       console.log("Catch Error: ", error);
       dispatch(inventoryActions.inventorySearchFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.logoutUser());
+        dispatch(userActions.userAuthFailure(error.response.message));
       }
     }
   };
