@@ -366,6 +366,7 @@ func ReportByRange(c *gin.Context) {
 			"part_name": record.Inventory.PartName,
 			"credit":    record.Credit,
 			"returned":  record.Returned,
+			"quantity":  record.Quantity,
 		})
 	}
 
