@@ -248,6 +248,7 @@ func ReportByRelationshipID(c *gin.Context) {
 				"date":      record.Date,
 				"part_name": record.Inventory.PartName,
 				"credit":    record.Credit,
+				"quantity":  record.Quantity,
 			})
 		} else if record.Credit {
 			totalCredit += record.Price
@@ -256,6 +257,7 @@ func ReportByRelationshipID(c *gin.Context) {
 				"id":        record.ID,
 				"price":     record.Price,
 				"date":      record.Date,
+				"quantity":  record.Quantity,
 				"part_name": record.Inventory.PartName,
 			})
 		} else {
@@ -265,6 +267,7 @@ func ReportByRelationshipID(c *gin.Context) {
 				"id":        record.ID,
 				"price":     record.Price,
 				"date":      record.Date,
+				"quantity":  record.Quantity,
 				"part_name": record.Inventory.PartName,
 			})
 		}
@@ -366,6 +369,7 @@ func ReportByRange(c *gin.Context) {
 			"part_name": record.Inventory.PartName,
 			"credit":    record.Credit,
 			"returned":  record.Returned,
+			"quantity":  record.Quantity,
 		})
 	}
 
