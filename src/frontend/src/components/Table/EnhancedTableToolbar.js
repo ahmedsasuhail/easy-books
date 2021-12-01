@@ -1,20 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import SearchBar from "material-ui-search-bar";
+import { TextField, IconButton } from "@material-ui/core";
+import { Search as SearchIcon } from "@material-ui/icons";
 
 const EnhancedTableToolbar = (props) => {
+  const { title, onRequestSearch, clearSearch } = props;
+
   const [searched, setSearched] = useState("");
 
   const requestSearch = () => {
-    props.onRequestSearch(searched);
+    onRequestSearch(searched);
   };
 
-  const cancelSearch = () => {
-    setSearched("");
-    props.onRequestSearch("");
-  };
+  useEffect(() => {
+    if (clearSearch) {
+      setSearched("");
+    }
+  }, [clearSearch]);
 
   return (
     <Toolbar
@@ -29,21 +33,25 @@ const EnhancedTableToolbar = (props) => {
         id="tableTitle"
         component="div"
       >
-        {props.title}
+        {title}
       </Typography>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          requestSearch();
-        }}
+      <TextField
+        id="query"
+        name="query"
+        type="text"
+        margin="normal"
+        placeholder="Search"
+        value={searched}
+        onChange={(e) => setSearched(e.target.value)}
+      />
+      <IconButton
+        onClick={() => requestSearch()}
+        color="primary"
+        component="span"
+        size="small"
       >
-        <SearchBar
-          id="search"
-          value={searched}
-          onChange={(searchVal) => setSearched(searchVal)}
-          onCancelSearch={cancelSearch}
-        />
-      </form>
+        <SearchIcon fontSize="small" />
+      </IconButton>
     </Toolbar>
   );
 };

@@ -99,7 +99,6 @@ const CreateUpdatePurchase = () => {
         InputLabelProps={{
           shrink: !relationshipId ? false : true,
         }}
-        oneOption={true}
         fullWidth
         required
         validate={required}

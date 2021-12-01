@@ -111,6 +111,7 @@ export const CustomMuiTable = (props) => {
       changePage={handleChangePage}
       changeRowsPerPage={handleChangeRowsPerPage}
       requestSearch={handleRequestSearch}
+      clearSearch={props.clearSearch}
       actions={true}
       openEditFunction={props.openEditFunction}
       submitDeleteFunction={props.submitDeleteFunction}
@@ -154,6 +155,7 @@ const ReadRelationship = () => {
   const [valueForm, setValueForm] = useState(null);
   const [id, setId] = useState("");
   const [openAlertModal, setOpenAlertModal] = useState(false);
+  const [clearSearch, setClearSearch] = useState(false);
 
   const token = useSelector((state) => state.user.token);
   const relationshipItems = useSelector(
@@ -238,6 +240,7 @@ const ReadRelationship = () => {
     if (formValues.id) {
       dispatch(relationshipUpdate({ formValues, token }));
     } else {
+      setClearSearch(true);
       dispatch(relationshipCreate({ formValues, token }));
     }
     handleCloseCreateOrEditRelationship();
@@ -271,6 +274,7 @@ const ReadRelationship = () => {
               rows={rows}
               openEditFunction={handleOpenEditRelationship}
               submitDeleteFunction={handleSubmitDeleteRelationship}
+              clearSearch={clearSearch}
             />
           </Grid>
         </Grid>

@@ -113,6 +113,7 @@ export const CustomMuiTable = (props) => {
       changePage={handleChangePage}
       changeRowsPerPage={handleChangeRowsPerPage}
       requestSearch={handleRequestSearch}
+      clearSearch={props.clearSearch}
       actions={true}
       openEditFunction={props.openEditFunction}
       submitDeleteFunction={props.submitDeleteFunction}
@@ -167,6 +168,7 @@ const ReadPurchase = (props) => {
   const [valueForm, setValueForm] = useState(null);
   const [id, setId] = useState("");
   const [openAlertModal, setOpenAlertModal] = useState(false);
+  const [clearSearch, setClearSearch] = useState(false);
 
   const token = useSelector((state) => state.user.token);
   const purchaseItems = useSelector((state) => state.purchase.purchases);
@@ -257,6 +259,7 @@ const ReadPurchase = (props) => {
     if (formValues.id) {
       dispatch(purchaseUpdate({ formValues, token }));
     } else {
+      setClearSearch(true);
       dispatch(purchaseCreate({ formValues, token }));
     }
     handleCloseCreateOrEditPurchase();
@@ -290,6 +293,7 @@ const ReadPurchase = (props) => {
               rows={rows}
               openEditFunction={handleOpenEditPurchase}
               submitDeleteFunction={handleSubmitDeletePurchase}
+              clearSearch={clearSearch}
             />
           </Grid>
         </Grid>

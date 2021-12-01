@@ -71,6 +71,7 @@ const ReadInventory = () => {
   const [valueForm, setValueForm] = useState(null);
   const [id, setId] = useState("");
   const [openAlertModal, setOpenAlertModal] = useState(false);
+  const [clearSearch, setClearSearch] = useState(false);
 
   const token = useSelector((state) => state.user.token);
   const inventoryItems = useSelector((state) => state.inventory.inventory);
@@ -208,6 +209,7 @@ const ReadInventory = () => {
     if (formValues.id) {
       dispatch(inventoryUpdate({ formValues, token }));
     } else {
+      setClearSearch(true);
       dispatch(inventoryCreate({ formValues, token }));
     }
     handleCloseCreateOrEditInventory();
@@ -247,6 +249,7 @@ const ReadInventory = () => {
               totalCount={totalCount}
               requestSort={handleRequestSort}
               requestSearch={handleRequestSearch}
+              clearSearch={clearSearch}
               openEditFunction={handleOpenEditInventory}
               submitDeleteFunction={handleSubmitDeleteInventory}
               actions={true}

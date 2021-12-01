@@ -26,6 +26,7 @@ const Table = (props) => {
     changePage,
     changeRowsPerPage,
     requestSearch,
+    clearSearch,
     actions,
     openEditFunction,
     submitDeleteFunction,
@@ -41,6 +42,7 @@ const Table = (props) => {
       <EnhancedTableToolbar
         title={tableTitle}
         onRequestSearch={requestSearch}
+        clearSearch={clearSearch}
       />
       <TableContainer>
         <MuiTable
