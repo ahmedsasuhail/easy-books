@@ -145,7 +145,7 @@ const Reports = () => {
       console.log("Catch Error: ", error);
       dispatch({ type: "CLEAR" });
       if (error.response && error.response.status === 401) {
-        userDispatch(userActions.userAuthFailure(error.response.message));
+        userDispatch(userActions.userAuthFailure(error.response.data.message));
       }
     }
   };
@@ -171,7 +171,7 @@ const Reports = () => {
       console.log("Catch Error: ", error);
       dispatch({ type: "CLEAR" });
       if (error.response && error.response.status === 401) {
-        userDispatch(userActions.userAuthFailure(error.response.message));
+        userDispatch(userActions.userAuthFailure(error.response.data.message));
       }
     }
   };
@@ -196,7 +196,7 @@ const Reports = () => {
       console.log("Catch Error: ", error);
       dispatch({ type: "CLEAR" });
       if (error.response && error.response.status === 401) {
-        userDispatch(userActions.userAuthFailure(error.response.message));
+        userDispatch(userActions.userAuthFailure(error.response.data.message));
       }
     }
   };

@@ -12,9 +12,6 @@ import {
   PURCHASE_DELETE_REQUEST,
   PURCHASE_DELETE_SUCCESS,
   PURCHASE_DELETE_FAILURE,
-  PURCHASE_SEARCH_REQUEST,
-  PURCHASE_SEARCH_SUCCESS,
-  PURCHASE_SEARCH_FAILURE,
 } from "../actions/actionTypes";
 import { mergeObjects } from "../../utils/helpers";
 
@@ -147,27 +144,6 @@ const purchaseReducer = (state = initialState, action) => {
       });
 
     case PURCHASE_DELETE_FAILURE:
-      return mergeObjects(state, {
-        pageLoading: false,
-      });
-
-    case PURCHASE_SEARCH_REQUEST:
-      return mergeObjects(state, {
-        pageLoading: true,
-      });
-
-    case PURCHASE_SEARCH_SUCCESS:
-      return mergeObjects(state, {
-        purchases: action.payload.purchases || [],
-        pageNo: action.payload.pageNo,
-        rowsPerPage: action.payload.rowsPerPage,
-        orderBy: action.payload.orderBy,
-        order: action.payload.order,
-        count: action.payload.count,
-        pageLoading: false,
-      });
-
-    case PURCHASE_SEARCH_FAILURE:
       return mergeObjects(state, {
         pageLoading: false,
       });

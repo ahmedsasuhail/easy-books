@@ -32,7 +32,7 @@ export const purchaseCreate = (values) => {
       console.log("Catch Error: ", error);
       dispatch(purchaseActions.purchaseCreateFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.userAuthFailure(error.response.message));
+        dispatch(userActions.userAuthFailure(error.response.data.message));
       }
     }
   };
@@ -68,7 +68,7 @@ export const purchaseUpdate = (values) => {
       console.log("Catch Error: ", error);
       dispatch(purchaseActions.purchaseUpdateFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.userAuthFailure(error.response.message));
+        dispatch(userActions.userAuthFailure(error.response.data.message));
       }
     }
   };
@@ -100,7 +100,7 @@ export const purchaseRead = (values) => {
       console.log("Catch Error: ", error);
       dispatch(purchaseActions.purchaseReadFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.userAuthFailure(error.response.message));
+        dispatch(userActions.userAuthFailure(error.response.data.message));
       }
     }
   };
@@ -130,42 +130,11 @@ export const purchaseDelete = (values) => {
       console.log("Catch Error: ", error);
       dispatch(purchaseActions.purchaseDeleteFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.userAuthFailure(error.response.message));
+        dispatch(userActions.userAuthFailure(error.response.data.message));
       } else if (error.response && error.response.status === 500) {
         result = false;
       }
     }
     return result;
-  };
-};
-
-export const purchaseSearch = (values) => {
-  return async (dispatch) => {
-    dispatch(purchaseActions.purchaseSearchRequest());
-    try {
-      const response = await axios.post(
-        "purchases/search",
-        {
-          search_term: values.keyword,
-        },
-        {
-          headers: {
-            Authorization: values.token,
-          },
-        }
-      );
-      if (response.data.data) {
-        dispatch(purchaseActions.purchaseSearchSuccess(response.data.data));
-      } else {
-        console.log("Error: ", response);
-        dispatch(purchaseActions.purchaseSearchFailure());
-      }
-    } catch (error) {
-      console.log("Catch Error: ", error);
-      dispatch(purchaseActions.purchaseSearchFailure());
-      if (error.response && error.response.status === 401) {
-        dispatch(userActions.userAuthFailure(error.response.message));
-      }
-    }
   };
 };

@@ -12,9 +12,6 @@ import {
   INVENTORY_DELETE_REQUEST,
   INVENTORY_DELETE_SUCCESS,
   INVENTORY_DELETE_FAILURE,
-  INVENTORY_SEARCH_REQUEST,
-  INVENTORY_SEARCH_SUCCESS,
-  INVENTORY_SEARCH_FAILURE,
 } from "../actions/actionTypes";
 import { mergeObjects } from "../../utils/helpers";
 
@@ -147,27 +144,6 @@ const inventoryReducer = (state = initialState, action) => {
       });
 
     case INVENTORY_DELETE_FAILURE:
-      return mergeObjects(state, {
-        pageLoading: false,
-      });
-
-    case INVENTORY_SEARCH_REQUEST:
-      return mergeObjects(state, {
-        pageLoading: true,
-      });
-
-    case INVENTORY_SEARCH_SUCCESS:
-      return mergeObjects(state, {
-        inventory: action.payload.inventory || [],
-        pageNo: action.payload.pageNo,
-        rowsPerPage: action.payload.rowsPerPage,
-        orderBy: action.payload.orderBy,
-        order: action.payload.order,
-        count: action.payload.count,
-        pageLoading: false,
-      });
-
-    case INVENTORY_SEARCH_FAILURE:
       return mergeObjects(state, {
         pageLoading: false,
       });

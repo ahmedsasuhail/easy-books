@@ -11,9 +11,6 @@ import {
   SALES_DELETE_REQUEST,
   SALES_DELETE_SUCCESS,
   SALES_DELETE_FAILURE,
-  SALES_SEARCH_REQUEST,
-  SALES_SEARCH_SUCCESS,
-  SALES_SEARCH_FAILURE,
 } from "../actions/actionTypes";
 import { mergeObjects } from "../../utils/helpers";
 
@@ -132,27 +129,6 @@ const salesReducer = (state = initialState, action) => {
       });
 
     case SALES_DELETE_FAILURE:
-      return mergeObjects(state, {
-        pageLoading: false,
-      });
-
-    case SALES_SEARCH_REQUEST:
-      return mergeObjects(state, {
-        pageLoading: true,
-      });
-
-    case SALES_SEARCH_SUCCESS:
-      return mergeObjects(state, {
-        sales: action.payload.sales || [],
-        pageNo: action.payload.pageNo,
-        rowsPerPage: action.payload.rowsPerPage,
-        orderBy: action.payload.orderBy,
-        order: action.payload.order,
-        count: action.payload.count,
-        pageLoading: false,
-      });
-
-    case SALES_SEARCH_FAILURE:
       return mergeObjects(state, {
         pageLoading: false,
       });

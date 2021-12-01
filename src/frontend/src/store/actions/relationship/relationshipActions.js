@@ -12,9 +12,6 @@ import {
   RELATIONSHIP_DELETE_REQUEST,
   RELATIONSHIP_DELETE_SUCCESS,
   RELATIONSHIP_DELETE_FAILURE,
-  RELATIONSHIP_SEARCH_REQUEST,
-  RELATIONSHIP_SEARCH_SUCCESS,
-  RELATIONSHIP_SEARCH_FAILURE,
 } from "../actionTypes";
 
 export const relationshipActions = {
@@ -108,32 +105,6 @@ export const relationshipActions = {
   relationshipDeleteFailure: () => {
     return {
       type: RELATIONSHIP_DELETE_FAILURE,
-    };
-  },
-
-  relationshipSearchRequest: () => {
-    return {
-      type: RELATIONSHIP_SEARCH_REQUEST,
-    };
-  },
-
-  relationshipSearchSuccess: (values) => {
-    return {
-      type: RELATIONSHIP_SEARCH_SUCCESS,
-      payload: {
-        relationships: values.records,
-        pageNo: values.page - 1,
-        rowsPerPage: values.page_limit,
-        orderBy: values.order_by,
-        order: values.sort_order,
-        count: values.total_count,
-      },
-    };
-  },
-
-  relationshipSearchFailure: () => {
-    return {
-      type: RELATIONSHIP_SEARCH_FAILURE,
     };
   },
 };

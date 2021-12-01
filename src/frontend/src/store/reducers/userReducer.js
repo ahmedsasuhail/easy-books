@@ -73,8 +73,14 @@ const userReducer = (state = initialState, action) => {
       });
 
     case USER_AUTH_FAILURE:
+      let errorMessage;
+      if (action.payload === "auth token expired") {
+        errorMessage = "Your session has been ended. Please login to continue.";
+      } else {
+        errorMessage = "Something went wrong. Please login to continue.";
+      }
       return mergeObjects(state, {
-        message: action.payload,
+        message: errorMessage,
         messageType: "AUTH",
         modelOpen: true,
       });
