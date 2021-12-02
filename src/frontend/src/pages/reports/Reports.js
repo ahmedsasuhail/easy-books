@@ -124,6 +124,10 @@ const Reports = () => {
 
   const handleTabChange = (event, newValue) => {
     setValue(newValue);
+    setPurchaseId("");
+    setPurchaseName("");
+    setRelationshipId("");
+    setRelationshipName("");
     dispatch({ type: "CLEAR" });
   };
 

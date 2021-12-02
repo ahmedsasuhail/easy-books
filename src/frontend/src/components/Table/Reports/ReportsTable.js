@@ -308,7 +308,10 @@ export default function SpanningTable(props) {
             </>
           )}
           {(props.relationshipRows || props.rangeRows) &&
-            (props.rangeRows ? props.rangeRows.purchased_total > 0 : true) && (
+            (props.rangeRows ? props.rangeRows.purchased_total > 0 : true) &&
+            (props.relationshipRows
+              ? props.relationshipRows.purchased_total > 0
+              : true) && (
               <>
                 <TableRow className={classes.rowBgColor}>
                   <TableCell className={classes.cellBold}>
@@ -516,6 +519,14 @@ export default function SpanningTable(props) {
                     </Collapse>
                   </TableCell>
                 </TableRow>
+              </>
+            )}
+          {!props.rangeRows &&
+            ((props.purchaseRows &&
+              props.purchaseRows.credited_sales_total > 0) ||
+              (props.relationshipRows &&
+                props.relationshipRows.credited_sales_total > 0)) && (
+              <>
                 <TableRow className={classes.rowBgColor}>
                   <TableCell className={classes.cellBold}>
                     <span>

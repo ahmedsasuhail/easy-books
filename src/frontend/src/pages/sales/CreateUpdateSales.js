@@ -7,7 +7,6 @@ import Switch from "@mui/material/Switch";
 import { makeStyles, CircularProgress } from "@material-ui/core";
 
 import Input from "../../components/Input/Input";
-import Select from "../../components/Select/Select";
 
 import PurchasesModal from "../inventory/PurchasesModal";
 import RelationshipModal from "../purchases/RelationshipModal";
@@ -66,6 +65,7 @@ const CreateUpdateSales = (props) => {
     ) {
       setPurchaseId(+formState.values.purchase_id);
       setPurchaseName(formState.values.purchase_name);
+      window.setFormValue("purchase_id", +formState.values.purchase_id);
     } else if (
       formState.values.id &&
       purchaseItems.length > 0 &&
@@ -74,6 +74,7 @@ const CreateUpdateSales = (props) => {
     ) {
       setInventoryId(+formState.values.inventory_id);
       setInventoryName(formState.values.part_name);
+      window.setFormValue("inventory_id", +formState.values.inventory_id);
     } else if (
       formState.values.id &&
       relationshipItems.length > 0 &&
@@ -82,6 +83,7 @@ const CreateUpdateSales = (props) => {
     ) {
       setRelationshipId(+formState.values.relationship_id);
       setRelationshipName(formState.values.buyer);
+      window.setFormValue("relationship_id", +formState.values.relationship_id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [purchaseId, inventoryId, relationshipId]);
@@ -93,6 +95,7 @@ const CreateUpdateSales = (props) => {
   const handleSetPurchaseName = (value) => {
     setPurchaseId(value.id);
     setPurchaseName(`${value.company_name} - ${value.vehicle_name}`);
+    window.setFormValue("purchase_id", value.id);
     handleClosePurchasesModal();
   };
 
@@ -100,12 +103,14 @@ const CreateUpdateSales = (props) => {
     setInventoryId(value.id);
     setInventoryName(value.part_name);
     setInventoryQuantity(value.quantity);
+    window.setFormValue("inventory_id", value.id);
     handleCloseInventoryModal();
   };
 
   const handleSetRelationshipName = (value) => {
     setRelationshipId(value.id);
     setRelationshipName(value.name);
+    window.setFormValue("relationship_id", value.id);
     handleCloseRelationshipModal();
   };
 
@@ -139,25 +144,23 @@ const CreateUpdateSales = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    inventoryPurchaseHandler(purchaseId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [purchaseId]);
+
   return (
     <>
       <Field
-        component={Select}
-        options={[{ id: purchaseId, name: purchaseName }]}
+        component={Input}
         id="purchase_id"
         name="purchase_id"
-        label="Purchase Id"
+        type="hidden"
         margin="normal"
-        hasEmptyOption={true}
-        disabled={!purchaseId}
-        InputLabelProps={{
-          shrink: !purchaseId ? false : true,
-        }}
-        fullWidth
         required
         validate={required}
-        onChange={(e) => inventoryPurchaseHandler(e.target.value)}
       />
+      <p>{purchaseName}</p>
       <Field>
         {() => (
           <Button
@@ -171,21 +174,15 @@ const CreateUpdateSales = (props) => {
         )}
       </Field>
       <Field
-        component={Select}
-        options={[{ id: inventoryId, name: inventoryName }]}
+        component={Input}
         id="inventory_id"
         name="inventory_id"
-        label="Inventory Id"
+        type="hidden"
         margin="normal"
-        hasEmptyOption={true}
-        disabled={!inventoryId}
-        InputLabelProps={{
-          shrink: !inventoryId ? false : true,
-        }}
-        fullWidth
         required
         validate={required}
       />
+      <p>{inventoryName}</p>
       {isLoading ? (
         <CircularProgress size={16} />
       ) : (
@@ -207,21 +204,15 @@ const CreateUpdateSales = (props) => {
         </Field>
       )}
       <Field
-        component={Select}
-        options={[{ id: relationshipId, name: relationshipName }]}
+        component={Input}
         id="relationship_id"
         name="relationship_id"
-        label="Relationship Id"
+        type="hidden"
         margin="normal"
-        hasEmptyOption={true}
-        disabled={!relationshipId}
-        InputLabelProps={{
-          shrink: !relationshipId ? false : true,
-        }}
-        fullWidth
         required
         validate={required}
       />
+      <p>{relationshipName}</p>
       <Field>
         {() => (
           <Button
@@ -230,7 +221,7 @@ const CreateUpdateSales = (props) => {
             size="small"
             color="primary"
           >
-            Add Relationship
+            Add Buyer
           </Button>
         )}
       </Field>

@@ -275,7 +275,10 @@ const ReadSales = () => {
 
   const handleSubmitReturn = (result) => {
     if (result) {
-      handleSubmitCreateUpdateSales(valueForm);
+      handleSubmitCreateUpdateSales({
+        id: valueForm.id,
+        returned: valueForm.returned,
+      });
     }
     handleConfirmReturnModal(false);
   };

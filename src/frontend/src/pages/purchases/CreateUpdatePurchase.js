@@ -5,7 +5,6 @@ import { Field, useFormState } from "react-final-form";
 import Button from "@mui/material/Button";
 
 import Input from "../../components/Input/Input";
-import Select from "../../components/Select/Select";
 
 import RelationshipModal from "./RelationshipModal";
 
@@ -31,6 +30,7 @@ const CreateUpdatePurchase = () => {
     ) {
       setRelationshipId(+formState.values.relationship_id);
       setRelationshipName(formState.values.seller);
+      window.setFormValue("relationship_id", +formState.values.relationship_id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [relationshipId]);
@@ -44,6 +44,7 @@ const CreateUpdatePurchase = () => {
   const handleSetRelationshipName = (value) => {
     setRelationshipId(value.id);
     setRelationshipName(value.name);
+    window.setFormValue("relationship_id", value.id);
     handleCloseRelationshipModal();
   };
 
@@ -88,21 +89,15 @@ const CreateUpdatePurchase = () => {
         validate={validateFloat(8, 2)}
       />
       <Field
-        component={Select}
-        options={[{ id: relationshipId, name: relationshipName }]}
+        component={Input}
         id="relationship_id"
         name="relationship_id"
-        label="Relationship Id"
+        type="hidden"
         margin="normal"
-        hasEmptyOption={true}
-        disabled={!relationshipId}
-        InputLabelProps={{
-          shrink: !relationshipId ? false : true,
-        }}
-        fullWidth
         required
         validate={required}
       />
+      <p>{relationshipName}</p>
       <Field>
         {() => (
           <Button
