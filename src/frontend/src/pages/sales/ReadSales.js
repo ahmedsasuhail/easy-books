@@ -108,6 +108,7 @@ const ReadSales = () => {
   const [openConfirmReturnModal, setOpenConfirmReturnModal] = useState(false);
   const [valueForm, setValueForm] = useState(null);
   const [id, setId] = useState("");
+  const [clearSearch, setClearSearch] = useState(false);
 
   const token = useSelector((state) => state.user.token);
   const salesItems = useSelector((state) => state.sales.sales);
@@ -261,6 +262,7 @@ const ReadSales = () => {
     if (formValues && formValues.id) {
       dispatch(salesUpdate({ formValues, token }));
     } else {
+      setClearSearch(true);
       dispatch(salesCreate({ formValues, token }));
     }
     handleCloseCreateOrEditSales();
@@ -314,6 +316,7 @@ const ReadSales = () => {
               changePage={handleChangePage}
               changeRowsPerPage={handleChangeRowsPerPage}
               requestSearch={handleRequestSearch}
+              clearSearch={clearSearch}
               actions={true}
               openEditFunction={handleOpenEditSales}
               submitDeleteFunction={handleSubmitDeleteSales}

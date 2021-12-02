@@ -472,10 +472,6 @@ export default function SpanningTable(props) {
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {console.log(
-                              props.purchaseRows &&
-                                props.purchaseRows.sales_returned
-                            )}
                             {props.purchaseRows &&
                             props.purchaseRows.sales_returned
                               ? props.purchaseRows.sales_returned.map(

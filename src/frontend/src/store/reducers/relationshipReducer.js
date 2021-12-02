@@ -12,9 +12,6 @@ import {
   RELATIONSHIP_DELETE_REQUEST,
   RELATIONSHIP_DELETE_SUCCESS,
   RELATIONSHIP_DELETE_FAILURE,
-  RELATIONSHIP_SEARCH_REQUEST,
-  RELATIONSHIP_SEARCH_SUCCESS,
-  RELATIONSHIP_SEARCH_FAILURE,
 } from "../actions/actionTypes";
 import { mergeObjects } from "../../utils/helpers";
 
@@ -147,27 +144,6 @@ const relationshipReducer = (state = initialState, action) => {
       });
 
     case RELATIONSHIP_DELETE_FAILURE:
-      return mergeObjects(state, {
-        pageLoading: false,
-      });
-
-    case RELATIONSHIP_SEARCH_REQUEST:
-      return mergeObjects(state, {
-        pageLoading: true,
-      });
-
-    case RELATIONSHIP_SEARCH_SUCCESS:
-      return mergeObjects(state, {
-        relationships: action.payload.relationships || [],
-        pageNo: action.payload.pageNo,
-        rowsPerPage: action.payload.rowsPerPage,
-        orderBy: action.payload.orderBy,
-        order: action.payload.order,
-        count: action.payload.count,
-        pageLoading: false,
-      });
-
-    case RELATIONSHIP_SEARCH_FAILURE:
       return mergeObjects(state, {
         pageLoading: false,
       });

@@ -32,7 +32,7 @@ export const relationshipCreate = (values) => {
       console.log("Catch Error: ", error);
       dispatch(relationshipActions.relationshipCreateFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.userAuthFailure(error.response.message));
+        dispatch(userActions.userAuthFailure(error.response.data.message));
       }
     }
   };
@@ -68,7 +68,7 @@ export const relationshipUpdate = (values) => {
       console.log("Catch Error: ", error);
       dispatch(relationshipActions.relationshipUpdateFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.userAuthFailure(error.response.message));
+        dispatch(userActions.userAuthFailure(error.response.data.message));
       }
     }
   };
@@ -102,7 +102,7 @@ export const relationshipRead = (values) => {
       console.log("Catch Error: ", error);
       dispatch(relationshipActions.relationshipReadFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.userAuthFailure(error.response.message));
+        dispatch(userActions.userAuthFailure(error.response.data.message));
       }
     }
   };
@@ -132,44 +132,11 @@ export const relationshipDelete = (values) => {
       console.log("Catch Error: ", error);
       dispatch(relationshipActions.relationshipDeleteFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.userAuthFailure(error.response.message));
+        dispatch(userActions.userAuthFailure(error.response.data.message));
       } else if (error.response && error.response.status === 500) {
         result = false;
       }
     }
     return result;
-  };
-};
-
-export const relationshipSearch = (values) => {
-  return async (dispatch) => {
-    dispatch(relationshipActions.relationshipSearchRequest());
-    try {
-      const response = await axios.post(
-        "relationships/search",
-        {
-          search_term: values.keyword,
-        },
-        {
-          headers: {
-            Authorization: values.token,
-          },
-        }
-      );
-      if (response.data.data) {
-        dispatch(
-          relationshipActions.relationshipSearchSuccess(response.data.data)
-        );
-      } else {
-        console.log("Error: ", response);
-        dispatch(relationshipActions.relationshipSearchFailure());
-      }
-    } catch (error) {
-      console.log("Catch Error: ", error);
-      dispatch(relationshipActions.relationshipSearchFailure());
-      if (error.response && error.response.status === 401) {
-        dispatch(userActions.userAuthFailure(error.response.message));
-      }
-    }
   };
 };

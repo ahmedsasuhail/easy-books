@@ -34,7 +34,7 @@ export const salesCreate = (values) => {
       console.log("Catch Error: ", error);
       dispatch(salesActions.salesCreateFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.userAuthFailure(error.response.message));
+        dispatch(userActions.userAuthFailure(error.response.data.message));
       }
     }
   };
@@ -76,7 +76,7 @@ export const salesUpdate = (values) => {
       console.log("Catch Error: ", error);
       dispatch(salesActions.salesUpdateFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.userAuthFailure(error.response.message));
+        dispatch(userActions.userAuthFailure(error.response.data.message));
       }
     }
   };
@@ -108,7 +108,7 @@ export const salesRead = (values) => {
       console.log("Catch Error: ", error);
       dispatch(salesActions.salesReadFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.userAuthFailure(error.response.message));
+        dispatch(userActions.userAuthFailure(error.response.data.message));
       }
     }
   };
@@ -138,40 +138,9 @@ export const salesDelete = (values) => {
       console.log("Catch Error: ", error);
       dispatch(salesActions.salesDeleteFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.userAuthFailure(error.response.message));
+        dispatch(userActions.userAuthFailure(error.response.data.message));
       }
     }
     return result;
-  };
-};
-
-export const salesSearch = (values) => {
-  return async (dispatch) => {
-    dispatch(salesActions.salesSearchRequest());
-    try {
-      const response = await axios.post(
-        "sales/search",
-        {
-          search_term: values.keyword,
-        },
-        {
-          headers: {
-            Authorization: values.token,
-          },
-        }
-      );
-      if (response.data.data) {
-        dispatch(salesActions.salesSearchSuccess(response.data.data));
-      } else {
-        console.log("Error: ", response);
-        dispatch(salesActions.salesSearchFailure());
-      }
-    } catch (error) {
-      console.log("Catch Error: ", error);
-      dispatch(salesActions.salesSearchFailure());
-      if (error.response && error.response.status === 401) {
-        dispatch(userActions.userAuthFailure(error.response.message));
-      }
-    }
   };
 };

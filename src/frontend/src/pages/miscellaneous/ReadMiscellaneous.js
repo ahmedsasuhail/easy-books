@@ -61,6 +61,7 @@ const ReadMiscellaneous = () => {
   const [openConfirmModal, setOpenConfirmModal] = useState(false);
   const [valueForm, setValueForm] = useState(null);
   const [id, setId] = useState("");
+  const [clearSearch, setClearSearch] = useState(false);
 
   const token = useSelector((state) => state.user.token);
   const miscellaneousItems = useSelector(
@@ -201,6 +202,7 @@ const ReadMiscellaneous = () => {
         })
       );
     } else {
+      setClearSearch(true);
       dispatch(
         miscellaneousCreate({
           formValues,
@@ -247,6 +249,7 @@ const ReadMiscellaneous = () => {
               changePage={handleChangePage}
               changeRowsPerPage={handleChangeRowsPerPage}
               requestSearch={handleRequestSearch}
+              clearSearch={clearSearch}
               actions={true}
               openEditFunction={handleOpenEditMiscellaneous}
               submitDeleteFunction={handleSubmitDeleteMiscellaneous}

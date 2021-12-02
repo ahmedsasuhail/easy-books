@@ -12,9 +12,6 @@ import {
   PURCHASE_DELETE_REQUEST,
   PURCHASE_DELETE_SUCCESS,
   PURCHASE_DELETE_FAILURE,
-  PURCHASE_SEARCH_REQUEST,
-  PURCHASE_SEARCH_SUCCESS,
-  PURCHASE_SEARCH_FAILURE,
 } from "../actionTypes";
 
 export const purchaseActions = {
@@ -108,32 +105,6 @@ export const purchaseActions = {
   purchaseDeleteFailure: () => {
     return {
       type: PURCHASE_DELETE_FAILURE,
-    };
-  },
-
-  purchaseSearchRequest: () => {
-    return {
-      type: PURCHASE_SEARCH_REQUEST,
-    };
-  },
-
-  purchaseSearchSuccess: (values) => {
-    return {
-      type: PURCHASE_SEARCH_SUCCESS,
-      payload: {
-        purchases: values.records,
-        pageNo: values.page - 1,
-        rowsPerPage: values.page_limit,
-        orderBy: values.order_by,
-        order: values.sort_order,
-        count: values.total_count,
-      },
-    };
-  },
-
-  purchaseSearchFailure: () => {
-    return {
-      type: PURCHASE_SEARCH_FAILURE,
     };
   },
 };
