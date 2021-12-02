@@ -264,8 +264,12 @@ func GetInventoryByPurchaseID(c *gin.Context) {
 				"quantity",
 				"date",
 				"purchases",
+				"sold_out",
 			},
-			Filter: fmt.Sprintf("purchase_id = \"%d\"", record.PurchaseID),
+			Filter: []string{
+				fmt.Sprintf("purchase_id = \"%d\"", record.PurchaseID),
+				"sold_out = false",
+			},
 		})
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
