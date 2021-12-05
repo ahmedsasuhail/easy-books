@@ -37,7 +37,7 @@ func ReportByPurchaseID(c *gin.Context) {
 	).First(&record)
 
 	if result.Error != nil {
-		errorResponse(c, http.StatusInternalServerError, err.Error())
+		errorResponse(c, http.StatusInternalServerError, result.Error.Error())
 
 		return
 	}
