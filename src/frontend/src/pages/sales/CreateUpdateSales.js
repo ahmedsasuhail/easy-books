@@ -160,7 +160,9 @@ const CreateUpdateSales = (props) => {
         required
         validate={required}
       />
-      <p>{purchaseName}</p>
+      <p>
+        Purchase Name: <br /> {purchaseName}
+      </p>
       <Field>
         {() => (
           <Button
@@ -182,7 +184,9 @@ const CreateUpdateSales = (props) => {
         required
         validate={required}
       />
-      <p>{inventoryName}</p>
+      <p>
+        Inventory Name: <br /> {inventoryName}
+      </p>
       {isLoading ? (
         <CircularProgress size={16} />
       ) : (
@@ -212,7 +216,9 @@ const CreateUpdateSales = (props) => {
         required
         validate={required}
       />
-      <p>{relationshipName}</p>
+      <p>
+        Buyer Name: <br /> {relationshipName}
+      </p>
       <Field>
         {() => (
           <Button

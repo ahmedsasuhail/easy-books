@@ -26,7 +26,7 @@ import { useLayoutState } from "../../context/LayoutContext";
 import { relationshipRead } from "../../store/actions/relationship";
 import { purchaseRead } from "../../store/actions/purchase";
 import { inventoryRead } from "../../store/actions/inventory";
-import { userActions } from "../../store/actions/user/userActions";
+import { userLogout } from "../../store/actions/user";
 
 function Layout() {
   var classes = useStyles();
@@ -50,10 +50,6 @@ function Layout() {
     (state) => state.inventory.pageLoading
   );
   const isSalesLoading = useSelector((state) => state.sales.pageLoading);
-
-  const logoutUser = () => {
-    dispatch(userActions.logoutUser());
-  };
 
   useEffect(() => {
     dispatch(
@@ -124,13 +120,17 @@ function Layout() {
         message={message}
         button={
           <>
-            <Button size="small" onClick={() => logoutUser()} color="primary">
+            <Button
+              size="small"
+              onClick={() => dispatch(userLogout())}
+              color="primary"
+            >
               Close
             </Button>
           </>
         }
         openModal={isModalOpen}
-        handleCloseModal={() => logoutUser()}
+        handleCloseModal={() => dispatch(userLogout())}
       />
     </Fragment>
   );

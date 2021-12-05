@@ -1,11 +1,11 @@
-import React from 'react';
-import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import React from "react";
+import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-import Layout from './components/Layout/Layout';
+import Layout from "./components/Layout/Layout";
 
-import Error from './pages/error/Error';
-import Login from './pages/login/Login';
+import Error from "./pages/error/Error";
+import Login from "./pages/login/Login";
 
 export default function App() {
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
@@ -13,14 +13,14 @@ export default function App() {
   return (
     <HashRouter>
       <Switch>
-        <Route exact path='/' render={() => <Redirect to='/app/dashboard' />} />
+        <Route exact path="/" render={() => <Redirect to="/app/dashboard" />} />
         <Route
           exact
-          path='/app'
-          render={() => <Redirect to='/app/dashboard' />}
+          path="/app"
+          render={() => <Redirect to="/app/dashboard" />}
         />
-        <PrivateRoute path='/app' component={Layout} />
-        <PublicRoute path='/login' component={Login} />
+        <PrivateRoute path="/app" component={Layout} />
+        <PublicRoute path="/login" component={Login} />
         <Route component={Error} />
       </Switch>
     </HashRouter>
@@ -29,6 +29,7 @@ export default function App() {
   // #######################################################################
 
   function PrivateRoute({ component, ...rest }) {
+    console.log(isAuthenticated);
     return (
       <Route
         {...rest}
@@ -38,7 +39,7 @@ export default function App() {
           ) : (
             <Redirect
               to={{
-                pathname: '/login',
+                pathname: "/login",
                 state: {
                   from: props.location,
                 },
@@ -58,7 +59,7 @@ export default function App() {
           isAuthenticated ? (
             <Redirect
               to={{
-                pathname: '/',
+                pathname: "/",
               }}
             />
           ) : (

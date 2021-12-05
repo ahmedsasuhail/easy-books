@@ -75,7 +75,8 @@ const userReducer = (state = initialState, action) => {
     case USER_AUTH_FAILURE:
       let errorMessage;
       if (action.payload === "auth token expired") {
-        errorMessage = "Your session has been ended. Please login to continue.";
+        errorMessage =
+          "Your session has expired. Please login again to continue.";
       } else {
         errorMessage = "Something went wrong. Please login to continue.";
       }

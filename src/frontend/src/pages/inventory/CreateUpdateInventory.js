@@ -57,7 +57,10 @@ const CreateUpdateInventory = () => {
         required
         validate={required}
       />
-      <p>{purchaseName}</p>
+      <p>
+        Purchase Name: <br />
+        {purchaseName}
+      </p>
       <Field>
         {() => (
           <Button
