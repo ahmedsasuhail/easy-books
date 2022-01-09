@@ -6,7 +6,8 @@ import {
   USER_LOGIN_SUCCESS,
   USER_LOGIN_FAILURE,
   USER_LOGOUT,
-} from '../actionTypes';
+  USER_AUTH_FAILURE,
+} from "../actionTypes";
 
 export const userActions = {
   // registrationRequest: () => {
@@ -57,6 +58,13 @@ export const userActions = {
   logoutUser: () => {
     return {
       type: USER_LOGOUT,
+    };
+  },
+
+  userAuthFailure: (message) => {
+    return {
+      type: USER_AUTH_FAILURE,
+      payload: message,
     };
   },
 };

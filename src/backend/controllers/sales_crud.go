@@ -26,7 +26,10 @@ func CreateSales(c *gin.Context) {
 
 	// Validate specified quantity.
 	quantity := record.Quantity
-	pgClient.Where("id = ?", record.InventoryID).Find(&inventory)
+	pgClient.Where(
+		"id = ?",
+		record.InventoryID,
+	).Preload("Purchases").Find(&inventory)
 	if quantity > inventory.Quantity {
 		errorResponse(
 			c,
@@ -67,6 +70,30 @@ func CreateSales(c *gin.Context) {
 		return
 	}
 
+	// Update corresponding cached inventory record.
+	updatedInventory := map[string]interface{}{
+		"id":                     inventory.ID,
+		"part_name":              inventory.PartName,
+		"quantity":               inventory.Quantity,
+		"sold_out":               inventory.SoldOut,
+		"date":                   inventory.Date,
+		"purchase_id":            inventory.PurchaseID,
+		"purchases.company_name": inventory.Purchases.CompanyName,
+		"purchases.vehicle_name": inventory.Purchases.VehicleName,
+		"purchases": map[string]interface{}{
+			"id":           inventory.Purchases.ID,
+			"company_name": inventory.Purchases.CompanyName,
+			"vehicle_name": inventory.Purchases.VehicleName,
+		},
+	}
+
+	_, err = inventoryIndex.UpdateDocuments(updatedInventory)
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+
 	pgClient.Preload(
 		"Relationships",
 	).Preload(
@@ -99,12 +126,7 @@ func CreateSales(c *gin.Context) {
 			"vehicle_name": record.Purchases.VehicleName,
 			"price":        record.Purchases.Price,
 		},
-		"inventory": map[string]interface{}{
-			"id":        record.Inventory.ID,
-			"part_name": record.Inventory.PartName,
-			"quantity":  record.Inventory.Quantity,
-			"sold_out":  record.Inventory.SoldOut,
-		},
+		"inventory": updatedInventory,
 	}
 
 	_, err = salesIndex.AddDocuments(filteredRecord)
@@ -137,7 +159,10 @@ func UpdateSales(c *gin.Context) {
 
 	// Validate specified quantity.
 	quantity := record.Quantity
-	pgClient.Where("id = ?", record.InventoryID).Find(&inventory)
+	pgClient.Where(
+		"id = ?",
+		record.InventoryID,
+	).Preload("Purchases").Find(&inventory)
 	if quantity > inventory.Quantity {
 		errorResponse(
 			c,
@@ -158,7 +183,10 @@ func UpdateSales(c *gin.Context) {
 	} else {
 		revisedQuantity = inventory.Quantity - quantity
 	}
-	err = pgClient.Model(&inventory).Select("Quantity", "SoldOut").Updates(
+	err = pgClient.Model(&inventory).Where(
+		"id = ?",
+		record.ID,
+	).Select("Quantity", "SoldOut").Updates(
 		models.Inventory{
 			Quantity: revisedQuantity,
 			SoldOut:  (revisedQuantity == 0),
@@ -180,7 +208,10 @@ func UpdateSales(c *gin.Context) {
 
 	// Dirty fix to toggle boolean fields.
 	if !record.Returned {
-		err = pgClient.Model(&record).Select("Returned").Updates(
+		err = pgClient.Model(&record).Where(
+			"id = ?",
+			record.ID,
+		).Select("Returned").Updates(
 			models.Sales{Returned: false},
 		).Error
 
@@ -192,7 +223,10 @@ func UpdateSales(c *gin.Context) {
 	}
 
 	if !record.Credit {
-		err = pgClient.Model(&record).Select("Credit").Updates(
+		err = pgClient.Model(&record).Where(
+			"id = ?",
+			record.ID,
+		).Select("Credit").Updates(
 			models.Sales{Credit: false},
 		).Error
 
@@ -201,6 +235,30 @@ func UpdateSales(c *gin.Context) {
 
 			return
 		}
+	}
+
+	// Update corresponding cached inventory record.
+	updatedInventory := map[string]interface{}{
+		"id":                     inventory.ID,
+		"part_name":              inventory.PartName,
+		"quantity":               inventory.Quantity,
+		"sold_out":               inventory.SoldOut,
+		"date":                   inventory.Date,
+		"purchase_id":            inventory.PurchaseID,
+		"purchases.company_name": inventory.Purchases.CompanyName,
+		"purchases.vehicle_name": inventory.Purchases.VehicleName,
+		"purchases": map[string]interface{}{
+			"id":           inventory.Purchases.ID,
+			"company_name": inventory.Purchases.CompanyName,
+			"vehicle_name": inventory.Purchases.VehicleName,
+		},
+	}
+
+	_, err = inventoryIndex.UpdateDocuments(updatedInventory)
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
 	}
 
 	pgClient.Preload(
@@ -237,12 +295,7 @@ func UpdateSales(c *gin.Context) {
 			"vehicle_name": record.Purchases.VehicleName,
 			"price":        record.Purchases.Price,
 		},
-		"inventory": map[string]interface{}{
-			"id":        record.Inventory.ID,
-			"part_name": record.Inventory.PartName,
-			"quantity":  record.Inventory.Quantity,
-			"sold_out":  record.Inventory.SoldOut,
-		},
+		"inventory": updatedInventory,
 	}
 
 	_, err = salesIndex.UpdateDocuments(filteredRecord)

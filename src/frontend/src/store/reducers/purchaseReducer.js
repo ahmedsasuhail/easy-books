@@ -8,12 +8,10 @@ import {
   PURCHASE_READ_REQUEST,
   PURCHASE_READ_SUCCESS,
   PURCHASE_READ_FAILURE,
+  PURCHASE_READ_CLEAR,
   PURCHASE_DELETE_REQUEST,
   PURCHASE_DELETE_SUCCESS,
   PURCHASE_DELETE_FAILURE,
-  PURCHASE_SEARCH_REQUEST,
-  PURCHASE_SEARCH_SUCCESS,
-  PURCHASE_SEARCH_FAILURE,
 } from "../actions/actionTypes";
 import { mergeObjects } from "../../utils/helpers";
 
@@ -24,6 +22,7 @@ const initialState = {
   pageNo: 0,
   rowsPerPage: 5,
   count: 0,
+  query: "",
   formLoading: false,
   pageLoading: false,
 };
@@ -32,6 +31,7 @@ const purchaseReducer = (state = initialState, action) => {
   switch (action.type) {
     case PURCHASE_CREATE_REQUEST:
       return mergeObjects(state, {
+        query: "",
         formLoading: true,
         pageLoading: true,
       });
@@ -114,12 +114,23 @@ const purchaseReducer = (state = initialState, action) => {
         orderBy: action.payload.orderBy,
         order: action.payload.order,
         count: action.payload.count,
+        query: action.payload.query,
         pageLoading: false,
       });
 
     case PURCHASE_READ_FAILURE:
       return mergeObjects(state, {
         pageLoading: false,
+      });
+
+    case PURCHASE_READ_CLEAR:
+      return mergeObjects(state, {
+        pageLoading: false,
+        pageNo: 0,
+        rowsPerPage: 5,
+        orderBy: "id",
+        order: "asc",
+        query: "",
       });
 
     case PURCHASE_DELETE_REQUEST:
@@ -133,27 +144,6 @@ const purchaseReducer = (state = initialState, action) => {
       });
 
     case PURCHASE_DELETE_FAILURE:
-      return mergeObjects(state, {
-        pageLoading: false,
-      });
-
-    case PURCHASE_SEARCH_REQUEST:
-      return mergeObjects(state, {
-        pageLoading: true,
-      });
-
-    case PURCHASE_SEARCH_SUCCESS:
-      return mergeObjects(state, {
-        purchases: action.payload.purchases || [],
-        pageNo: action.payload.pageNo,
-        rowsPerPage: action.payload.rowsPerPage,
-        orderBy: action.payload.orderBy,
-        order: action.payload.order,
-        count: action.payload.count,
-        pageLoading: false,
-      });
-
-    case PURCHASE_SEARCH_FAILURE:
       return mergeObjects(state, {
         pageLoading: false,
       });

@@ -1,20 +1,21 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import {
   Dialog,
   DialogContent,
   DialogTitle,
   DialogActions,
-} from '@material-ui/core';
-import TableContainer from '@mui/material/TableContainer';
-import Paper from '@mui/material/Paper';
+} from "@material-ui/core";
+import TableContainer from "@mui/material/TableContainer";
+import Paper from "@mui/material/Paper";
 
-import CustomTable from '../../components/Table/CustomTable';
+import CustomTable from "../../components/Table/CustomTable";
 
-import { getInventoryPurchase } from '../../store/actions/inventory_purchase';
+import { getInventoryPurchase } from "../../store/actions/inventory_purchase";
+import { inventoryActions } from "../../store/actions/inventory/inventoryActions";
 
-import { formattedDate } from '../../utils/helpers';
+import { formattedDate } from "../../utils/helpers";
 
 const InventoryModal = (props) => {
   const {
@@ -28,21 +29,21 @@ const InventoryModal = (props) => {
   let rows = [];
   const headCells = [
     {
-      id: 'id',
-      label: 'ID',
+      id: "id",
+      label: "ID",
       display: false,
     },
     {
-      id: 'part_name',
-      label: 'Part Name',
+      id: "part_name",
+      label: "Part Name",
     },
     {
-      id: 'quantity',
-      label: 'Quantity',
+      id: "quantity",
+      label: "Quantity",
     },
     {
-      id: 'date',
-      label: 'Date',
+      id: "date",
+      label: "Date",
     },
   ];
 
@@ -51,7 +52,7 @@ const InventoryModal = (props) => {
   const token = useSelector((state) => state.user.token);
   const pageNo = useSelector((state) => state.inventoryPurchase.pageNo);
   const rowsPerPage = useSelector(
-    (state) => state.inventoryPurchase.rowsPerPage,
+    (state) => state.inventoryPurchase.rowsPerPage
   );
   const orderBy = useSelector((state) => state.inventoryPurchase.orderBy);
   const order = useSelector((state) => state.inventoryPurchase.order);
@@ -62,16 +63,16 @@ const InventoryModal = (props) => {
       return {
         sn: pageNo === 0 ? idx + 1 : rowsPerPage * pageNo + (idx + 1),
         id: inventory.id,
-        part_name: inventory.part_name ? inventory.part_name : 'Not Specified',
-        quantity: inventory.quantity ? inventory.quantity : 'Not Specified',
-        date: inventory.date ? formattedDate(inventory.date) : 'Not Specified',
+        part_name: inventory.part_name ? inventory.part_name : "Not Specified",
+        quantity: inventory.quantity ? inventory.quantity : "Not Specified",
+        date: inventory.date ? formattedDate(inventory.date) : "Not Specified",
       };
     });
   }
 
   const handleRequestSort = (property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    const direction = isAsc ? 'desc' : 'asc';
+    const isAsc = orderBy === property && order === "asc";
+    const direction = isAsc ? "desc" : "asc";
     dispatch(
       getInventoryPurchase({
         id,
@@ -80,7 +81,7 @@ const InventoryModal = (props) => {
         rowsPerPage,
         order: direction,
         orderBy: property,
-      }),
+      })
     );
   };
 
@@ -93,7 +94,7 @@ const InventoryModal = (props) => {
         rowsPerPage,
         orderBy,
         order,
-      }),
+      })
     );
   };
 
@@ -106,9 +107,14 @@ const InventoryModal = (props) => {
         rowsPerPage: parseInt(event.target.value, 10),
         orderBy,
         order,
-      }),
+      })
     );
   };
+
+  useEffect(() => {
+    dispatch(inventoryActions.inventoryReadClear());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     handleChangePage(null, pageNo);
@@ -118,15 +124,15 @@ const InventoryModal = (props) => {
   return (
     <Dialog
       fullWidth={true}
-      maxWidth='md'
+      maxWidth="md"
       open={openInventoryModal}
       onClose={handleCloseInventoryModal}
     >
-      <DialogTitle id='max-width-dialog-title'>Inventory</DialogTitle>
+      <DialogTitle id="max-width-dialog-title">Inventory</DialogTitle>
       <DialogContent>
         <TableContainer component={Paper}>
           <CustomTable
-            tableTitle='All Inventory'
+            tableTitle="All Inventory"
             order={order}
             orderBy={orderBy}
             requestSort={handleRequestSort}
@@ -139,7 +145,7 @@ const InventoryModal = (props) => {
             changeRowsPerPage={handleChangeRowsPerPage}
             actions={true}
             submitAddFunction={handleSetInventoryName}
-            size='small'
+            size="small"
           />
         </TableContainer>
       </DialogContent>

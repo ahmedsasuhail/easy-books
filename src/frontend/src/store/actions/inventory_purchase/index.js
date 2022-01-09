@@ -34,7 +34,7 @@ export const getInventoryPurchase = (values) => {
       console.log("Catch Error: ", error);
       dispatch(inventoryPurchaseActions.inventoryPurchaseFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.logoutUser());
+        dispatch(userActions.userAuthFailure(error.response.data.message));
       }
     }
     return result;

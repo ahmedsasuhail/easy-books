@@ -49,7 +49,7 @@ const CreateUpdateRelationship = () => {
         multiline={true}
         rows={3}
         rowsMax={3}
-        validate={validateMaxString(5)}
+        validate={validateMaxString(250)}
       />
     </>
   );

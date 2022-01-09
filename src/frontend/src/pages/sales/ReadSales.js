@@ -16,7 +16,6 @@ import {
   salesUpdate,
   salesDelete,
   salesRead,
-  salesSearch,
 } from "../../store/actions/sales";
 import { inventoryPurchaseActions } from "../../store/actions/inventory_purchase/inventoryPurchaseActions";
 
@@ -42,7 +41,7 @@ const ReadSales = () => {
     {
       id: "purchase_name",
       label: "Purchase Name",
-      disableSort: true,
+      sortName: "purchases.company_name",
     },
     {
       id: "purchase_id",
@@ -51,20 +50,29 @@ const ReadSales = () => {
     {
       id: "part_name",
       label: "Part Name",
-      disableSort: true,
+      sortName: "inventory.part_name",
     },
     {
       id: "inventory_id",
       display: false,
     },
     {
+      id: "inventory_quantity",
+      display: false,
+    },
+    {
       id: "buyer",
       label: "Buyer",
-      disableSort: true,
+      sortName: "relationships.name",
     },
     {
       id: "relationship_id",
       display: false,
+    },
+    {
+      id: "quantity",
+      label: "Quantity",
+      disableSort: true,
     },
     {
       id: "price",
@@ -96,9 +104,11 @@ const ReadSales = () => {
   const classes = useStyles();
 
   const [openCreateUpdateSales, setOpenCreateUpdateSales] = useState(false);
-  const [openConfirmModal, setOpenConfirmModal] = useState(false);
+  const [openConfirmDeleteModal, setOpenConfirmDeleteModal] = useState(false);
+  const [openConfirmReturnModal, setOpenConfirmReturnModal] = useState(false);
   const [valueForm, setValueForm] = useState(null);
   const [id, setId] = useState("");
+  const [clearSearch, setClearSearch] = useState(false);
 
   const token = useSelector((state) => state.user.token);
   const salesItems = useSelector((state) => state.sales.sales);
@@ -107,6 +117,7 @@ const ReadSales = () => {
   const orderBy = useSelector((state) => state.sales.orderBy);
   const order = useSelector((state) => state.sales.order);
   const totalCount = useSelector((state) => state.sales.count);
+  const query = useSelector((state) => state.sales.query);
   const isLoading = useSelector((state) => state.sales.formLoading);
 
   if (salesItems) {
@@ -122,12 +133,16 @@ const ReadSales = () => {
           ? sale.inventory.part_name
           : "Not Specified",
         inventory_id: sale.inventory.id ? sale.inventory.id : "Not Specified",
+        inventory_quantity: sale.inventory.quantity
+          ? sale.inventory.quantity
+          : null,
         buyer: sale.relationships.id
           ? sale.relationships.name
           : "Not Specified",
         relationship_id: sale.relationships.id
           ? sale.relationships.id
           : "Not Specified",
+        quantity: sale.quantity ? sale.quantity : "Not Specified",
         price: sale.price ? sale.price : "Not Specified",
         date: sale.date ? formattedDate(sale.date) : "Not Specified",
         returned: sale.returned ? true : false,
@@ -151,6 +166,7 @@ const ReadSales = () => {
         rowsPerPage,
         order: direction,
         orderBy: property,
+        query,
       })
     );
   };
@@ -163,6 +179,7 @@ const ReadSales = () => {
         rowsPerPage,
         orderBy,
         order,
+        query,
       })
     );
   };
@@ -175,12 +192,22 @@ const ReadSales = () => {
         rowsPerPage: parseInt(event.target.value, 10),
         orderBy,
         order,
+        query,
       })
     );
   };
 
   const handleRequestSearch = (value) => {
-    dispatch(salesSearch({ token, keyword: value }));
+    dispatch(
+      salesRead({
+        token,
+        pageNo: 0,
+        rowsPerPage,
+        orderBy,
+        order,
+        query: value,
+      })
+    );
   };
 
   useEffect(() => {
@@ -192,8 +219,12 @@ const ReadSales = () => {
     setOpenCreateUpdateSales(true);
   };
 
-  const handleConfirmModal = (bool) => {
-    setOpenConfirmModal(bool);
+  const handleConfirmDeleteModal = (bool) => {
+    setOpenConfirmDeleteModal(bool);
+  };
+
+  const handleConfirmReturnModal = (bool) => {
+    setOpenConfirmReturnModal(bool);
   };
 
   const handleOpenEditSales = (values) => {
@@ -216,7 +247,7 @@ const ReadSales = () => {
         }
       });
     }
-    handleConfirmModal(false);
+    handleConfirmDeleteModal(false);
   };
 
   const handleCloseCreateOrEditSales = () => {
@@ -226,11 +257,12 @@ const ReadSales = () => {
   };
 
   const handleSubmitCreateUpdateSales = (formValues) => {
-    if (formValues.date)
+    if (formValues && formValues.date)
       formValues.date = new Date(formValues.date).toISOString();
-    if (formValues.id) {
+    if (formValues && formValues.id) {
       dispatch(salesUpdate({ formValues, token }));
     } else {
+      setClearSearch(true);
       dispatch(salesCreate({ formValues, token }));
     }
     handleCloseCreateOrEditSales();
@@ -238,19 +270,22 @@ const ReadSales = () => {
 
   const handleSubmitDeleteSales = (id) => {
     setId(id);
-    handleConfirmModal(true);
+    handleConfirmDeleteModal(true);
   };
 
   const handleSubmitReturn = (result) => {
     if (result) {
-      handleSubmitCreateUpdateSales(valueForm);
+      handleSubmitCreateUpdateSales({
+        id: valueForm.id,
+        returned: valueForm.returned,
+      });
     }
-    handleConfirmModal(false);
+    handleConfirmReturnModal(false);
   };
 
   const handleSubmitReturnSales = (value) => {
     setValueForm(value);
-    handleConfirmModal(true);
+    handleConfirmReturnModal(true);
   };
 
   return (
@@ -284,6 +319,7 @@ const ReadSales = () => {
               changePage={handleChangePage}
               changeRowsPerPage={handleChangeRowsPerPage}
               requestSearch={handleRequestSearch}
+              clearSearch={clearSearch}
               actions={true}
               openEditFunction={handleOpenEditSales}
               submitDeleteFunction={handleSubmitDeleteSales}
@@ -326,8 +362,8 @@ const ReadSales = () => {
             </Button>
           </>
         }
-        openModal={openConfirmModal}
-        handleCloseModal={() => handleConfirmModal(false)}
+        openModal={openConfirmDeleteModal}
+        handleCloseModal={() => handleConfirmDeleteModal(false)}
       />
       <MessageDialogue
         title="Confirm"
@@ -352,8 +388,8 @@ const ReadSales = () => {
             </Button>
           </>
         }
-        openModal={openConfirmModal}
-        handleCloseModal={() => handleConfirmModal(false)}
+        openModal={openConfirmReturnModal}
+        handleCloseModal={() => handleConfirmReturnModal(false)}
       />
     </>
   );

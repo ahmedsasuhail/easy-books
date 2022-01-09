@@ -5,7 +5,6 @@ import { Field, useFormState } from "react-final-form";
 import Button from "@mui/material/Button";
 
 import Input from "../../components/Input/Input";
-import Select from "../../components/Select/Select";
 
 import PurchasesModal from "./PurchasesModal";
 
@@ -26,14 +25,8 @@ const CreateUpdateInventory = () => {
       !purchaseName
     ) {
       setPurchaseId(+formState.values.purchase_id);
-
-      const items = purchaseItems.filter(
-        (item) => item.id === formState.values.purchase_id
-      );
-
-      if (items.length > 0) {
-        setPurchaseName(`${items[0].company_name}-${items[0].vehicle_name}`);
-      }
+      setPurchaseName(formState.values.purchase_name);
+      window.setFormValue("purchase_id", +formState.values.purchase_id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [purchaseId]);
@@ -41,6 +34,7 @@ const CreateUpdateInventory = () => {
   const handleSetPurchaseName = (value) => {
     setPurchaseId(value.id);
     setPurchaseName(`${value.company_name} - ${value.vehicle_name}`);
+    window.setFormValue("purchase_id", value.id);
     handleClosePurchasesModal();
   };
 
@@ -55,22 +49,18 @@ const CreateUpdateInventory = () => {
   return (
     <>
       <Field
-        component={Select}
-        options={[{ id: purchaseId, name: purchaseName }]}
+        component={Input}
         id="purchase_id"
         name="purchase_id"
-        label="Purchase Id"
+        type="hidden"
         margin="normal"
-        hasEmptyOption={true}
-        hasOne={true}
-        disabled={!purchaseId}
-        InputLabelProps={{
-          shrink: !purchaseId ? false : true,
-        }}
-        fullWidth
         required
         validate={required}
       />
+      <p>
+        Purchase Name: <br />
+        {purchaseName}
+      </p>
       <Field>
         {() => (
           <Button

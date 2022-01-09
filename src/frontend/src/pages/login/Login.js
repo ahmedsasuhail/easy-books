@@ -46,7 +46,7 @@ function Login() {
           <Typography variant="h1" className={classes.greeting}>
             Welcome!
           </Typography>
-          <Fade in={error}>
+          <Fade in={error === "LOGIN"}>
             <Typography color="error" className={classes.errorMessage}>
               {message}
             </Typography>

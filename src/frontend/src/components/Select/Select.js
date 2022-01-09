@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-import { TextField } from '@material-ui/core/';
+import { TextField } from "@material-ui/core/";
 
 const Select = (props) => {
   return (
@@ -27,7 +27,7 @@ const Select = (props) => {
         props.onChange && props.onChange(e);
       }}
     >
-      {props.hasEmptyOption && <option value='' />}
+      {props.hasEmptyOption && <option value="" />}
       {props.options
         ? props.options.map((item, index) => {
             return (
@@ -38,11 +38,11 @@ const Select = (props) => {
                   ? item.part_name
                   : item.company_name
                   ? `${item.company_name} - ${item.vehicle_name}`
-                  : ''}
+                  : ""}
               </option>
             );
           })
-        : ''}
+        : ""}
     </TextField>
   );
 };

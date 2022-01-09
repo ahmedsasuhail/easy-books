@@ -8,12 +8,10 @@ import {
   RELATIONSHIP_READ_REQUEST,
   RELATIONSHIP_READ_SUCCESS,
   RELATIONSHIP_READ_FAILURE,
+  RELATIONSHIP_READ_CLEAR,
   RELATIONSHIP_DELETE_REQUEST,
   RELATIONSHIP_DELETE_SUCCESS,
   RELATIONSHIP_DELETE_FAILURE,
-  RELATIONSHIP_SEARCH_REQUEST,
-  RELATIONSHIP_SEARCH_SUCCESS,
-  RELATIONSHIP_SEARCH_FAILURE,
 } from "../actionTypes";
 
 export const relationshipActions = {
@@ -74,7 +72,8 @@ export const relationshipActions = {
         rowsPerPage: values.page_limit,
         orderBy: values.order_by,
         order: values.sort_order,
-        count: values.total_count,
+        count: values.query ? values.total_matched_count : values.total_count,
+        query: values.query,
       },
     };
   },
@@ -82,6 +81,12 @@ export const relationshipActions = {
   relationshipReadFailure: () => {
     return {
       type: RELATIONSHIP_READ_FAILURE,
+    };
+  },
+
+  relationshipReadClear: () => {
+    return {
+      type: RELATIONSHIP_READ_CLEAR,
     };
   },
 
@@ -100,32 +105,6 @@ export const relationshipActions = {
   relationshipDeleteFailure: () => {
     return {
       type: RELATIONSHIP_DELETE_FAILURE,
-    };
-  },
-
-  relationshipSearchRequest: () => {
-    return {
-      type: RELATIONSHIP_SEARCH_REQUEST,
-    };
-  },
-
-  relationshipSearchSuccess: (values) => {
-    return {
-      type: RELATIONSHIP_SEARCH_SUCCESS,
-      payload: {
-        relationships: values.records,
-        pageNo: values.page - 1,
-        rowsPerPage: values.page_limit,
-        orderBy: values.order_by,
-        order: values.sort_order,
-        count: values.total_count,
-      },
-    };
-  },
-
-  relationshipSearchFailure: () => {
-    return {
-      type: RELATIONSHIP_SEARCH_FAILURE,
     };
   },
 };

@@ -37,18 +37,7 @@ func ReportByPurchaseID(c *gin.Context) {
 	).First(&record)
 
 	if result.Error != nil {
-		successResponse(c, http.StatusOK, "", map[string]interface{}{
-			"id":                   record.Purchases.ID,
-			"company_name":         record.Purchases.CompanyName,
-			"vehicle_name":         record.Purchases.VehicleName,
-			"price":                record.Purchases.Price,
-			"sales":                nil,
-			"sales_returned":       nil,
-			"sales_total":          nil,
-			"sales_returned_total": nil,
-			"credited_sales_total": nil,
-			"total":                nil,
-		})
+		errorResponse(c, http.StatusInternalServerError, result.Error.Error())
 
 		return
 	}
@@ -83,6 +72,7 @@ func ReportByPurchaseID(c *gin.Context) {
 				"date":      record.Date,
 				"credit":    record.Credit,
 				"returned":  record.Returned,
+				"quantity":  record.Quantity,
 				"part_name": record.Inventory.PartName,
 				"sold_out":  record.Inventory.SoldOut,
 			})
@@ -95,18 +85,7 @@ func ReportByPurchaseID(c *gin.Context) {
 				"date":      record.Date,
 				"credit":    record.Credit,
 				"returned":  record.Returned,
-				"part_name": record.Inventory.PartName,
-				"sold_out":  record.Inventory.SoldOut,
-			})
-		} else if !record.Inventory.SoldOut {
-			totalNotSold += record.Price
-
-			notSold = append(notSold, map[string]interface{}{
-				"id":        record.ID,
-				"price":     record.Price,
-				"date":      record.Date,
-				"credit":    record.Credit,
-				"returned":  record.Returned,
+				"quantity":  record.Quantity,
 				"part_name": record.Inventory.PartName,
 				"sold_out":  record.Inventory.SoldOut,
 			})
@@ -119,6 +98,22 @@ func ReportByPurchaseID(c *gin.Context) {
 				"date":      record.Date,
 				"credit":    record.Credit,
 				"returned":  record.Returned,
+				"quantity":  record.Quantity,
+				"part_name": record.Inventory.PartName,
+				"sold_out":  record.Inventory.SoldOut,
+			})
+		}
+
+		if !record.Inventory.SoldOut {
+			totalNotSold += record.Price
+
+			notSold = append(notSold, map[string]interface{}{
+				"id":        record.ID,
+				"price":     record.Price,
+				"date":      record.Date,
+				"credit":    record.Credit,
+				"returned":  record.Returned,
+				"quantity":  record.Inventory.Quantity,
 				"part_name": record.Inventory.PartName,
 				"sold_out":  record.Inventory.SoldOut,
 			})
@@ -242,6 +237,7 @@ func ReportByRelationshipID(c *gin.Context) {
 				"date":      record.Date,
 				"part_name": record.Inventory.PartName,
 				"credit":    record.Credit,
+				"quantity":  record.Quantity,
 			})
 		} else if record.Credit {
 			totalCredit += record.Price
@@ -250,6 +246,7 @@ func ReportByRelationshipID(c *gin.Context) {
 				"id":        record.ID,
 				"price":     record.Price,
 				"date":      record.Date,
+				"quantity":  record.Quantity,
 				"part_name": record.Inventory.PartName,
 			})
 		} else {
@@ -259,6 +256,7 @@ func ReportByRelationshipID(c *gin.Context) {
 				"id":        record.ID,
 				"price":     record.Price,
 				"date":      record.Date,
+				"quantity":  record.Quantity,
 				"part_name": record.Inventory.PartName,
 			})
 		}
@@ -360,6 +358,7 @@ func ReportByRange(c *gin.Context) {
 			"part_name": record.Inventory.PartName,
 			"credit":    record.Credit,
 			"returned":  record.Returned,
+			"quantity":  record.Quantity,
 		})
 	}
 

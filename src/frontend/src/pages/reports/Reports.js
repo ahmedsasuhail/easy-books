@@ -10,7 +10,8 @@ import {
 } from "@material-ui/icons";
 import Box from "@mui/material/Box";
 import FormControl from "@mui/material/FormControl";
-import NativeSelect from "@mui/material/NativeSelect";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -18,12 +19,14 @@ import { Grid } from "@material-ui/core";
 
 import SpanningTable from "../../components/Table/Reports/ReportsTable";
 
+import PurchasesModal from "../inventory/PurchasesModal";
+import RelationshipModal from "../purchases/RelationshipModal";
+
 import { mergeObjects } from "../../utils/helpers";
 import axios from "../../utils/axiosInstance";
+import { formattedDate } from "../../utils/helpers";
 
 import { userActions } from "../../store/actions/user/userActions";
-
-import { formattedDate } from "../../utils/helpers";
 
 import useStyles from "./styles";
 
@@ -56,9 +59,14 @@ const Reports = () => {
   const userDispatch = useDispatch();
 
   const [value, setValue] = useState(0);
-  const [relationshipId, setRelationshipId] = useState("");
   const [fromDate, setFromDate] = useState(new Date().toISOString());
   const [toDate, setToDate] = useState(new Date().toISOString());
+  const [purchaseId, setPurchaseId] = useState("");
+  const [purchaseName, setPurchaseName] = useState("");
+  const [relationshipId, setRelationshipId] = useState("");
+  const [relationshipName, setRelationshipName] = useState("");
+  const [openPurchasesModal, setOpenPurchasesModal] = useState(false);
+  const [openRelationshipModal, setOpenRelationshipModal] = useState(false);
 
   const token = useSelector((state) => state.user.token);
   const purchaseItems = useSelector((state) => state.purchase.purchases);
@@ -98,6 +106,7 @@ const Reports = () => {
         return {
           purchaseRows: {},
           relationshipRows: {},
+          rangeRows: {},
           isLoading: false,
         };
       default:
@@ -115,11 +124,14 @@ const Reports = () => {
 
   const handleTabChange = (event, newValue) => {
     setValue(newValue);
+    setPurchaseId("");
+    setPurchaseName("");
+    setRelationshipId("");
+    setRelationshipName("");
     dispatch({ type: "CLEAR" });
   };
 
-  const handlePurchasesChange = async (event) => {
-    const id = event.target.value;
+  const handlePurchasesChange = async (id) => {
     dispatch({ type: "LOADING" });
     try {
       const response = await axios.post(
@@ -137,7 +149,7 @@ const Reports = () => {
       console.log("Catch Error: ", error);
       dispatch({ type: "CLEAR" });
       if (error.response && error.response.status === 401) {
-        userDispatch(userActions.logoutUser());
+        userDispatch(userActions.userAuthFailure(error.response.data.message));
       }
     }
   };
@@ -163,13 +175,12 @@ const Reports = () => {
       console.log("Catch Error: ", error);
       dispatch({ type: "CLEAR" });
       if (error.response && error.response.status === 401) {
-        userDispatch(userActions.logoutUser());
+        userDispatch(userActions.userAuthFailure(error.response.data.message));
       }
     }
   };
 
   const handleRangeChange = async () => {
-    console.log(fromDate, toDate);
     dispatch({ type: "LOADING" });
     try {
       const response = await axios.post(
@@ -189,7 +200,7 @@ const Reports = () => {
       console.log("Catch Error: ", error);
       dispatch({ type: "CLEAR" });
       if (error.response && error.response.status === 401) {
-        userDispatch(userActions.logoutUser());
+        userDispatch(userActions.userAuthFailure(error.response.data.message));
       }
     }
   };
@@ -199,6 +210,27 @@ const Reports = () => {
     { icon: <ContactsIcon />, label: "RELATIONSHIPS" },
     { icon: <DateRangeIcon />, label: "RANGE" },
   ];
+
+  const handleSetPurchaseName = (value) => {
+    setPurchaseId(value.id);
+    setPurchaseName(`${value.company_name} - ${value.vehicle_name}`);
+    handlePurchasesChange(value.id);
+    handleClosePurchasesModal();
+  };
+
+  const handleClosePurchasesModal = () => {
+    setOpenPurchasesModal(false);
+  };
+
+  const handleSetRelationshipName = (value) => {
+    setRelationshipId(value.id);
+    setRelationshipName(value.name);
+    handleCloseRelationshipModal();
+  };
+
+  const handleCloseRelationshipModal = () => {
+    setOpenRelationshipModal(false);
+  };
 
   return (
     <Box className={classes.pageContainer}>
@@ -219,28 +251,27 @@ const Reports = () => {
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <FormControl className={classes.dropdownWidth}>
-          <InputLabel variant="standard" htmlFor="uncontrolled-native">
-            Purchases
-          </InputLabel>
-          <NativeSelect
-            inputProps={{
-              name: "purchases",
-              id: "uncontrolled-native",
-            }}
-            onChange={(e) => handlePurchasesChange(e)}
+        <FormControl variant="standard" className={classes.dropdownWidth}>
+          <InputLabel id="purchases-open-select-label">Purchases</InputLabel>
+          <Select
+            labelId="purchases-open-select-label"
+            id="purchases-open-select"
+            value={purchaseId}
+            autoWidth
+            disabled
           >
-            <option value=""></option>
-            {purchaseItems &&
-              purchaseItems.map((item) => {
-                return (
-                  <option
-                    key={item.id}
-                    value={item.id}
-                  >{`${item.company_name} - ${item.vehicle_name}`}</option>
-                );
-              })}
-          </NativeSelect>
+            <MenuItem value={purchaseId || ""}>
+              {purchaseName || "None"}
+            </MenuItem>
+          </Select>
+          <Button
+            variant="text"
+            onClick={() => setOpenPurchasesModal(true)}
+            size="small"
+            color="primary"
+          >
+            Add Purchase
+          </Button>
         </FormControl>
         <SpanningTable
           isLoading={state.isLoading}
@@ -249,33 +280,36 @@ const Reports = () => {
       </TabPanel>
       <TabPanel value={value} index={1}>
         <Grid container>
-          <FormControl className={classes.dropdownWidth}>
-            <InputLabel variant="standard" htmlFor="uncontrolled-native">
+          <FormControl variant="standard" className={classes.dropdownWidth}>
+            <InputLabel id="relationships-open-select-label">
               Relationships
             </InputLabel>
-            <NativeSelect
-              inputProps={{
-                name: "relationships",
-                id: "uncontrolled-native",
-              }}
-              onChange={(e) => setRelationshipId(e.target.value)}
+            <Select
+              labelId="relationships-open-select-label"
+              id="relationships-open-select"
+              value={relationshipId}
+              autoWidth
+              disabled
             >
-              <option value=""></option>
-              {relationshipItems &&
-                relationshipItems.map((item) => {
-                  return (
-                    <option key={item.id} value={item.id}>
-                      {item.name}
-                    </option>
-                  );
-                })}
-            </NativeSelect>
+              <MenuItem value={relationshipId || ""}>
+                {relationshipName || "None"}
+              </MenuItem>
+            </Select>
+            <Button
+              variant="text"
+              onClick={() => setOpenRelationshipModal(true)}
+              size="small"
+              color="primary"
+            >
+              Add Relationship
+            </Button>
           </FormControl>
           <TextField
             id="from_date"
             name="from_date"
             label="From Date"
             type="date"
+            variant="standard"
             defaultValue={new Date().toISOString().split("T")[0]}
             onChange={(e) =>
               setFromDate(new Date(e.target.value).toISOString())
@@ -290,6 +324,7 @@ const Reports = () => {
             name="to_date"
             label="To Date"
             type="date"
+            variant="standard"
             defaultValue={new Date().toISOString().split("T")[0]}
             onChange={(e) => setToDate(new Date(e.target.value).toISOString())}
             className={classes.formInput}
@@ -297,11 +332,7 @@ const Reports = () => {
               shrink: true,
             }}
           />
-          <Button
-            variant="outlined"
-            size="large"
-            onClick={() => handleRelationshipsChange()}
-          >
+          <Button size="small" onClick={() => handleRelationshipsChange()}>
             Submit
           </Button>
           <SpanningTable
@@ -317,6 +348,7 @@ const Reports = () => {
             name="from_date"
             label="From Date"
             type="date"
+            variant="standard"
             defaultValue={new Date().toISOString().split("T")[0]}
             onChange={(e) =>
               setFromDate(new Date(e.target.value).toISOString())
@@ -331,6 +363,7 @@ const Reports = () => {
             name="to_date"
             label="To Date"
             type="date"
+            variant="standard"
             defaultValue={new Date().toISOString().split("T")[0]}
             onChange={(e) => setToDate(new Date(e.target.value).toISOString())}
             className={classes.formInput}
@@ -338,11 +371,7 @@ const Reports = () => {
               shrink: true,
             }}
           />
-          <Button
-            variant="outlined"
-            size="medium"
-            onClick={() => handleRangeChange()}
-          >
+          <Button size="small" onClick={() => handleRangeChange()}>
             Submit
           </Button>
         </Grid>
@@ -353,6 +382,18 @@ const Reports = () => {
           toDate={formattedDate(toDate).split("/").reverse().join("-")}
         />
       </TabPanel>
+      <PurchasesModal
+        purchaseItems={purchaseItems}
+        openPurchasesModal={openPurchasesModal}
+        handleSetPurchaseName={handleSetPurchaseName}
+        handleClosePurchasesModal={handleClosePurchasesModal}
+      />
+      <RelationshipModal
+        relationshipItems={relationshipItems}
+        openRelationshipModal={openRelationshipModal}
+        handleSetRelationshipName={handleSetRelationshipName}
+        handleCloseRelationshipModal={handleCloseRelationshipModal}
+      />
     </Box>
   );
 };

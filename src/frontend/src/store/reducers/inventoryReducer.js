@@ -8,12 +8,10 @@ import {
   INVENTORY_READ_REQUEST,
   INVENTORY_READ_SUCCESS,
   INVENTORY_READ_FAILURE,
+  INVENTORY_READ_CLEAR,
   INVENTORY_DELETE_REQUEST,
   INVENTORY_DELETE_SUCCESS,
   INVENTORY_DELETE_FAILURE,
-  INVENTORY_SEARCH_REQUEST,
-  INVENTORY_SEARCH_SUCCESS,
-  INVENTORY_SEARCH_FAILURE,
 } from "../actions/actionTypes";
 import { mergeObjects } from "../../utils/helpers";
 
@@ -24,6 +22,7 @@ const initialState = {
   pageNo: 0,
   rowsPerPage: 5,
   count: 0,
+  query: "",
   formLoading: false,
   pageLoading: false,
 };
@@ -32,6 +31,7 @@ const inventoryReducer = (state = initialState, action) => {
   switch (action.type) {
     case INVENTORY_CREATE_REQUEST:
       return mergeObjects(state, {
+        query: "",
         formLoading: true,
         pageLoading: true,
       });
@@ -114,12 +114,23 @@ const inventoryReducer = (state = initialState, action) => {
         orderBy: action.payload.orderBy,
         order: action.payload.order,
         count: action.payload.count,
+        query: action.payload.query,
         pageLoading: false,
       });
 
     case INVENTORY_READ_FAILURE:
       return mergeObjects(state, {
         pageLoading: false,
+      });
+
+    case INVENTORY_READ_CLEAR:
+      return mergeObjects(state, {
+        pageLoading: false,
+        orderBy: "id",
+        order: "asc",
+        pageNo: 0,
+        rowsPerPage: 5,
+        query: "",
       });
 
     case INVENTORY_DELETE_REQUEST:
@@ -133,27 +144,6 @@ const inventoryReducer = (state = initialState, action) => {
       });
 
     case INVENTORY_DELETE_FAILURE:
-      return mergeObjects(state, {
-        pageLoading: false,
-      });
-
-    case INVENTORY_SEARCH_REQUEST:
-      return mergeObjects(state, {
-        pageLoading: true,
-      });
-
-    case INVENTORY_SEARCH_SUCCESS:
-      return mergeObjects(state, {
-        inventory: action.payload.inventory || [],
-        pageNo: action.payload.pageNo,
-        rowsPerPage: action.payload.rowsPerPage,
-        orderBy: action.payload.orderBy,
-        order: action.payload.order,
-        count: action.payload.count,
-        pageLoading: false,
-      });
-
-    case INVENTORY_SEARCH_FAILURE:
       return mergeObjects(state, {
         pageLoading: false,
       });

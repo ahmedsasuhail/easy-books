@@ -7,16 +7,15 @@ import Box from "@mui/material/Box";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import Dialog from "../../components/Dialog/Dialog";
 import CustomTable from "../../components/Table/CustomTable";
+import MessageDialogue from "../../components/Dialog/MessageDialogue";
 
 import CreateUpdateInventory from "./CreateUpdateInventory";
-import MessageDialogue from "../../components/Dialog/MessageDialogue";
 
 import {
   inventoryCreate,
   inventoryRead,
   inventoryUpdate,
   inventoryDelete,
-  inventorySearch,
 } from "../../store/actions/inventory";
 
 import { formattedDate } from "../../utils/helpers";
@@ -45,7 +44,7 @@ const ReadInventory = () => {
     {
       id: "purchase_name",
       label: "Purchase Name",
-      disableSort: true,
+      sortName: "purchases.company_name",
     },
     {
       id: "part_name",
@@ -54,6 +53,7 @@ const ReadInventory = () => {
     {
       id: "quantity",
       label: "Quantity",
+      disableSort: true,
     },
     {
       id: "date",
@@ -71,6 +71,7 @@ const ReadInventory = () => {
   const [valueForm, setValueForm] = useState(null);
   const [id, setId] = useState("");
   const [openAlertModal, setOpenAlertModal] = useState(false);
+  const [clearSearch, setClearSearch] = useState(false);
 
   const token = useSelector((state) => state.user.token);
   const inventoryItems = useSelector((state) => state.inventory.inventory);
@@ -79,6 +80,7 @@ const ReadInventory = () => {
   const orderBy = useSelector((state) => state.inventory.orderBy);
   const order = useSelector((state) => state.inventory.order);
   const totalCount = useSelector((state) => state.inventory.count);
+  const query = useSelector((state) => state.inventory.query);
   const isLoading = useSelector((state) => state.inventory.formLoading);
 
   if (inventoryItems) {
@@ -115,6 +117,7 @@ const ReadInventory = () => {
         rowsPerPage,
         order: direction,
         orderBy: property,
+        query,
       })
     );
   };
@@ -127,6 +130,7 @@ const ReadInventory = () => {
         rowsPerPage,
         orderBy,
         order,
+        query,
       })
     );
   };
@@ -139,12 +143,22 @@ const ReadInventory = () => {
         rowsPerPage: parseInt(event.target.value, 10),
         orderBy,
         order,
+        query,
       })
     );
   };
 
   const handleRequestSearch = (value) => {
-    dispatch(inventorySearch({ token, keyword: value }));
+    dispatch(
+      inventoryRead({
+        token,
+        pageNo: 0,
+        rowsPerPage,
+        orderBy,
+        order,
+        query: value,
+      })
+    );
   };
 
   useEffect(() => {
@@ -195,6 +209,7 @@ const ReadInventory = () => {
     if (formValues.id) {
       dispatch(inventoryUpdate({ formValues, token }));
     } else {
+      setClearSearch(true);
       dispatch(inventoryCreate({ formValues, token }));
     }
     handleCloseCreateOrEditInventory();
@@ -234,6 +249,7 @@ const ReadInventory = () => {
               totalCount={totalCount}
               requestSort={handleRequestSort}
               requestSearch={handleRequestSearch}
+              clearSearch={clearSearch}
               openEditFunction={handleOpenEditInventory}
               submitDeleteFunction={handleSubmitDeleteInventory}
               actions={true}

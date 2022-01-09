@@ -8,12 +8,10 @@ import {
   RELATIONSHIP_READ_REQUEST,
   RELATIONSHIP_READ_SUCCESS,
   RELATIONSHIP_READ_FAILURE,
+  RELATIONSHIP_READ_CLEAR,
   RELATIONSHIP_DELETE_REQUEST,
   RELATIONSHIP_DELETE_SUCCESS,
   RELATIONSHIP_DELETE_FAILURE,
-  RELATIONSHIP_SEARCH_REQUEST,
-  RELATIONSHIP_SEARCH_SUCCESS,
-  RELATIONSHIP_SEARCH_FAILURE,
 } from "../actions/actionTypes";
 import { mergeObjects } from "../../utils/helpers";
 
@@ -24,6 +22,7 @@ const initialState = {
   pageNo: 0,
   rowsPerPage: 5,
   count: 0,
+  query: "",
   formLoading: false,
   pageLoading: false,
 };
@@ -32,6 +31,7 @@ const relationshipReducer = (state = initialState, action) => {
   switch (action.type) {
     case RELATIONSHIP_CREATE_REQUEST:
       return mergeObjects(state, {
+        query: "",
         formLoading: true,
         pageLoading: true,
       });
@@ -114,12 +114,23 @@ const relationshipReducer = (state = initialState, action) => {
         orderBy: action.payload.orderBy,
         order: action.payload.order,
         count: action.payload.count,
+        query: action.payload.query,
         pageLoading: false,
       });
 
     case RELATIONSHIP_READ_FAILURE:
       return mergeObjects(state, {
         pageLoading: false,
+      });
+
+    case RELATIONSHIP_READ_CLEAR:
+      return mergeObjects(state, {
+        pageLoading: false,
+        orderBy: "id",
+        order: "asc",
+        pageNo: 0,
+        rowsPerPage: 5,
+        query: "",
       });
 
     case RELATIONSHIP_DELETE_REQUEST:
@@ -133,27 +144,6 @@ const relationshipReducer = (state = initialState, action) => {
       });
 
     case RELATIONSHIP_DELETE_FAILURE:
-      return mergeObjects(state, {
-        pageLoading: false,
-      });
-
-    case RELATIONSHIP_SEARCH_REQUEST:
-      return mergeObjects(state, {
-        pageLoading: true,
-      });
-
-    case RELATIONSHIP_SEARCH_SUCCESS:
-      return mergeObjects(state, {
-        relationships: action.payload.relationships || [],
-        pageNo: action.payload.pageNo,
-        rowsPerPage: action.payload.rowsPerPage,
-        orderBy: action.payload.orderBy,
-        order: action.payload.order,
-        count: action.payload.count,
-        pageLoading: false,
-      });
-
-    case RELATIONSHIP_SEARCH_FAILURE:
       return mergeObjects(state, {
         pageLoading: false,
       });

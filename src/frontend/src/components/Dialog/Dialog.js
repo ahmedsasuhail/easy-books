@@ -1,5 +1,5 @@
-import React from 'react';
-import { Form } from 'react-final-form';
+import React from "react";
+import { Form } from "react-final-form";
 
 import {
   Button,
@@ -8,7 +8,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-} from '@material-ui/core';
+} from "@material-ui/core";
 
 const CustomDialog = (props) => {
   return (
@@ -19,28 +19,34 @@ const CustomDialog = (props) => {
         open={props.open}
         onClose={props.handleClose}
       >
-        <DialogTitle id='max-width-dialog-title'>{props.title}</DialogTitle>
+        <DialogTitle id="max-width-dialog-title">{props.title}</DialogTitle>
         <Form
           initialValues={props.initialValues}
           onSubmit={props.handleSubmit}
-          render={({ handleSubmit, invalid }) => {
+          mutators={{
+            setValue: ([field, value], state, { changeValue }) => {
+              changeValue(state, field, () => value);
+            },
+          }}
+          render={({ form, handleSubmit, invalid }) => {
+            window.setFormValue = form.mutators.setValue;
             return (
               <form onSubmit={handleSubmit}>
                 <DialogContent>{props.children}</DialogContent>
                 <DialogActions>
                   <>
-                    <Button onClick={props.handleClose} color='primary'>
+                    <Button onClick={props.handleClose} color="primary">
                       {props.closeButtonLabel
                         ? props.closeButtonLabel
-                        : 'Cancel'}
+                        : "Cancel"}
                     </Button>
-                    <Button type='submit' color='secondary' disabled={invalid}>
+                    <Button type="submit" color="secondary" disabled={invalid}>
                       {props.isLoading ? (
                         <CircularProgress size={16} />
                       ) : props.saveButtonLabel ? (
                         props.saveButtonLabel
                       ) : (
-                        'Submit'
+                        "Submit"
                       )}
                     </Button>
                   </>

@@ -16,7 +16,6 @@ import {
   miscellaneousCreate,
   miscellaneousUpdate,
   miscellaneousDelete,
-  miscellaneousSearch,
 } from "../../store/actions/miscellaneous";
 
 import { formattedDate } from "../../utils/helpers";
@@ -41,6 +40,7 @@ const ReadMiscellaneous = () => {
     {
       id: "description",
       label: "Description",
+      disableSort: true,
     },
     {
       id: "price",
@@ -61,6 +61,7 @@ const ReadMiscellaneous = () => {
   const [openConfirmModal, setOpenConfirmModal] = useState(false);
   const [valueForm, setValueForm] = useState(null);
   const [id, setId] = useState("");
+  const [clearSearch, setClearSearch] = useState(false);
 
   const token = useSelector((state) => state.user.token);
   const miscellaneousItems = useSelector(
@@ -71,6 +72,7 @@ const ReadMiscellaneous = () => {
   const orderBy = useSelector((state) => state.miscellaneous.orderBy);
   const order = useSelector((state) => state.miscellaneous.order);
   const totalCount = useSelector((state) => state.miscellaneous.count);
+  const query = useSelector((state) => state.miscellaneous.query);
   const isLoading = useSelector((state) => state.miscellaneous.formLoading);
 
   if (miscellaneousItems) {
@@ -105,6 +107,7 @@ const ReadMiscellaneous = () => {
         rowsPerPage,
         order: direction,
         orderBy: property,
+        query,
       })
     );
   };
@@ -117,6 +120,7 @@ const ReadMiscellaneous = () => {
         rowsPerPage,
         orderBy,
         order,
+        query,
       })
     );
   };
@@ -129,12 +133,22 @@ const ReadMiscellaneous = () => {
         rowsPerPage: parseInt(event.target.value, 10),
         orderBy,
         order,
+        query,
       })
     );
   };
 
   const handleRequestSearch = (value) => {
-    dispatch(miscellaneousSearch({ token, keyword: value }));
+    dispatch(
+      miscellaneousRead({
+        token,
+        pageNo: 0,
+        rowsPerPage,
+        orderBy,
+        order,
+        query: value,
+      })
+    );
   };
 
   useEffect(() => {
@@ -188,6 +202,7 @@ const ReadMiscellaneous = () => {
         })
       );
     } else {
+      setClearSearch(true);
       dispatch(
         miscellaneousCreate({
           formValues,
@@ -234,6 +249,7 @@ const ReadMiscellaneous = () => {
               changePage={handleChangePage}
               changeRowsPerPage={handleChangeRowsPerPage}
               requestSearch={handleRequestSearch}
+              clearSearch={clearSearch}
               actions={true}
               openEditFunction={handleOpenEditMiscellaneous}
               submitDeleteFunction={handleSubmitDeleteMiscellaneous}

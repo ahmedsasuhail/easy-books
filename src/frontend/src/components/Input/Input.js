@@ -1,8 +1,8 @@
-import React from 'react';
+import React from "react";
 
-import { TextField } from '@material-ui/core';
+import { TextField } from "@material-ui/core";
 
-import useStyles from './inputStyles';
+import useStyles from "./inputStyles";
 
 const Input = (props) => {
   var classes = useStyles();

@@ -7,7 +7,6 @@ import Switch from "@mui/material/Switch";
 import { makeStyles, CircularProgress } from "@material-ui/core";
 
 import Input from "../../components/Input/Input";
-import Select from "../../components/Select/Select";
 
 import PurchasesModal from "../inventory/PurchasesModal";
 import RelationshipModal from "../purchases/RelationshipModal";
@@ -16,7 +15,7 @@ import MessageDialogue from "../../components/Dialog/MessageDialogue";
 
 import { getInventoryPurchase } from "../../store/actions/inventory_purchase";
 
-import { validateFloat } from "../../utils/helpers";
+import { validateFloat, validateLimit } from "../../utils/helpers";
 
 const useStyles = makeStyles((theme) => ({
   switchMargin: {
@@ -34,20 +33,22 @@ const CreateUpdateSales = (props) => {
   const relationshipItems = useSelector(
     (state) => state.relationship.relationships
   );
-  const inventoryItems = useSelector((state) => state.inventory.inventory);
   const inventoryPurchaseData = useSelector(
     (state) => state.inventoryPurchase.data
   );
   const isLoading = useSelector((state) => state.inventoryPurchase.loading);
-  const pageNo = useSelector((state) => state.inventory.pageNo);
-  const rowsPerPage = useSelector((state) => state.inventory.rowsPerPage);
-  const orderBy = useSelector((state) => state.inventory.orderBy);
-  const order = useSelector((state) => state.inventory.order);
+  const pageNo = useSelector((state) => state.inventoryPurchase.pageNo);
+  const rowsPerPage = useSelector(
+    (state) => state.inventoryPurchase.rowsPerPage
+  );
+  const orderBy = useSelector((state) => state.inventoryPurchase.orderBy);
+  const order = useSelector((state) => state.inventoryPurchase.order);
 
   const [purchaseId, setPurchaseId] = useState();
   const [purchaseName, setPurchaseName] = useState();
   const [inventoryId, setInventoryId] = useState();
   const [inventoryName, setInventoryName] = useState();
+  const [inventoryQuantity, setInventoryQuantity] = useState();
   const [relationshipId, setRelationshipId] = useState();
   const [relationshipName, setRelationshipName] = useState();
   const [openPurchasesModal, setOpenPurchasesModal] = useState(false);
@@ -63,14 +64,8 @@ const CreateUpdateSales = (props) => {
       !purchaseName
     ) {
       setPurchaseId(+formState.values.purchase_id);
-
-      const items = purchaseItems.filter(
-        (item) => item.id === formState.values.purchase_id
-      );
-
-      if (items.length > 0) {
-        setPurchaseName(`${items[0].company_name}-${items[0].vehicle_name}`);
-      }
+      setPurchaseName(formState.values.purchase_name);
+      window.setFormValue("purchase_id", +formState.values.purchase_id);
     } else if (
       formState.values.id &&
       purchaseItems.length > 0 &&
@@ -78,14 +73,8 @@ const CreateUpdateSales = (props) => {
       !inventoryName
     ) {
       setInventoryId(+formState.values.inventory_id);
-
-      const items = inventoryItems.filter(
-        (item) => item.id === formState.values.inventory_id
-      );
-
-      if (items.length > 0) {
-        setInventoryName(items[0].part_name);
-      }
+      setInventoryName(formState.values.part_name);
+      window.setFormValue("inventory_id", +formState.values.inventory_id);
     } else if (
       formState.values.id &&
       relationshipItems.length > 0 &&
@@ -93,14 +82,8 @@ const CreateUpdateSales = (props) => {
       !relationshipName
     ) {
       setRelationshipId(+formState.values.relationship_id);
-
-      const items = relationshipItems.filter(
-        (item) => item.id === formState.values.relationship_id
-      );
-
-      if (items.length > 0) {
-        setRelationshipName(items[0].name);
-      }
+      setRelationshipName(formState.values.buyer);
+      window.setFormValue("relationship_id", +formState.values.relationship_id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [purchaseId, inventoryId, relationshipId]);
@@ -112,18 +95,22 @@ const CreateUpdateSales = (props) => {
   const handleSetPurchaseName = (value) => {
     setPurchaseId(value.id);
     setPurchaseName(`${value.company_name} - ${value.vehicle_name}`);
+    window.setFormValue("purchase_id", value.id);
     handleClosePurchasesModal();
   };
 
   const handleSetInventoryName = (value) => {
     setInventoryId(value.id);
     setInventoryName(value.part_name);
+    setInventoryQuantity(value.quantity);
+    window.setFormValue("inventory_id", value.id);
     handleCloseInventoryModal();
   };
 
   const handleSetRelationshipName = (value) => {
     setRelationshipId(value.id);
     setRelationshipName(value.name);
+    window.setFormValue("relationship_id", value.id);
     handleCloseRelationshipModal();
   };
 
@@ -144,7 +131,6 @@ const CreateUpdateSales = (props) => {
       getInventoryPurchase({ id, token, pageNo, rowsPerPage, orderBy, order })
     ).then((res) => {
       if (!res) {
-        // alert("There are no inventory items with the current purchase item.");
         setOpenAlertModal(true);
       }
     });
@@ -153,29 +139,30 @@ const CreateUpdateSales = (props) => {
   useEffect(() => {
     if (props.initialValues && props.initialValues.purchase_id) {
       inventoryPurchaseHandler(props.initialValues.purchase_id);
+      setInventoryQuantity(props.initialValues.inventory_quantity);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    inventoryPurchaseHandler(purchaseId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [purchaseId]);
+
   return (
     <>
       <Field
-        component={Select}
-        options={[{ id: purchaseId, name: purchaseName }]}
+        component={Input}
         id="purchase_id"
         name="purchase_id"
-        label="Purchase Id"
+        type="hidden"
         margin="normal"
-        hasEmptyOption={true}
-        disabled={!purchaseId}
-        InputLabelProps={{
-          shrink: !purchaseId ? false : true,
-        }}
-        fullWidth
         required
         validate={required}
-        onChange={(e) => inventoryPurchaseHandler(e.target.value)}
       />
+      <p>
+        Purchase Name: <br /> {purchaseName}
+      </p>
       <Field>
         {() => (
           <Button
@@ -189,21 +176,17 @@ const CreateUpdateSales = (props) => {
         )}
       </Field>
       <Field
-        component={Select}
-        options={[{ id: inventoryId, name: inventoryName }]}
+        component={Input}
         id="inventory_id"
         name="inventory_id"
-        label="Inventory Id"
+        type="hidden"
         margin="normal"
-        hasEmptyOption={true}
-        disabled={!inventoryId}
-        InputLabelProps={{
-          shrink: !inventoryId ? false : true,
-        }}
-        fullWidth
         required
         validate={required}
       />
+      <p>
+        Inventory Name: <br /> {inventoryName}
+      </p>
       {isLoading ? (
         <CircularProgress size={16} />
       ) : (
@@ -225,21 +208,17 @@ const CreateUpdateSales = (props) => {
         </Field>
       )}
       <Field
-        component={Select}
-        options={[{ id: relationshipId, name: relationshipName }]}
+        component={Input}
         id="relationship_id"
         name="relationship_id"
-        label="Relationship Id"
+        type="hidden"
         margin="normal"
-        hasEmptyOption={true}
-        disabled={!relationshipId}
-        InputLabelProps={{
-          shrink: !relationshipId ? false : true,
-        }}
-        fullWidth
         required
         validate={required}
       />
+      <p>
+        Buyer Name: <br /> {relationshipName}
+      </p>
       <Field>
         {() => (
           <Button
@@ -248,10 +227,21 @@ const CreateUpdateSales = (props) => {
             size="small"
             color="primary"
           >
-            Add Relationship
+            Add Buyer
           </Button>
         )}
       </Field>
+      <Field
+        component={Input}
+        id="quantity"
+        name="quantity"
+        label={`Quantity (Max: ${inventoryQuantity || 1})`}
+        type="number"
+        margin="normal"
+        fullWidth
+        required
+        validate={validateLimit(1, inventoryQuantity || 1)}
+      />
       <Field
         component={Input}
         id="price"

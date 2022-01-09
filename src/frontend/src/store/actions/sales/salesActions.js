@@ -11,9 +11,6 @@ import {
   SALES_DELETE_REQUEST,
   SALES_DELETE_SUCCESS,
   SALES_DELETE_FAILURE,
-  SALES_SEARCH_REQUEST,
-  SALES_SEARCH_SUCCESS,
-  SALES_SEARCH_FAILURE,
 } from "../actionTypes";
 
 export const salesActions = {
@@ -74,7 +71,8 @@ export const salesActions = {
         rowsPerPage: values.page_limit,
         orderBy: values.order_by,
         order: values.sort_order,
-        count: values.total_count,
+        count: values.query ? values.total_matched_count : values.total_count,
+        query: values.query,
       },
     };
   },
@@ -100,32 +98,6 @@ export const salesActions = {
   salesDeleteFailure: () => {
     return {
       type: SALES_DELETE_FAILURE,
-    };
-  },
-
-  salesSearchRequest: () => {
-    return {
-      type: SALES_SEARCH_REQUEST,
-    };
-  },
-
-  salesSearchSuccess: (values) => {
-    return {
-      type: SALES_SEARCH_SUCCESS,
-      payload: {
-        sales: values.records,
-        pageNo: values.page - 1,
-        rowsPerPage: values.page_limit,
-        orderBy: values.order_by,
-        order: values.sort_order,
-        count: values.total_count,
-      },
-    };
-  },
-
-  salesSearchFailure: () => {
-    return {
-      type: SALES_SEARCH_FAILURE,
     };
   },
 };

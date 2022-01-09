@@ -32,7 +32,7 @@ export const miscellaneousCreate = (values) => {
       console.log("Catch Error: ", error);
       dispatch(miscellaneousActions.miscellaneousCreateFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.logoutUser());
+        dispatch(userActions.userAuthFailure(error.response.data.message));
       }
     }
   };
@@ -68,7 +68,7 @@ export const miscellaneousUpdate = (values) => {
       console.log("Catch Error: ", error);
       dispatch(miscellaneousActions.miscellaneousUpdateFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.logoutUser());
+        dispatch(userActions.userAuthFailure(error.response.data.message));
       }
     }
   };
@@ -81,7 +81,9 @@ export const miscellaneousRead = (values) => {
       const response = await axios.get(
         `miscellaneous/?page=${values.pageNo + 1}&page_limit=${
           values.rowsPerPage
-        }&order_by=${values.orderBy}&sort_order=${values.order}`,
+        }&order_by=${values.orderBy}&sort_order=${values.order}&q=${
+          values.query
+        }`,
         {
           headers: {
             Authorization: values.token,
@@ -100,7 +102,7 @@ export const miscellaneousRead = (values) => {
       console.log("Catch Error: ", error);
       dispatch(miscellaneousActions.miscellaneousReadFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.logoutUser());
+        dispatch(userActions.userAuthFailure(error.response.data.message));
       }
     }
   };
@@ -130,42 +132,9 @@ export const miscellaneousDelete = (values) => {
       console.log("Catch Error: ", error);
       dispatch(miscellaneousActions.miscellaneousDeleteFailure());
       if (error.response && error.response.status === 401) {
-        dispatch(userActions.logoutUser());
+        dispatch(userActions.userAuthFailure(error.response.data.message));
       }
     }
     return result;
-  };
-};
-
-export const miscellaneousSearch = (values) => {
-  return async (dispatch) => {
-    dispatch(miscellaneousActions.miscellaneousSearchRequest());
-    try {
-      const response = await axios.post(
-        "miscellaneous/search",
-        {
-          search_term: values.keyword,
-        },
-        {
-          headers: {
-            Authorization: values.token,
-          },
-        }
-      );
-      if (response.data.data) {
-        dispatch(
-          miscellaneousActions.miscellaneousSearchSuccess(response.data.data)
-        );
-      } else {
-        console.log("Error: ", response);
-        dispatch(miscellaneousActions.miscellaneousSearchFailure());
-      }
-    } catch (error) {
-      console.log("Catch Error: ", error);
-      dispatch(miscellaneousActions.miscellaneousSearchFailure());
-      if (error.response && error.response.status === 401) {
-        dispatch(userActions.logoutUser());
-      }
-    }
   };
 };

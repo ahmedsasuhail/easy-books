@@ -2,6 +2,8 @@ import React, { useEffect, Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Route, Switch, withRouter } from "react-router-dom";
 
+import { Button } from "@material-ui/core";
+
 import classnames from "classnames";
 
 import useStyles from "./styles";
@@ -9,6 +11,7 @@ import useStyles from "./styles";
 import Header from "../Header";
 import Sidebar from "../Sidebar";
 import Loader from "../Loader/Loader";
+import MessageDialogue from "../Dialog/MessageDialogue";
 
 import Dashboard from "../../pages/dashboard/Dashboard";
 import Miscellaneous from "../../pages/miscellaneous/ReadMiscellaneous";
@@ -23,6 +26,7 @@ import { useLayoutState } from "../../context/LayoutContext";
 import { relationshipRead } from "../../store/actions/relationship";
 import { purchaseRead } from "../../store/actions/purchase";
 import { inventoryRead } from "../../store/actions/inventory";
+import { userLogout } from "../../store/actions/user";
 
 function Layout() {
   var classes = useStyles();
@@ -32,6 +36,8 @@ function Layout() {
   const dispatch = useDispatch();
 
   const token = useSelector((state) => state.user.token);
+  const isModalOpen = useSelector((state) => state.user.modelOpen);
+  const message = useSelector((state) => state.user.message);
 
   const isMiscellaneousLoading = useSelector(
     (state) => state.miscellaneous.pageLoading
@@ -53,6 +59,7 @@ function Layout() {
         rowsPerPage: 5,
         order: "asc",
         orderBy: "id",
+        query: "",
       })
     );
     dispatch(
@@ -62,6 +69,7 @@ function Layout() {
         rowsPerPage: 5,
         order: "asc",
         orderBy: "id",
+        query: "",
       })
     );
     dispatch(
@@ -71,6 +79,7 @@ function Layout() {
         rowsPerPage: 5,
         order: "asc",
         orderBy: "id",
+        query: "",
       })
     );
   }, [dispatch, token]);
@@ -106,6 +115,23 @@ function Layout() {
           </Switch>
         </div>
       </div>
+      <MessageDialogue
+        title="Alert"
+        message={message}
+        button={
+          <>
+            <Button
+              size="small"
+              onClick={() => dispatch(userLogout())}
+              color="primary"
+            >
+              Close
+            </Button>
+          </>
+        }
+        openModal={isModalOpen}
+        handleCloseModal={() => dispatch(userLogout())}
+      />
     </Fragment>
   );
 }
