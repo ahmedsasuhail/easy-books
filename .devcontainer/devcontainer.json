@@ -29,7 +29,7 @@
       }
     },
     "terminal.integrated.defaultProfile.linux": "zsh",
-    "terminal.integrated.automationShell.linux": "bash"
+    "#terminal.integrated.automationShell.linux": "bash"
   },
 
   // Add the IDs of extensions you want installed when the container is created.
