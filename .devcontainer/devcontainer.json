@@ -34,7 +34,7 @@
 
   // Add the IDs of extensions you want installed when the container is created.
   "extensions": [
-    "golang.go",
+    "matklad.rust-analyzer",
     "dbaeumer.vscode-eslint",
     "ms-azuretools.vscode-docker",
     "rangav.vscode-thunder-client"
@@ -62,6 +62,6 @@
     "docker-from-docker": "latest",
     "git": "os-provided",
     "node": "16",
-    "golang": "1.17"
+    "rust": "1.57.0"
   }
 }
