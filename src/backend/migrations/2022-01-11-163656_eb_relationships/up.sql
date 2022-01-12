@@ -1,0 +1,9 @@
+CREATE TABLE eb_relationships (
+	created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	updated_at TIMESTAMPTZ,
+
+	id SERIAL PRIMARY KEY,
+	name VARCHAR (100),
+	phone_number VARCHAR (10) UNIQUE,
+	address VARCHAR (250)
+);

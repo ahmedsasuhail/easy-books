@@ -1,0 +1,8 @@
+CREATE TABLE eb_users (
+	created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	updated_at TIMESTAMPTZ,
+
+	name VARCHAR (100),
+	email VARCHAR (100) PRIMARY KEY,
+	password TEXT NOT NULL
+);
