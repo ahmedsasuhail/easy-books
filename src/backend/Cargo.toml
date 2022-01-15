@@ -3,10 +3,21 @@ name = "easy-books"
 version = "0.1.0"
 edition = "2021"
 
-[dependencies]
-rocket = "0.5.0-rc.1"
-chrono = "0.4.19"
-bigdecimal = "0.1.2"
+[dependencies.serde]
+version = "1.0"
+features = ["derive"]
+
+[dependencies.bigdecimal]
+version = "0.1.2"
+features = ["serde"]
+
+[dependencies.chrono]
+version = "0.4.19"
+features = ["serde"]
+
+[dependencies.rocket]
+version = "0.5.0-rc.1"
+features = ["json"]
 
 [dependencies.rocket_sync_db_pools]
 version = "0.1.0-rc.1"

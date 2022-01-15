@@ -1,6 +1,7 @@
 use bigdecimal::BigDecimal;
 use chrono::{NaiveDate, NaiveDateTime};
 use diesel::{Insertable, Queryable};
+use serde::{Deserialize, Serialize};
 
 use crate::schema::*;
 
@@ -8,7 +9,7 @@ use crate::schema::*;
 // eb_inventory
 // ----------------------------------------------------------------------------
 
-#[derive(Queryable)]
+#[derive(Queryable, Serialize)]
 pub struct Inventory {
     pub created_at: NaiveDateTime,
     pub updated_at: Option<NaiveDateTime>,
@@ -20,7 +21,7 @@ pub struct Inventory {
     pub purchase_id: Option<usize>,
 }
 
-#[derive(Insertable)]
+#[derive(Insertable, Deserialize)]
 #[table_name = "eb_inventory"]
 pub struct NewInventory<'a> {
     pub updated_at: Option<NaiveDateTime>,
@@ -35,7 +36,7 @@ pub struct NewInventory<'a> {
 // eb_miscellaneous
 // ----------------------------------------------------------------------------
 
-#[derive(Queryable)]
+#[derive(Queryable, Serialize)]
 pub struct Miscellaneous {
     pub created_at: NaiveDateTime,
     pub updated_at: Option<NaiveDateTime>,
@@ -45,7 +46,7 @@ pub struct Miscellaneous {
     pub date: Option<NaiveDate>,
 }
 
-#[derive(Insertable)]
+#[derive(Insertable, Deserialize)]
 #[table_name = "eb_miscellaneous"]
 pub struct NewMiscellaneous<'a> {
     pub updated_at: Option<NaiveDateTime>,
@@ -58,7 +59,7 @@ pub struct NewMiscellaneous<'a> {
 // eb_purchases
 // ----------------------------------------------------------------------------
 
-#[derive(Queryable)]
+#[derive(Queryable, Serialize)]
 pub struct Purchase {
     pub created_at: NaiveDateTime,
     pub updated_at: Option<NaiveDateTime>,
@@ -70,7 +71,7 @@ pub struct Purchase {
     pub relationship_id: Option<usize>,
 }
 
-#[derive(Insertable)]
+#[derive(Insertable, Deserialize)]
 #[table_name = "eb_purchases"]
 pub struct NewPurchase<'a> {
     pub updated_at: Option<NaiveDateTime>,
@@ -85,7 +86,7 @@ pub struct NewPurchase<'a> {
 // eb_relationships
 // ----------------------------------------------------------------------------
 
-#[derive(Queryable)]
+#[derive(Queryable, Serialize)]
 pub struct Relationship {
     pub created_at: NaiveDateTime,
     pub updated_at: Option<NaiveDateTime>,
@@ -95,7 +96,7 @@ pub struct Relationship {
     pub address: Option<String>,
 }
 
-#[derive(Insertable)]
+#[derive(Insertable, Deserialize)]
 #[table_name = "eb_relationships"]
 pub struct NewRelationship<'a> {
     pub updated_at: Option<NaiveDateTime>,
@@ -108,7 +109,7 @@ pub struct NewRelationship<'a> {
 // eb_sales
 // ----------------------------------------------------------------------------
 
-#[derive(Queryable)]
+#[derive(Queryable, Serialize)]
 pub struct Sale {
     pub created_at: NaiveDateTime,
     pub updated_at: Option<NaiveDateTime>,
@@ -123,7 +124,7 @@ pub struct Sale {
     pub inventory_id: Option<usize>,
 }
 
-#[derive(Insertable)]
+#[derive(Insertable, Deserialize)]
 #[table_name = "eb_sales"]
 pub struct NewSale {
     pub updated_at: Option<NaiveDateTime>,
@@ -141,7 +142,7 @@ pub struct NewSale {
 // eb_users
 // ----------------------------------------------------------------------------
 
-#[derive(Queryable)]
+#[derive(Queryable, Serialize)]
 pub struct User {
     pub created_at: NaiveDateTime,
     pub updated_at: Option<NaiveDateTime>,
@@ -150,7 +151,7 @@ pub struct User {
     pub password: String,
 }
 
-#[derive(Insertable)]
+#[derive(Insertable, Deserialize)]
 #[table_name = "eb_users"]
 pub struct NewUser<'a> {
     pub updated_at: Option<NaiveDateTime>,
