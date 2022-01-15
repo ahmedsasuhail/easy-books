@@ -62,6 +62,6 @@
     "docker-from-docker": "latest",
     "git": "os-provided",
     "node": "16",
-    "rust": "1.57.0"
+    "rust": "1.58.0"
   }
 }
