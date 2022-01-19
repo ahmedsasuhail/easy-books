@@ -23,9 +23,9 @@ pub struct Inventory {
 
 #[derive(Insertable, Deserialize)]
 #[table_name = "eb_inventory"]
-pub struct NewInventory<'a> {
+pub struct NewInventory {
     pub updated_at: Option<NaiveDateTime>,
-    pub part_name: Option<&'a str>,
+    pub part_name: Option<String>,
     pub quantity: Option<i32>,
     pub date: Option<NaiveDate>,
     pub sold_out: Option<bool>,
@@ -48,9 +48,9 @@ pub struct Miscellaneous {
 
 #[derive(Insertable, Deserialize)]
 #[table_name = "eb_miscellaneous"]
-pub struct NewMiscellaneous<'a> {
+pub struct NewMiscellaneous {
     pub updated_at: Option<NaiveDateTime>,
-    pub description: Option<&'a str>,
+    pub description: Option<String>,
     pub price: Option<BigDecimal>,
     pub date: Option<NaiveDate>,
 }
@@ -73,10 +73,10 @@ pub struct Purchase {
 
 #[derive(Insertable, Deserialize)]
 #[table_name = "eb_purchases"]
-pub struct NewPurchase<'a> {
+pub struct NewPurchase {
     pub updated_at: Option<NaiveDateTime>,
-    pub company_name: Option<&'a str>,
-    pub vehicle_name: Option<&'a str>,
+    pub company_name: Option<String>,
+    pub vehicle_name: Option<String>,
     pub price: Option<BigDecimal>,
     pub date: Option<NaiveDate>,
     pub relationship_id: Option<i32>,
@@ -98,11 +98,11 @@ pub struct Relationship {
 
 #[derive(Insertable, Deserialize)]
 #[table_name = "eb_relationships"]
-pub struct NewRelationship<'a> {
+pub struct NewRelationship {
     pub updated_at: Option<NaiveDateTime>,
-    pub name: Option<&'a str>,
-    pub phone_number: Option<&'a str>,
-    pub address: Option<&'a str>,
+    pub name: Option<String>,
+    pub phone_number: Option<String>,
+    pub address: Option<String>,
 }
 
 // ----------------------------------------------------------------------------
@@ -153,9 +153,9 @@ pub struct User {
 
 #[derive(Insertable, Deserialize)]
 #[table_name = "eb_users"]
-pub struct NewUser<'a> {
+pub struct NewUser {
     pub updated_at: Option<NaiveDateTime>,
-    pub name: Option<&'a str>,
-    pub email: &'a str,
-    pub password: &'a str,
+    pub name: Option<String>,
+    pub email: String,
+    pub password: String,
 }
