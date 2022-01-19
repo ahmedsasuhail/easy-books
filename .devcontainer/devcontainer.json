@@ -37,7 +37,8 @@
     "matklad.rust-analyzer",
     "dbaeumer.vscode-eslint",
     "ms-azuretools.vscode-docker",
-    "rangav.vscode-thunder-client"
+    "rangav.vscode-thunder-client",
+    "webfreak.debug"
   ],
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
