@@ -8,6 +8,7 @@ use rocket_sync_db_pools::database;
 
 // Modules.
 pub mod controllers;
+pub mod fairings;
 pub mod models;
 pub mod routes;
 pub mod schema;
@@ -21,6 +22,7 @@ pub struct Database(diesel::PgConnection);
 fn rocket() -> _ {
     rocket::build()
         .attach(Database::fairing())
+        .attach(fairings::CORSFairing)
         .mount("/", routes![routes::index])
         .mount("/auth", routes![routes::register])
 }
