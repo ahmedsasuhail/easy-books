@@ -1,5 +1,0 @@
-CREATE TABLE IF NOT EXISTS eb_users (
-	name VARCHAR (100),
-	email VARCHAR (100) PRIMARY KEY,
-	password TEXT NOT NULL
-);
