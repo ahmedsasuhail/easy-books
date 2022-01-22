@@ -1,14 +1,17 @@
 /// Routes configuration for backend.
 // TODO: add custom request guard for deserialization errors.
+// TODO: read JWT_SECRET from environment instead of using constant.
 use chrono::{Duration, Utc};
 
 use crate::auth::{self, JWTToken};
 use crate::consts::JWT_SECRET;
 use crate::controllers;
 use crate::models::{NewUser, User};
-use crate::types::{ApiResponse, Status};
+use crate::types::{ApiResponse, CustomResponse, StatusType};
+use crate::utils;
 use crate::Database;
 
+use rocket::http::Status;
 use rocket::serde::json::Json;
 
 #[get("/")]
@@ -50,24 +53,30 @@ pub fn index() -> &'static str {
 /// }
 /// ```
 #[post("/register", data = "<user>", format = "json")]
-pub async fn register(db: Database, user: Json<NewUser>) -> Json<ApiResponse<User>> {
+pub async fn register(db: Database, user: Json<NewUser>) -> CustomResponse<User> {
     let new_user = Json::into_inner(user);
 
     let user = db.run(|c| controllers::create_user(c, new_user)).await;
 
     match user {
-        Ok(u) => Json::from(ApiResponse {
-            status: Status::Success,
-            code: 200,
-            message: None,
-            data: Some(u),
-        }),
-        Err(e) => Json::from(ApiResponse {
-            status: Status::Error,
-            code: 500,
-            message: Some(e.to_string()),
-            data: None,
-        }),
+        Ok(u) => utils::custom_response(
+            Status::Ok,
+            ApiResponse {
+                status_type: StatusType::Success,
+                code: Status::Ok.code,
+                message: None,
+                data: Some(u),
+            },
+        ),
+        Err(e) => utils::custom_response(
+            Status::InternalServerError,
+            ApiResponse {
+                status_type: StatusType::Error,
+                code: Status::InternalServerError.code,
+                message: Some(e.to_string()),
+                data: None,
+            },
+        ),
     }
 }
 
@@ -102,7 +111,7 @@ pub async fn register(db: Database, user: Json<NewUser>) -> Json<ApiResponse<Use
 /// }
 /// ```
 #[post("/login", data = "<user>", format = "json")]
-pub async fn login(db: Database, user: Json<NewUser>) -> Json<ApiResponse<JWTToken>> {
+pub async fn login(db: Database, user: Json<NewUser>) -> CustomResponse<JWTToken> {
     let user = user.into_inner();
 
     let user = db.run(|c| controllers::auth_user(c, user)).await;
@@ -118,25 +127,34 @@ pub async fn login(db: Database, user: Json<NewUser>) -> Json<ApiResponse<JWTTok
             let token = auth::gen_token(claims, JWT_SECRET);
 
             match token {
-                Ok(t) => Json::from(ApiResponse {
-                    status: Status::Success,
-                    code: 200,
-                    message: None,
-                    data: Some(t),
-                }),
-                Err(e) => Json::from(ApiResponse {
-                    status: Status::Error,
-                    code: 500,
-                    message: Some(e.to_string()),
-                    data: None,
-                }),
+                Ok(t) => utils::custom_response(
+                    Status::Ok,
+                    ApiResponse {
+                        status_type: StatusType::Success,
+                        code: Status::Ok.code,
+                        message: None,
+                        data: Some(t),
+                    },
+                ),
+                Err(e) => utils::custom_response(
+                    Status::InternalServerError,
+                    ApiResponse {
+                        status_type: StatusType::Error,
+                        code: Status::InternalServerError.code,
+                        message: Some(e.to_string()),
+                        data: None,
+                    },
+                ),
             }
         }
-        Err(e) => Json::from(ApiResponse {
-            status: Status::Fail,
-            code: 401,
-            message: Some(e.to_string()),
-            data: None,
-        }),
+        Err(e) => utils::custom_response(
+            Status::Unauthorized,
+            ApiResponse {
+                status_type: StatusType::Fail,
+                code: Status::Unauthorized.code,
+                message: Some(e.to_string()),
+                data: None,
+            },
+        ),
     }
 }
