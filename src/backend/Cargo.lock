@@ -286,6 +286,7 @@ dependencies = [
  "rocket_sync_db_pools",
  "serde",
  "sha2",
+ "sha3",
 ]
 
 [[package]]
@@ -614,6 +615,12 @@ dependencies = [
  "serde_json",
  "sha2",
 ]
+
+[[package]]
+name = "keccak"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "67c21572b4949434e4fc1e1978b99c5f77064153c59d998bf13ecd96fb5ecba7"
 
 [[package]]
 name = "lazy_static"
@@ -1219,6 +1226,16 @@ dependencies = [
  "cfg-if",
  "cpufeatures",
  "digest",
+]
+
+[[package]]
+name = "sha3"
+version = "0.10.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "31f935e31cf406e8c0e96c2815a5516181b7004ae8c5f296293221e9b1e356bd"
+dependencies = [
+ "digest",
+ "keccak",
 ]
 
 [[package]]

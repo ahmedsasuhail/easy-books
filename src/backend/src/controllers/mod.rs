@@ -1,6 +1,7 @@
 /// This module contains controller functions that can be used as route handlers.
 use crate::models::{NewUser, User};
 use crate::types::QueryError;
+use crate::utils;
 
 use diesel::prelude::*;
 use diesel::{PgConnection, QueryDsl, RunQueryDsl};
@@ -15,6 +16,11 @@ use diesel::{PgConnection, QueryDsl, RunQueryDsl};
 pub fn create_user(conn: &PgConnection, user: NewUser) -> Result<User, QueryError> {
     use crate::schema::eb_users::dsl::*;
 
+    // Replace the password with its hashed version.
+    let user = NewUser {
+        password: utils::hash_sha3_512(&user.password),
+        ..user
+    };
     diesel::insert_into(eb_users).values(&user).execute(conn)?;
 
     let user = eb_users.filter(email.eq(&user.email)).first::<User>(conn)?;
@@ -33,7 +39,7 @@ pub fn auth_user(conn: &PgConnection, user: NewUser) -> Result<User, QueryError>
 
     let found_user = eb_users
         .filter(email.eq(&user.email))
-        .filter(password.eq(&user.password))
+        .filter(password.eq(utils::hash_sha3_512(&user.password)))
         .first::<User>(conn);
 
     found_user.map_err(|_| "invalid credentials".into())

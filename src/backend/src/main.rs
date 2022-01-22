@@ -15,6 +15,7 @@ pub mod models;
 pub mod routes;
 pub mod schema;
 pub mod types;
+pub mod utils;
 
 // Primary backend database connection pool.
 #[database("db")]
