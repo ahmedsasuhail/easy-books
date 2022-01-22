@@ -148,6 +148,8 @@ pub struct User {
     pub updated_at: Option<NaiveDateTime>,
     pub name: Option<String>,
     pub email: String,
+
+    #[serde(skip_serializing)]
     pub password: String,
 }
 
