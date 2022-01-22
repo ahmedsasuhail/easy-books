@@ -1,4 +1,9 @@
 /// Routes configuration for backend.
+// TODO: add custom request guard for deserialization errors.
+use chrono::{Duration, Utc};
+
+use crate::auth::{self, JWTToken};
+use crate::consts::JWT_SECRET;
 use crate::controllers;
 use crate::models::{NewUser, User};
 use crate::types::{ApiResponse, Status};
@@ -11,13 +16,12 @@ pub fn index() -> &'static str {
     "Welcome to Easy Books!"
 }
 
-// TODO: add custom request guard for deserialization errors.
 /// Registers a new user into the database.
 ///
 /// # Arguments
 ///
 /// * `db` - The database connection pool.
-/// * `new_user` - The user to register.
+/// * `user` - The user to register.
 ///
 /// # Example Request
 ///
@@ -61,6 +65,76 @@ pub async fn register(db: Database, user: Json<NewUser>) -> Json<ApiResponse<Use
         Err(e) => Json::from(ApiResponse {
             status: Status::Error,
             code: 500,
+            message: Some(e.to_string()),
+            data: None,
+        }),
+    }
+}
+
+/// Authenticates a user and generates a JWT token if successful.
+///
+/// # Arguments
+///
+/// * `db` - The database connection pool.
+/// * `user` - The user to authenticate.
+///
+/// # Example Request
+///
+/// ```json
+/// {
+///     "email": "john.doe@example.com",
+///     "password": "password123"
+/// }
+/// ```
+///
+/// # Example Response
+///
+/// ```json
+/// {
+///     "status": "success",
+///     "code": 200,
+///     "message": null,
+///     "data": {
+///         "token": "eyJhbGciOiJIUzI1NiJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbWFpbCI6ImpvaG4uZG9lQGV4YW1wbGUuY29tIiwiZXhwaXJ5IjoiMjAyMi0wMS0yM1QxMjoyNzo1Mi4wNjkyMzE1NDZaIn0.tdUgkBeKf4m_EyTM3A9Kh9hyPchrw02zI2AAw99J_6o",
+///         "email": "john.doe@example.com",
+///         "expiry": "2022-01-23T12:27:52.069231546Z"
+///     }
+/// }
+/// ```
+#[post("/login", data = "<user>", format = "json")]
+pub async fn login(db: Database, user: Json<NewUser>) -> Json<ApiResponse<JWTToken>> {
+    let user = user.into_inner();
+
+    let user = db.run(|c| controllers::auth_user(c, user)).await;
+    match user {
+        Ok(u) => {
+            // If login was successful, we generate and return a JWT token.
+            let claims = auth::JWTClaims {
+                authorized: true,
+                email: u.email,
+                expiry: Utc::now() + Duration::hours(24),
+            };
+
+            let token = auth::gen_token(claims, JWT_SECRET);
+
+            match token {
+                Ok(t) => Json::from(ApiResponse {
+                    status: Status::Success,
+                    code: 200,
+                    message: None,
+                    data: Some(t),
+                }),
+                Err(e) => Json::from(ApiResponse {
+                    status: Status::Error,
+                    code: 500,
+                    message: Some(e.to_string()),
+                    data: None,
+                }),
+            }
+        }
+        Err(e) => Json::from(ApiResponse {
+            status: Status::Fail,
+            code: 401,
             message: Some(e.to_string()),
             data: None,
         }),

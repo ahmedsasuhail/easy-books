@@ -7,6 +7,8 @@ extern crate diesel;
 use rocket_sync_db_pools::database;
 
 // Modules.
+pub mod auth;
+pub mod consts;
 pub mod controllers;
 pub mod fairings;
 pub mod models;
@@ -24,5 +26,5 @@ fn rocket() -> _ {
         .attach(Database::fairing())
         .attach(fairings::CORSFairing)
         .mount("/", routes![routes::index])
-        .mount("/auth", routes![routes::register])
+        .mount("/auth", routes![routes::register, routes::login])
 }

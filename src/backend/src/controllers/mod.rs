@@ -17,10 +17,24 @@ pub fn create_user(conn: &PgConnection, user: NewUser) -> Result<User, QueryErro
 
     diesel::insert_into(eb_users).values(&user).execute(conn)?;
 
-    let user = eb_users.filter(email.eq(&user.email)).first::<User>(conn);
+    let user = eb_users.filter(email.eq(&user.email)).first::<User>(conn)?;
 
-    match user {
-        Ok(u) => Ok(u),
-        Err(e) => Err(Box::from(e)),
-    }
+    Ok(user)
+}
+
+/// Authenticates a specified user's credentials with the records in the database.
+///
+/// # Arguments
+///
+/// * `conn` - The database connection.
+/// * `user` - The user to authenticate.
+pub fn auth_user(conn: &PgConnection, user: NewUser) -> Result<User, QueryError> {
+    use crate::schema::eb_users::dsl::*;
+
+    let found_user = eb_users
+        .filter(email.eq(&user.email))
+        .filter(password.eq(&user.password))
+        .first::<User>(conn);
+
+    found_user.map_err(|_| "invalid credentials".into())
 }
