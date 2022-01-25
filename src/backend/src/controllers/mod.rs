@@ -1,6 +1,6 @@
 /// This module contains controller functions that can be used as route handlers.
 use crate::models::{NewUser, User};
-use crate::types::QueryError;
+use crate::types::QueryResult;
 use crate::utils;
 
 use diesel::prelude::*;
@@ -13,7 +13,7 @@ use diesel::{PgConnection, QueryDsl, RunQueryDsl};
 ///
 /// * `conn` - The database connection.
 /// * `user` - The user to create.
-pub fn create_user(conn: &PgConnection, user: NewUser) -> Result<User, QueryError> {
+pub fn create_user(conn: &PgConnection, user: NewUser) -> QueryResult<User> {
     use crate::schema::eb_users::dsl::*;
 
     // Replace the password with its hashed version.
@@ -34,7 +34,7 @@ pub fn create_user(conn: &PgConnection, user: NewUser) -> Result<User, QueryErro
 ///
 /// * `conn` - The database connection.
 /// * `user` - The user to authenticate.
-pub fn auth_user(conn: &PgConnection, user: NewUser) -> Result<User, QueryError> {
+pub fn auth_user(conn: &PgConnection, user: NewUser) -> QueryResult<User> {
     use crate::schema::eb_users::dsl::*;
 
     let found_user = eb_users

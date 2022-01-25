@@ -8,6 +8,9 @@ use rocket::serde::{json::Json, Serialize};
 /// It's compatible with diesel query errors.
 pub type QueryError = Box<dyn Error + Send + Sync>;
 
+/// Type alias for custom results returned by querying functions.
+pub type QueryResult<T> = Result<T, QueryError>;
+
 /// Type alias for a JSON response with a custom HTTP status code.
 pub type CustomResponse<T> = Custom<Json<ApiResponse<T>>>;
 
@@ -28,7 +31,7 @@ pub enum StatusType {
 ///
 /// # Fields
 ///
-/// * `status` - Can be "success", "fail" or "error".
+/// * `status_type` - Can be "success", "fail" or "error".
 /// * `code` - The HTTP status code.
 /// * `message` - An optional message.
 /// * `data` - Optional arbitrary data.
