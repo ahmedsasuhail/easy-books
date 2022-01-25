@@ -54,7 +54,7 @@ pub fn index() -> &'static str {
 ///     }
 /// }
 /// ```
-#[post("/register", data = "<user>", format = "json")]
+#[post("/auth/register", data = "<user>", format = "json")]
 pub async fn register(db: Database, user: Json<NewUser>) -> CustomResponse<User> {
     let new_user = Json::into_inner(user);
 
@@ -112,7 +112,7 @@ pub async fn register(db: Database, user: Json<NewUser>) -> CustomResponse<User>
 ///     }
 /// }
 /// ```
-#[post("/login", data = "<user>", format = "json")]
+#[post("/auth/login", data = "<user>", format = "json")]
 pub async fn login(db: Database, user: Json<NewUser>) -> CustomResponse<JWTToken> {
     let user = user.into_inner();
 

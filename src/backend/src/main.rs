@@ -28,12 +28,12 @@ fn rocket() -> _ {
         .attach(Database::fairing())
         .attach(fairings::CORSFairing)
         .mount("/", routes![routes::index])
-        .mount("/auth", routes![routes::register, routes::login])
+        .mount("/eb", routes![routes::register, routes::login])
         .register(
-            "/auth",
+            "/eb",
             catchers![
                 routes::catchers::bad_request,
-                routes::catchers::unprocessable_entity
+                routes::catchers::unprocessable_entity,
             ],
         )
 }
