@@ -10,7 +10,7 @@
 			"name": "Easy-Books: Debug",
 			"program": "${workspaceFolder}/src/backend/target/debug/easy-books",
 			"args": [],
-			"cwd": "${workspaceFolder}"
+			"cwd": "${workspaceFolder}/src/backend"
 		}
 	]
 }
