@@ -10,6 +10,7 @@ use rocket_sync_db_pools::database;
 pub mod auth;
 pub mod consts;
 pub mod controllers;
+pub mod crud;
 pub mod fairings;
 pub mod models;
 pub mod routes;
@@ -28,4 +29,11 @@ fn rocket() -> _ {
         .attach(fairings::CORSFairing)
         .mount("/", routes![routes::index])
         .mount("/auth", routes![routes::register, routes::login])
+        .register(
+            "/auth",
+            catchers![
+                routes::catchers::bad_request,
+                routes::catchers::unprocessable_entity
+            ],
+        )
 }

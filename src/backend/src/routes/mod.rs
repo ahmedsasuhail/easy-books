@@ -14,6 +14,8 @@ use crate::Database;
 use rocket::http::Status;
 use rocket::serde::json::Json;
 
+pub mod catchers;
+
 #[get("/")]
 pub fn index() -> &'static str {
     "Welcome to Easy Books!"
