@@ -1,0 +1,5 @@
+[global.databases.db]
+url = "postgres://postgres:password@localhost:5432/easybooks"
+
+[debug]
+port = 8080

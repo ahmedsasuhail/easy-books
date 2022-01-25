@@ -1,4 +1,3 @@
 data.ms
 .env
 diesel.toml
-Rocket.toml
