@@ -50,7 +50,7 @@
   ],
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  "forwardPorts": [3000, 5432, 8080],
+  "forwardPorts": [3000, 5432, 8080, 7700],
 
   // Use 'postCreateCommand' to run commands after the container is created.
   "postCreateCommand": "cargo install diesel_cli --no-default-features --features postgres",

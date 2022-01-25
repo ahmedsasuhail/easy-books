@@ -40,5 +40,13 @@ services:
     # Add "forwardPorts": ["5432"] to **devcontainer.json** to forward PostgreSQL locally.
     # (Adding the "ports" property to this file will not forward from a Codespace.)
 
+  search_engine:
+    image: getmeili/meilisearch:v0.25.2
+    restart: unless-stopped
+    volumes:
+      - meilisearch-data:/workspace/src/backend/data.ms
+    network_mode: service:db
+
 volumes:
   postgres-data:
+  meilisearch-data:
