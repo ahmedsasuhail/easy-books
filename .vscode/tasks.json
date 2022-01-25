@@ -3,40 +3,50 @@
   "tasks": [
     {
       "label": "Easy-Books: Build Project",
-      "type": "shell",
-      "command": "go build -o ${input:binaryName}",
+      "type": "cargo",
+      "command": "build",
+      "args": ["--release"],
       "options": {
-        "cwd": "${workspaceFolder}"
+        "cwd": "${workspaceFolder}/src/backend"
       },
-      "problemMatcher": ["$go"]
+      "problemMatcher": [
+        "$rustc"
+      ],
+      "group": "build"
     },
     {
-      "label": "Easy-Books: Run Project",
-      "type": "shell",
-      "command": "go",
-      "args": ["run", "main.go"],
+      "label": "Easy-Books: Run Project (Debug Mode)",
+      "type": "cargo",
+      "command": "run",
       "options": {
-        "cwd": "${workspaceFolder}"
+        "cwd": "${workspaceFolder}/src/backend"
       },
-      "problemMatcher": ["$go"]
+      "problemMatcher": [
+        "$rustc"
+      ]
+    },
+    {
+      "label": "Easy-Books: Run Project (Release Mode)",
+      "type": "cargo",
+      "command": "run",
+      "args": ["--release"],
+      "options": {
+        "cwd": "${workspaceFolder}/src/backend"
+      },
+      "problemMatcher": [
+        "$rustc"
+      ],
     },
     {
       "label": "Easy-Books: Clean Project",
-      "type": "shell",
-      "command": "rm",
-      "args": ["${input:binaryName}"],
+      "type": "cargo",
+      "command": "clean",
       "options": {
-        "cwd": "${workspaceFolder}"
+        "cwd": "${workspaceFolder}/src/backend"
       },
-      "problemMatcher": ["$go"]
-    }
-  ],
-  "inputs": [
-    {
-      "id": "binaryName",
-      "description": "The name of the project output binary.",
-      "default": "easy-books",
-      "type": "promptString"
-    }
+      "problemMatcher": [
+        "$rustc"
+      ]
+    },
   ]
 }
