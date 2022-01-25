@@ -13,8 +13,12 @@ use crate::schema::*;
 
 #[derive(Queryable, Serialize)]
 pub struct Inventory {
+    #[serde(skip_serializing)]
     pub created_at: NaiveDateTime,
+
+    #[serde(skip_serializing)]
     pub updated_at: Option<NaiveDateTime>,
+
     pub id: i32,
     pub part_name: Option<String>,
     pub quantity: Option<i32>,
@@ -52,8 +56,12 @@ pub struct UpdateInventory {
 
 #[derive(Queryable, Serialize)]
 pub struct Miscellaneous {
+    #[serde(skip_serializing)]
     pub created_at: NaiveDateTime,
+
+    #[serde(skip_serializing)]
     pub updated_at: Option<NaiveDateTime>,
+
     pub id: i32,
     pub description: Option<String>,
     pub price: Option<BigDecimal>,
@@ -85,8 +93,12 @@ pub struct UpdateMiscellaneous {
 
 #[derive(Queryable, Serialize)]
 pub struct Purchase {
+    #[serde(skip_serializing)]
     pub created_at: NaiveDateTime,
+
+    #[serde(skip_serializing)]
     pub updated_at: Option<NaiveDateTime>,
+
     pub id: i32,
     pub company_name: Option<String>,
     pub vehicle_name: Option<String>,
@@ -124,8 +136,11 @@ pub struct UpdatePurchase {
 
 #[derive(Queryable, Serialize)]
 pub struct Relationship {
+    #[serde(skip_serializing)]
     pub created_at: NaiveDateTime,
+    #[serde(skip_serializing)]
     pub updated_at: Option<NaiveDateTime>,
+
     pub id: i32,
     pub name: Option<String>,
     pub phone_number: Option<String>,
@@ -157,8 +172,12 @@ pub struct UpdateRelationship {
 
 #[derive(Queryable, Serialize)]
 pub struct Sale {
+    #[serde(skip_serializing)]
     pub created_at: NaiveDateTime,
+
+    #[serde(skip_serializing)]
     pub updated_at: Option<NaiveDateTime>,
+
     pub id: i32,
     pub price: Option<BigDecimal>,
     pub date: Option<NaiveDate>,
