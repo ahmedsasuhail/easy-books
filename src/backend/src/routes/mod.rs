@@ -46,8 +46,6 @@ pub fn index() -> &'static str {
 ///     "code": 200,
 ///     "message": null,
 ///     "data": {
-///         "created_at": "2022-01-19T17:36:27.445374",
-///         "updated_at": null,
 ///         "name": "John Doe",
 ///         "email": "john.doe@example.com",
 ///         "password": "password123"
