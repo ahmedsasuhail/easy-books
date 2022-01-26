@@ -4,7 +4,6 @@
 use chrono::{Duration, Utc};
 
 use crate::auth::{self, JWTToken};
-use crate::consts::JWT_SECRET;
 use crate::controllers;
 use crate::models::{NewUser, User};
 use crate::types::{ApiResponse, CustomResponse, StatusType};
@@ -124,24 +123,39 @@ pub async fn login(db: Database, user: Json<NewUser>) -> CustomResponse<JWTToken
                 expiry: Utc::now() + Duration::hours(24),
             };
 
-            let token = auth::gen_token(claims, JWT_SECRET);
+            let jwt_secret = std::env::var("JWT_SECRET");
 
-            match token {
-                Ok(t) => utils::custom_response(
-                    Status::Ok,
-                    ApiResponse {
-                        status_type: StatusType::Success,
-                        code: Status::Ok.code,
-                        message: None,
-                        data: Some(t),
-                    },
-                ),
-                Err(e) => utils::custom_response(
+            match jwt_secret {
+                Ok(s) => {
+                    let token = auth::gen_token(claims, &s);
+
+                    match token {
+                        Ok(t) => utils::custom_response(
+                            Status::Ok,
+                            ApiResponse {
+                                status_type: StatusType::Success,
+                                code: Status::Ok.code,
+                                message: None,
+                                data: Some(t),
+                            },
+                        ),
+                        Err(e) => utils::custom_response(
+                            Status::InternalServerError,
+                            ApiResponse {
+                                status_type: StatusType::Error,
+                                code: Status::InternalServerError.code,
+                                message: Some(e.to_string()),
+                                data: None,
+                            },
+                        ),
+                    }
+                }
+                Err(_) => utils::custom_response(
                     Status::InternalServerError,
                     ApiResponse {
                         status_type: StatusType::Error,
                         code: Status::InternalServerError.code,
-                        message: Some(e.to_string()),
+                        message: Some(String::from("env:JWT_SECRET missing or invalid")),
                         data: None,
                     },
                 ),

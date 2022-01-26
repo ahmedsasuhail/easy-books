@@ -8,9 +8,7 @@ use rocket_sync_db_pools::database;
 
 // Modules.
 pub mod auth;
-pub mod consts;
 pub mod controllers;
-pub mod crud;
 pub mod fairings;
 pub mod models;
 pub mod routes;
