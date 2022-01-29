@@ -11,7 +11,7 @@ pub fn bad_request() -> CustomResponse<()> {
         ApiResponse {
             status_type: StatusType::Fail,
             code: Status::BadRequest.code,
-            message: Some(String::from("invalid json syntax")),
+            message: Some(String::from("invalid token or json syntax")),
             data: None,
         },
     )
