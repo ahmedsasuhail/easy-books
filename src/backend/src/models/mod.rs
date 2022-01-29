@@ -5,13 +5,15 @@ use diesel::{Insertable, Queryable};
 
 use serde::{Deserialize, Serialize};
 
+use meilisearch_sdk::document::*;
+
 use crate::schema::*;
 
 // ----------------------------------------------------------------------------
 // eb_inventory
 // ----------------------------------------------------------------------------
 
-#[derive(Queryable, Serialize)]
+#[derive(Debug, Queryable, Serialize, Deserialize)]
 pub struct Inventory {
     #[serde(skip_serializing)]
     pub created_at: NaiveDateTime,
@@ -25,6 +27,14 @@ pub struct Inventory {
     pub date: Option<NaiveDate>,
     pub sold_out: Option<bool>,
     pub purchase_id: Option<i32>,
+}
+
+impl Document for Inventory {
+    type UIDType = i32;
+
+    fn get_uid(&self) -> &Self::UIDType {
+        &self.id
+    }
 }
 
 #[derive(Insertable, Deserialize)]
@@ -54,7 +64,7 @@ pub struct UpdateInventory {
 // eb_miscellaneous
 // ----------------------------------------------------------------------------
 
-#[derive(Queryable, Serialize)]
+#[derive(Debug, Queryable, Serialize, Deserialize)]
 pub struct Miscellaneous {
     #[serde(skip_serializing)]
     pub created_at: NaiveDateTime,
@@ -66,6 +76,14 @@ pub struct Miscellaneous {
     pub description: Option<String>,
     pub price: Option<BigDecimal>,
     pub date: Option<NaiveDate>,
+}
+
+impl Document for Miscellaneous {
+    type UIDType = i32;
+
+    fn get_uid(&self) -> &Self::UIDType {
+        &self.id
+    }
 }
 
 #[derive(Insertable, Deserialize)]
@@ -91,7 +109,7 @@ pub struct UpdateMiscellaneous {
 // eb_purchases
 // ----------------------------------------------------------------------------
 
-#[derive(Queryable, Serialize)]
+#[derive(Debug, Queryable, Serialize, Deserialize)]
 pub struct Purchase {
     #[serde(skip_serializing)]
     pub created_at: NaiveDateTime,
@@ -105,6 +123,14 @@ pub struct Purchase {
     pub price: Option<BigDecimal>,
     pub date: Option<NaiveDate>,
     pub relationship_id: Option<i32>,
+}
+
+impl Document for Purchase {
+    type UIDType = i32;
+
+    fn get_uid(&self) -> &Self::UIDType {
+        &self.id
+    }
 }
 
 #[derive(Insertable, Deserialize)]
@@ -134,7 +160,7 @@ pub struct UpdatePurchase {
 // eb_relationships
 // ----------------------------------------------------------------------------
 
-#[derive(Queryable, Serialize)]
+#[derive(Debug, Queryable, Serialize, Deserialize)]
 pub struct Relationship {
     #[serde(skip_serializing)]
     pub created_at: NaiveDateTime,
@@ -145,6 +171,14 @@ pub struct Relationship {
     pub name: Option<String>,
     pub phone_number: Option<String>,
     pub address: Option<String>,
+}
+
+impl Document for Relationship {
+    type UIDType = i32;
+
+    fn get_uid(&self) -> &Self::UIDType {
+        &self.id
+    }
 }
 
 #[derive(Insertable, Deserialize)]
@@ -170,7 +204,7 @@ pub struct UpdateRelationship {
 // eb_sales
 // ----------------------------------------------------------------------------
 
-#[derive(Queryable, Serialize)]
+#[derive(Debug, Queryable, Serialize, Deserialize)]
 pub struct Sale {
     #[serde(skip_serializing)]
     pub created_at: NaiveDateTime,
@@ -187,6 +221,14 @@ pub struct Sale {
     pub relationship_id: Option<i32>,
     pub purchase_id: Option<i32>,
     pub inventory_id: Option<i32>,
+}
+
+impl Document for Sale {
+    type UIDType = i32;
+
+    fn get_uid(&self) -> &Self::UIDType {
+        &self.id
+    }
 }
 
 #[derive(Insertable, Deserialize)]
