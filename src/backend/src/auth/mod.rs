@@ -1,4 +1,5 @@
 /// This module contains JWT authentication functionality.
+use std::env;
 use std::error::Error;
 
 use rocket::http::Status;
@@ -42,6 +43,7 @@ pub struct JWTToken {
 pub enum JWTTokenError {
     Missing,
     Invalid,
+    SecretNotFoound,
 }
 
 /// Generates a JWT token using the specified claims.
@@ -103,12 +105,19 @@ impl<'r> FromRequest<'r> for JWTTokenStr<'r> {
     type Error = JWTTokenError;
 
     async fn from_request(req: &'r Request<'_>) -> Outcome<Self, Self::Error> {
-        match req.headers().get_one("Authorization") {
-            None => Outcome::Failure((Status::BadRequest, JWTTokenError::Missing)),
-            Some(key) => match validate_token(key, "easy-books") {
-                Ok(_) => Outcome::Success(JWTTokenStr(key)),
-                Err(_) => Outcome::Failure((Status::BadRequest, JWTTokenError::Invalid)),
+        let jwt_secret = env::var("JWT_SECRET");
+
+        match jwt_secret {
+            Ok(s) => match req.headers().get_one("Authorization") {
+                None => Outcome::Failure((Status::BadRequest, JWTTokenError::Missing)),
+                Some(key) => match validate_token(key, &s) {
+                    Ok(_) => Outcome::Success(JWTTokenStr(key)),
+                    Err(_) => Outcome::Failure((Status::BadRequest, JWTTokenError::Invalid)),
+                },
             },
+            Err(_) => {
+                Outcome::Failure((Status::InternalServerError, JWTTokenError::SecretNotFoound))
+            }
         }
     }
 }
