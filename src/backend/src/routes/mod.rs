@@ -16,6 +16,9 @@ use rocket::serde::json::Json;
 mod inventory;
 pub use inventory::*;
 
+mod miscellaneous;
+pub use miscellaneous::*;
+
 pub mod catchers;
 
 #[get("/")]
