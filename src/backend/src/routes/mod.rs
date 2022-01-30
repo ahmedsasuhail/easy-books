@@ -22,6 +22,9 @@ pub use miscellaneous::*;
 mod purchases;
 pub use purchases::*;
 
+mod relationships;
+pub use relationships::*;
+
 pub mod catchers;
 
 #[get("/")]
