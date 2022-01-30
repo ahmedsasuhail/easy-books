@@ -60,6 +60,11 @@ pub struct UpdateInventory {
     pub purchase_id: Option<i32>,
 }
 
+#[derive(Deserialize)]
+pub struct DeleteInventory {
+    pub id: i32,
+}
+
 // ----------------------------------------------------------------------------
 // eb_miscellaneous
 // ----------------------------------------------------------------------------
@@ -103,6 +108,11 @@ pub struct UpdateMiscellaneous {
     pub description: Option<String>,
     pub price: Option<BigDecimal>,
     pub date: Option<NaiveDate>,
+}
+
+#[derive(Deserialize)]
+pub struct DeleteMiscellaneous {
+    pub id: i32,
 }
 
 // ----------------------------------------------------------------------------
@@ -156,6 +166,11 @@ pub struct UpdatePurchase {
     pub relationship_id: Option<i32>,
 }
 
+#[derive(Deserialize)]
+pub struct DeletePurchase {
+    pub id: i32,
+}
+
 // ----------------------------------------------------------------------------
 // eb_relationships
 // ----------------------------------------------------------------------------
@@ -198,6 +213,11 @@ pub struct UpdateRelationship {
     pub name: Option<String>,
     pub phone_number: Option<String>,
     pub address: Option<String>,
+}
+
+#[derive(Deserialize)]
+pub struct DeleteRelationship {
+    pub id: i32,
 }
 
 // ----------------------------------------------------------------------------
@@ -258,6 +278,11 @@ pub struct UpdateSale {
     pub relationship_id: Option<i32>,
     pub purchase_id: Option<i32>,
     pub inventory_id: Option<i32>,
+}
+
+#[derive(Deserialize)]
+pub struct DeleteSale {
+    pub id: i32,
 }
 
 // ----------------------------------------------------------------------------
