@@ -26,13 +26,13 @@ pub async fn create_relationship<'r>(
     let relationship = db.run(move |c| relationship.create(c)).await;
 
     match relationship {
-        Ok(i) => utils::custom_response(
+        Ok(r) => utils::custom_response(
             Status::Ok,
             ApiResponse {
                 status_type: StatusType::Success,
                 code: Status::Ok.code,
                 message: None,
-                data: Some(i),
+                data: Some(r),
             },
         ),
         Err(e) => utils::custom_response(
@@ -62,13 +62,13 @@ pub async fn read_relationships<'r>(
     let relationship = db.run(|c| relationships::read(c)).await;
 
     match relationship {
-        Ok(i) => utils::custom_response(
+        Ok(r) => utils::custom_response(
             Status::Ok,
             ApiResponse {
                 status_type: StatusType::Success,
                 code: Status::Ok.code,
                 message: None,
-                data: Some(i),
+                data: Some(r),
             },
         ),
         Err(e) => utils::custom_response(
@@ -101,13 +101,13 @@ pub async fn update_relationship<'r>(
     let relationship = db.run(move |c| relationship.update(c)).await;
 
     match relationship {
-        Ok(i) => utils::custom_response(
+        Ok(r) => utils::custom_response(
             Status::Ok,
             ApiResponse {
                 status_type: StatusType::Success,
                 code: Status::Ok.code,
                 message: None,
-                data: Some(i),
+                data: Some(r),
             },
         ),
         Err(e) => utils::custom_response(

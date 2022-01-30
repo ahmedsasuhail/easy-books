@@ -26,13 +26,13 @@ pub async fn create_miscellaneous<'r>(
     let miscellaneous = db.run(move |c| miscellaneous.create(c)).await;
 
     match miscellaneous {
-        Ok(i) => utils::custom_response(
+        Ok(m) => utils::custom_response(
             Status::Ok,
             ApiResponse {
                 status_type: StatusType::Success,
                 code: Status::Ok.code,
                 message: None,
-                data: Some(i),
+                data: Some(m),
             },
         ),
         Err(e) => utils::custom_response(
@@ -62,13 +62,13 @@ pub async fn read_miscellaneous<'r>(
     let miscellaneous = db.run(|c| miscellaneous::read(c)).await;
 
     match miscellaneous {
-        Ok(i) => utils::custom_response(
+        Ok(m) => utils::custom_response(
             Status::Ok,
             ApiResponse {
                 status_type: StatusType::Success,
                 code: Status::Ok.code,
                 message: None,
-                data: Some(i),
+                data: Some(m),
             },
         ),
         Err(e) => utils::custom_response(
@@ -101,13 +101,13 @@ pub async fn update_miscellaneous<'r>(
     let miscellaneous = db.run(move |c| miscellaneous.update(c)).await;
 
     match miscellaneous {
-        Ok(i) => utils::custom_response(
+        Ok(m) => utils::custom_response(
             Status::Ok,
             ApiResponse {
                 status_type: StatusType::Success,
                 code: Status::Ok.code,
                 message: None,
-                data: Some(i),
+                data: Some(m),
             },
         ),
         Err(e) => utils::custom_response(

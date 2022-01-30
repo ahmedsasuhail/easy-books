@@ -26,13 +26,13 @@ pub async fn create_sale<'r>(
     let sale = db.run(move |c| sale.create(c)).await;
 
     match sale {
-        Ok(i) => utils::custom_response(
+        Ok(s) => utils::custom_response(
             Status::Ok,
             ApiResponse {
                 status_type: StatusType::Success,
                 code: Status::Ok.code,
                 message: None,
-                data: Some(i),
+                data: Some(s),
             },
         ),
         Err(e) => utils::custom_response(
@@ -59,13 +59,13 @@ pub async fn read_sales<'r>(_token: JWTTokenStr<'_>, db: Database) -> CustomResp
     let sale = db.run(|c| sales::read(c)).await;
 
     match sale {
-        Ok(i) => utils::custom_response(
+        Ok(s) => utils::custom_response(
             Status::Ok,
             ApiResponse {
                 status_type: StatusType::Success,
                 code: Status::Ok.code,
                 message: None,
-                data: Some(i),
+                data: Some(s),
             },
         ),
         Err(e) => utils::custom_response(
@@ -98,13 +98,13 @@ pub async fn update_sale<'r>(
     let sale = db.run(move |c| sale.update(c)).await;
 
     match sale {
-        Ok(i) => utils::custom_response(
+        Ok(s) => utils::custom_response(
             Status::Ok,
             ApiResponse {
                 status_type: StatusType::Success,
                 code: Status::Ok.code,
                 message: None,
-                data: Some(i),
+                data: Some(s),
             },
         ),
         Err(e) => utils::custom_response(

@@ -26,13 +26,13 @@ pub async fn create_purchase<'r>(
     let purchase = db.run(move |c| purchase.create(c)).await;
 
     match purchase {
-        Ok(i) => utils::custom_response(
+        Ok(p) => utils::custom_response(
             Status::Ok,
             ApiResponse {
                 status_type: StatusType::Success,
                 code: Status::Ok.code,
                 message: None,
-                data: Some(i),
+                data: Some(p),
             },
         ),
         Err(e) => utils::custom_response(
@@ -62,13 +62,13 @@ pub async fn read_purchases<'r>(
     let purchases = db.run(|c| purchases::read(c)).await;
 
     match purchases {
-        Ok(i) => utils::custom_response(
+        Ok(p) => utils::custom_response(
             Status::Ok,
             ApiResponse {
                 status_type: StatusType::Success,
                 code: Status::Ok.code,
                 message: None,
-                data: Some(i),
+                data: Some(p),
             },
         ),
         Err(e) => utils::custom_response(
@@ -101,13 +101,13 @@ pub async fn update_purchase<'r>(
     let purchase = db.run(move |c| purchase.update(c)).await;
 
     match purchase {
-        Ok(i) => utils::custom_response(
+        Ok(p) => utils::custom_response(
             Status::Ok,
             ApiResponse {
                 status_type: StatusType::Success,
                 code: Status::Ok.code,
                 message: None,
-                data: Some(i),
+                data: Some(p),
             },
         ),
         Err(e) => utils::custom_response(
