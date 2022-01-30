@@ -9,6 +9,7 @@ use rocket_sync_db_pools::database;
 // Modules.
 pub mod auth;
 pub mod controllers;
+pub mod crud;
 pub mod fairings;
 pub mod models;
 pub mod routes;
@@ -26,12 +27,21 @@ fn rocket() -> _ {
         .attach(Database::fairing())
         .attach(fairings::CORSFairing)
         .mount("/", routes![routes::index])
-        .mount("/eb", routes![routes::register, routes::login])
         .register(
             "/eb",
             catchers![
                 routes::catchers::bad_request,
                 routes::catchers::unprocessable_entity,
+            ],
+        )
+        .mount("/eb", routes![routes::register, routes::login])
+        .mount(
+            "/eb",
+            routes![
+                routes::create_inventory,
+                routes::read_inventory,
+                routes::update_inventory,
+                routes::delete_inventory,
             ],
         )
 }

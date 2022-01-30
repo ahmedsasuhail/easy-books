@@ -13,6 +13,9 @@ use crate::Database;
 use rocket::http::Status;
 use rocket::serde::json::Json;
 
+mod inventory;
+pub use inventory::*;
+
 pub mod catchers;
 
 #[get("/")]
