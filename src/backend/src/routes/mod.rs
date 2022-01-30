@@ -19,6 +19,9 @@ pub use inventory::*;
 mod miscellaneous;
 pub use miscellaneous::*;
 
+mod purchases;
+pub use purchases::*;
+
 pub mod catchers;
 
 #[get("/")]

@@ -53,4 +53,13 @@ fn rocket() -> _ {
                 routes::delete_miscellaneous,
             ],
         )
+        .mount(
+            "/eb",
+            routes![
+                routes::create_purchase,
+                routes::read_purchases,
+                routes::update_purchase,
+                routes::delete_purchase,
+            ],
+        )
 }
