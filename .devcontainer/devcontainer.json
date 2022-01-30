@@ -46,7 +46,8 @@
     "ms-azuretools.vscode-docker",
     "rangav.vscode-thunder-client",
     "webfreak.debug",
-    "mikestead.dotenv"
+    "mikestead.dotenv",
+    "gruntfuggly.todo-tree"
   ],
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
