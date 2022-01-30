@@ -71,4 +71,13 @@ fn rocket() -> _ {
                 routes::delete_relationship,
             ],
         )
+        .mount(
+            "/eb",
+            routes![
+                routes::create_sale,
+                routes::read_sales,
+                routes::update_sale,
+                routes::delete_sale,
+            ],
+        )
 }

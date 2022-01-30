@@ -25,6 +25,9 @@ pub use purchases::*;
 mod relationships;
 pub use relationships::*;
 
+mod sales;
+pub use sales::*;
+
 pub mod catchers;
 
 #[get("/")]
