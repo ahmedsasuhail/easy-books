@@ -46,8 +46,7 @@ pub fn index() -> &'static str {
 ///     "message": null,
 ///     "data": {
 ///         "name": "John Doe",
-///         "email": "john.doe@example.com",
-///         "password": "password123"
+///         "email": "john.doe@example.com"
 ///     }
 /// }
 /// ```
