@@ -49,7 +49,8 @@
     "mikestead.dotenv",
     "gruntfuggly.todo-tree",
     "trunk.io",
-    "eamodio.gitlens"
+    "eamodio.gitlens",
+    "usernamehw.errorlens"
   ],
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
