@@ -4,7 +4,7 @@ FROM mcr.microsoft.com/vscode/devcontainers/javascript-node:0-${VARIANT}
 
 # [Optional] Uncomment this section to install additional OS packages.
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-	&& apt-get -y install --no-install-recommends vim==8.2 libpq-dev==13.5-0 \
+	&& apt-get -y install --no-install-recommends vim=2:8.2.2434-3+deb11u1 libpq-dev=13.5-0+deb11u1 \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
 
