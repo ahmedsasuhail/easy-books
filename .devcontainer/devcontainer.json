@@ -48,7 +48,8 @@
     "webfreak.debug",
     "mikestead.dotenv",
     "gruntfuggly.todo-tree",
-    "trunk.io"
+    "trunk.io",
+    "eamodio.gitlens"
   ],
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
