@@ -47,7 +47,8 @@
     "rangav.vscode-thunder-client",
     "webfreak.debug",
     "mikestead.dotenv",
-    "gruntfuggly.todo-tree"
+    "gruntfuggly.todo-tree",
+    "trunk.io"
   ],
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
