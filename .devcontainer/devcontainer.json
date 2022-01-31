@@ -50,7 +50,8 @@
     "gruntfuggly.todo-tree",
     "trunk.io",
     "eamodio.gitlens",
-    "usernamehw.errorlens"
+    "usernamehw.errorlens",
+    "mutantdino.resourcemonitor"
   ],
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
