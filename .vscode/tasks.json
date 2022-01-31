@@ -9,9 +9,7 @@
       "options": {
         "cwd": "${workspaceFolder}/src/backend"
       },
-      "problemMatcher": [
-        "$rustc"
-      ],
+      "problemMatcher": ["$rustc"],
       "group": "build"
     },
     {
@@ -21,9 +19,7 @@
       "options": {
         "cwd": "${workspaceFolder}/src/backend"
       },
-      "problemMatcher": [
-        "$rustc"
-      ]
+      "problemMatcher": ["$rustc"]
     },
     {
       "label": "Easy-Books: Run Project (Release Mode)",
@@ -33,9 +29,7 @@
       "options": {
         "cwd": "${workspaceFolder}/src/backend"
       },
-      "problemMatcher": [
-        "$rustc"
-      ],
+      "problemMatcher": ["$rustc"]
     },
     {
       "label": "Easy-Books: Clean Project",
@@ -44,9 +38,7 @@
       "options": {
         "cwd": "${workspaceFolder}/src/backend"
       },
-      "problemMatcher": [
-        "$rustc"
-      ]
-    },
+      "problemMatcher": ["$rustc"]
+    }
   ]
 }
