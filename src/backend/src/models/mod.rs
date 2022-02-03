@@ -13,7 +13,8 @@ use crate::schema::*;
 // eb_inventory
 // ----------------------------------------------------------------------------
 
-#[derive(Debug, Queryable, Serialize, Deserialize)]
+#[derive(Debug, Queryable, Serialize, Deserialize, Identifiable)]
+#[table_name = "eb_purchases"]
 pub struct Inventory {
     #[serde(skip_serializing)]
     pub created_at: NaiveDateTime,
@@ -69,7 +70,8 @@ pub struct DeleteInventory {
 // eb_miscellaneous
 // ----------------------------------------------------------------------------
 
-#[derive(Debug, Queryable, Serialize, Deserialize)]
+#[derive(Debug, Queryable, Serialize, Deserialize, Identifiable)]
+#[table_name = "eb_miscellaneous"]
 pub struct Miscellaneous {
     #[serde(skip_serializing)]
     pub created_at: NaiveDateTime,
@@ -119,7 +121,8 @@ pub struct DeleteMiscellaneous {
 // eb_purchases
 // ----------------------------------------------------------------------------
 
-#[derive(Debug, Queryable, Serialize, Deserialize)]
+#[derive(Debug, Queryable, Serialize, Deserialize, Identifiable)]
+#[table_name = "eb_purchases"]
 pub struct Purchase {
     #[serde(skip_serializing)]
     pub created_at: NaiveDateTime,
@@ -175,7 +178,8 @@ pub struct DeletePurchase {
 // eb_relationships
 // ----------------------------------------------------------------------------
 
-#[derive(Debug, Queryable, Serialize, Deserialize)]
+#[derive(Debug, Queryable, Serialize, Deserialize, Identifiable)]
+#[table_name = "eb_relationships"]
 pub struct Relationship {
     #[serde(skip_serializing)]
     pub created_at: NaiveDateTime,
@@ -224,7 +228,8 @@ pub struct DeleteRelationship {
 // eb_sales
 // ----------------------------------------------------------------------------
 
-#[derive(Debug, Queryable, Serialize, Deserialize)]
+#[derive(Debug, Queryable, Serialize, Deserialize, Identifiable)]
+#[table_name = "eb_sales"]
 pub struct Sale {
     #[serde(skip_serializing)]
     pub created_at: NaiveDateTime,

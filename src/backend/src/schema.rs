@@ -72,6 +72,10 @@ table! {
     }
 }
 
+joinable!(eb_inventory -> eb_purchases (purchase_id));
+joinable!(eb_purchases -> eb_relationships (relationship_id));
+joinable!(eb_sales -> eb_relationships (relationship_id));
+joinable!(eb_sales -> eb_purchases (purchase_id));
 joinable!(eb_sales -> eb_inventory (inventory_id));
 
 allow_tables_to_appear_in_same_query!(
