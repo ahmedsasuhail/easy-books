@@ -274,10 +274,18 @@ const ReadSales = () => {
   };
 
   const handleSubmitReturn = (result) => {
+    console.log(valueForm);
     if (result) {
       handleSubmitCreateUpdateSales({
         id: valueForm.id,
         returned: valueForm.returned,
+        purchase_id: valueForm.purchase_id,
+        inventory_id: valueForm.inventory_id,
+        relationship_id: valueForm.relationship_id,
+        price: valueForm.price,
+        date: valueForm.date,
+        credit: valueForm.credit,
+        quantity: valueForm.quantity,
       });
     }
     handleConfirmReturnModal(false);

@@ -294,6 +294,7 @@ const CreateUpdateSales = (props) => {
         handleSetRelationshipName={handleSetRelationshipName}
         handleCloseRelationshipModal={handleCloseRelationshipModal}
       />
+      {console.log(openAlertModal)}
       <MessageDialogue
         title="Alert"
         message="There are no inventory items with the current purchase item."

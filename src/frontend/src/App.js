@@ -29,7 +29,6 @@ export default function App() {
   // #######################################################################
 
   function PrivateRoute({ component, ...rest }) {
-    console.log(isAuthenticated);
     return (
       <Route
         {...rest}
