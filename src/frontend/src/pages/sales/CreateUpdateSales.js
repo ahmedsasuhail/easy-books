@@ -69,7 +69,7 @@ const CreateUpdateSales = (props) => {
     } else if (
       formState.values.id &&
       purchaseItems.length > 0 &&
-      !inventoryId &&
+      inventoryId === undefined &&
       !inventoryName
     ) {
       setInventoryId(+formState.values.inventory_id);
@@ -95,6 +95,9 @@ const CreateUpdateSales = (props) => {
   const handleSetPurchaseName = (value) => {
     setPurchaseId(value.id);
     setPurchaseName(`${value.company_name} - ${value.vehicle_name}`);
+    setInventoryId(0);
+    setInventoryName(null);
+    window.setFormValue("inventory_id", null);
     window.setFormValue("purchase_id", value.id);
     handleClosePurchasesModal();
   };
@@ -127,19 +130,23 @@ const CreateUpdateSales = (props) => {
   };
 
   const inventoryPurchaseHandler = (id) => {
-    dispatch(
-      getInventoryPurchase({ id, token, pageNo, rowsPerPage, orderBy, order })
-    ).then((res) => {
-      if (!res) {
-        setOpenAlertModal(true);
-      }
-    });
+    if (id) {
+      dispatch(
+        getInventoryPurchase({ id, token, pageNo, rowsPerPage, orderBy, order })
+      ).then((res) => {
+        if (res.length === 0) {
+          setOpenAlertModal(true);
+        }
+      });
+    }
   };
 
   useEffect(() => {
     if (props.initialValues && props.initialValues.purchase_id) {
       inventoryPurchaseHandler(props.initialValues.purchase_id);
-      setInventoryQuantity(props.initialValues.inventory_quantity);
+      setInventoryQuantity(
+        props.initialValues.inventory_quantity + props.initialValues.quantity
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -294,7 +301,6 @@ const CreateUpdateSales = (props) => {
         handleSetRelationshipName={handleSetRelationshipName}
         handleCloseRelationshipModal={handleCloseRelationshipModal}
       />
-      {console.log(openAlertModal)}
       <MessageDialogue
         title="Alert"
         message="There are no inventory items with the current purchase item."

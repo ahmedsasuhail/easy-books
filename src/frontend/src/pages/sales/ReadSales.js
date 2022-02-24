@@ -274,7 +274,6 @@ const ReadSales = () => {
   };
 
   const handleSubmitReturn = (result) => {
-    console.log(valueForm);
     if (result) {
       handleSubmitCreateUpdateSales({
         id: valueForm.id,

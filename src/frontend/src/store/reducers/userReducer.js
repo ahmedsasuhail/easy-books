@@ -56,7 +56,7 @@ const userReducer = (state = initialState, action) => {
       });
     case USER_LOGIN_FAILURE:
       return mergeObjects(state, {
-        message: "Something is wrong with your login or password :(",
+        message: "Something is wrong with your email or password :(",
         messageType: "LOGIN",
         loading: false,
       });

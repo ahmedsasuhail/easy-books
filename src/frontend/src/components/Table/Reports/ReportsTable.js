@@ -113,65 +113,47 @@ export default function SpanningTable(props) {
                           <Typography variant="h6" gutterBottom component="div">
                             Items
                           </Typography>
-                          <Table size="small" aria-label="purchases">
-                            <TableHead>
-                              <TableRow>
-                                <TableCell className={classes.cellBold}>
-                                  Part Name
-                                </TableCell>
-                                <TableCell
-                                  className={classes.cellBold}
-                                  align="right"
-                                >
-                                  Date
-                                </TableCell>
-                                <TableCell className={classes.cellBold}>
-                                  Returned
-                                </TableCell>
-                                <TableCell className={classes.cellBold}>
-                                  Credited
-                                </TableCell>
-                                <TableCell
-                                  className={classes.cellBold}
-                                  align="right"
-                                >
-                                  Price
-                                </TableCell>
-                                <TableCell
-                                  className={classes.cellBold}
-                                  align="right"
-                                >
-                                  Quantity
-                                </TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {props.purchaseRows &&
-                                props.purchaseRows.sales &&
-                                props.purchaseRows.sales.map((item, idx) => (
-                                  <TableRow key={idx}>
-                                    <TableCell>{item.part_name}</TableCell>
-                                    <TableCell align="right">
-                                      {
-                                        new Date(item.date)
-                                          .toISOString()
-                                          .split("T")[0]
-                                      }
-                                    </TableCell>
-                                    <TableCell>No</TableCell>
-                                    <TableCell>No</TableCell>
-                                    <TableCell align="right">
-                                      {item.price}
-                                    </TableCell>
-                                    <TableCell align="right">
-                                      {item.quantity}
-                                    </TableCell>
-                                  </TableRow>
-                                ))}
-                              {props.purchaseRows &&
-                                props.purchaseRows.sales_returned &&
-                                props.purchaseRows.sales_returned.map(
-                                  (item, idx) => (
+                          <TableContainer style={{ maxHeight: 300 }}>
+                            <Table
+                              size="small"
+                              aria-label="purchases"
+                              stickyHeader
+                            >
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell className={classes.cellBold}>
+                                    Part Name
+                                  </TableCell>
+                                  <TableCell
+                                    className={classes.cellBold}
+                                    align="right"
+                                  >
+                                    Date
+                                  </TableCell>
+                                  <TableCell className={classes.cellBold}>
+                                    Returned
+                                  </TableCell>
+                                  <TableCell className={classes.cellBold}>
+                                    Credited
+                                  </TableCell>
+                                  <TableCell
+                                    className={classes.cellBold}
+                                    align="right"
+                                  >
+                                    Price
+                                  </TableCell>
+                                  <TableCell
+                                    className={classes.cellBold}
+                                    align="right"
+                                  >
+                                    Quantity
+                                  </TableCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {props.purchaseRows &&
+                                  props.purchaseRows.sales &&
+                                  props.purchaseRows.sales.map((item, idx) => (
                                     <TableRow key={idx}>
                                       <TableCell>{item.part_name}</TableCell>
                                       <TableCell align="right">
@@ -181,7 +163,155 @@ export default function SpanningTable(props) {
                                             .split("T")[0]
                                         }
                                       </TableCell>
-                                      <TableCell>Yes</TableCell>
+                                      <TableCell>No</TableCell>
+                                      <TableCell>No</TableCell>
+                                      <TableCell align="right">
+                                        {item.price}
+                                      </TableCell>
+                                      <TableCell align="right">
+                                        {item.quantity}
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                {props.purchaseRows &&
+                                  props.purchaseRows.sales_returned &&
+                                  props.purchaseRows.sales_returned.map(
+                                    (item, idx) => (
+                                      <TableRow key={idx}>
+                                        <TableCell>{item.part_name}</TableCell>
+                                        <TableCell align="right">
+                                          {
+                                            new Date(item.date)
+                                              .toISOString()
+                                              .split("T")[0]
+                                          }
+                                        </TableCell>
+                                        <TableCell>Yes</TableCell>
+                                        <TableCell>
+                                          {item.credit ? "Yes" : "No"}
+                                        </TableCell>
+                                        <TableCell align="right">
+                                          {item.price}
+                                        </TableCell>
+                                        <TableCell align="right">
+                                          {item.quantity}
+                                        </TableCell>
+                                      </TableRow>
+                                    )
+                                  )}
+                                {props.purchaseRows &&
+                                  props.purchaseRows.credited_sales &&
+                                  props.purchaseRows.credited_sales.map(
+                                    (item, idx) => (
+                                      <TableRow key={idx}>
+                                        <TableCell>{item.part_name}</TableCell>
+                                        <TableCell align="right">
+                                          {
+                                            new Date(item.date)
+                                              .toISOString()
+                                              .split("T")[0]
+                                          }
+                                        </TableCell>
+                                        <TableCell>No</TableCell>
+                                        <TableCell>Yes</TableCell>
+                                        <TableCell align="right">
+                                          {item.price}
+                                        </TableCell>
+                                        <TableCell align="right">
+                                          {item.quantity}
+                                        </TableCell>
+                                      </TableRow>
+                                    )
+                                  )}
+                                {props.relationshipRows &&
+                                  props.relationshipRows.sales &&
+                                  props.relationshipRows.sales.map(
+                                    (item, idx) => (
+                                      <TableRow key={idx}>
+                                        <TableCell>{item.part_name}</TableCell>
+                                        <TableCell align="right">
+                                          {
+                                            new Date(item.date)
+                                              .toISOString()
+                                              .split("T")[0]
+                                          }
+                                        </TableCell>
+                                        <TableCell>No</TableCell>
+                                        <TableCell>No</TableCell>
+                                        <TableCell align="right">
+                                          {item.price}
+                                        </TableCell>
+                                        <TableCell align="right">
+                                          {item.quantity}
+                                        </TableCell>
+                                      </TableRow>
+                                    )
+                                  )}
+                                {props.relationshipRows &&
+                                  props.relationshipRows.sales_returned &&
+                                  props.relationshipRows.sales_returned.map(
+                                    (item, idx) => (
+                                      <TableRow key={idx}>
+                                        <TableCell>{item.part_name}</TableCell>
+                                        <TableCell align="right">
+                                          {
+                                            new Date(item.date)
+                                              .toISOString()
+                                              .split("T")[0]
+                                          }
+                                        </TableCell>
+                                        <TableCell>Yes</TableCell>
+                                        <TableCell>
+                                          {item.credit ? "Yes" : "No"}
+                                        </TableCell>
+                                        <TableCell align="right">
+                                          {item.price}
+                                        </TableCell>
+                                        <TableCell align="right">
+                                          {item.quantity}
+                                        </TableCell>
+                                      </TableRow>
+                                    )
+                                  )}
+                                {props.relationshipRows &&
+                                  props.relationshipRows.credited_sales &&
+                                  props.relationshipRows.credited_sales.map(
+                                    (item, idx) => (
+                                      <TableRow key={idx}>
+                                        <TableCell>{item.part_name}</TableCell>
+                                        <TableCell align="right">
+                                          {
+                                            new Date(item.date)
+                                              .toISOString()
+                                              .split("T")[0]
+                                          }
+                                        </TableCell>
+                                        <TableCell>No</TableCell>
+                                        <TableCell>Yes</TableCell>
+                                        <TableCell align="right">
+                                          {item.price}
+                                        </TableCell>
+                                        <TableCell align="right">
+                                          {item.quantity}
+                                        </TableCell>
+                                      </TableRow>
+                                    )
+                                  )}
+                                {props.rangeRows &&
+                                  props.rangeRows.sales &&
+                                  props.rangeRows.sales.map((item, idx) => (
+                                    <TableRow key={idx}>
+                                      <TableCell>{item.part_name}</TableCell>
+                                      <TableCell align="right">
+                                        {
+                                          new Date(item.date)
+                                            .toISOString()
+                                            .split("T")[0]
+                                        }
+                                      </TableCell>
+                                      <TableCell>
+                                        {item.returned ? "Yes" : "No"}
+                                      </TableCell>
                                       <TableCell>
                                         {item.credit ? "Yes" : "No"}
                                       </TableCell>
@@ -192,134 +322,10 @@ export default function SpanningTable(props) {
                                         {item.quantity}
                                       </TableCell>
                                     </TableRow>
-                                  )
-                                )}
-                              {props.purchaseRows &&
-                                props.purchaseRows.credited_sales &&
-                                props.purchaseRows.credited_sales.map(
-                                  (item, idx) => (
-                                    <TableRow key={idx}>
-                                      <TableCell>{item.part_name}</TableCell>
-                                      <TableCell align="right">
-                                        {
-                                          new Date(item.date)
-                                            .toISOString()
-                                            .split("T")[0]
-                                        }
-                                      </TableCell>
-                                      <TableCell>No</TableCell>
-                                      <TableCell>Yes</TableCell>
-                                      <TableCell align="right">
-                                        {item.price}
-                                      </TableCell>
-                                      <TableCell align="right">
-                                        {item.quantity}
-                                      </TableCell>
-                                    </TableRow>
-                                  )
-                                )}
-                              {props.relationshipRows &&
-                                props.relationshipRows.sales &&
-                                props.relationshipRows.sales.map(
-                                  (item, idx) => (
-                                    <TableRow key={idx}>
-                                      <TableCell>{item.part_name}</TableCell>
-                                      <TableCell align="right">
-                                        {
-                                          new Date(item.date)
-                                            .toISOString()
-                                            .split("T")[0]
-                                        }
-                                      </TableCell>
-                                      <TableCell>No</TableCell>
-                                      <TableCell>No</TableCell>
-                                      <TableCell align="right">
-                                        {item.price}
-                                      </TableCell>
-                                      <TableCell align="right">
-                                        {item.quantity}
-                                      </TableCell>
-                                    </TableRow>
-                                  )
-                                )}
-                              {props.relationshipRows &&
-                                props.relationshipRows.sales_returned &&
-                                props.relationshipRows.sales_returned.map(
-                                  (item, idx) => (
-                                    <TableRow key={idx}>
-                                      <TableCell>{item.part_name}</TableCell>
-                                      <TableCell align="right">
-                                        {
-                                          new Date(item.date)
-                                            .toISOString()
-                                            .split("T")[0]
-                                        }
-                                      </TableCell>
-                                      <TableCell>Yes</TableCell>
-                                      <TableCell>
-                                        {item.credit ? "Yes" : "No"}
-                                      </TableCell>
-                                      <TableCell align="right">
-                                        {item.price}
-                                      </TableCell>
-                                      <TableCell align="right">
-                                        {item.quantity}
-                                      </TableCell>
-                                    </TableRow>
-                                  )
-                                )}
-                              {props.relationshipRows &&
-                                props.relationshipRows.credited_sales &&
-                                props.relationshipRows.credited_sales.map(
-                                  (item, idx) => (
-                                    <TableRow key={idx}>
-                                      <TableCell>{item.part_name}</TableCell>
-                                      <TableCell align="right">
-                                        {
-                                          new Date(item.date)
-                                            .toISOString()
-                                            .split("T")[0]
-                                        }
-                                      </TableCell>
-                                      <TableCell>No</TableCell>
-                                      <TableCell>Yes</TableCell>
-                                      <TableCell align="right">
-                                        {item.price}
-                                      </TableCell>
-                                      <TableCell align="right">
-                                        {item.quantity}
-                                      </TableCell>
-                                    </TableRow>
-                                  )
-                                )}
-                              {props.rangeRows &&
-                                props.rangeRows.sales &&
-                                props.rangeRows.sales.map((item, idx) => (
-                                  <TableRow key={idx}>
-                                    <TableCell>{item.part_name}</TableCell>
-                                    <TableCell align="right">
-                                      {
-                                        new Date(item.date)
-                                          .toISOString()
-                                          .split("T")[0]
-                                      }
-                                    </TableCell>
-                                    <TableCell>
-                                      {item.returned ? "Yes" : "No"}
-                                    </TableCell>
-                                    <TableCell>
-                                      {item.credit ? "Yes" : "No"}
-                                    </TableCell>
-                                    <TableCell align="right">
-                                      {item.price}
-                                    </TableCell>
-                                    <TableCell align="right">
-                                      {item.quantity}
-                                    </TableCell>
-                                  </TableRow>
-                                ))}
-                            </TableBody>
-                          </Table>
+                                  ))}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
                         </Box>
                       </Collapse>
                     </TableCell>
