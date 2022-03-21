@@ -185,7 +185,7 @@ func UpdateSales(c *gin.Context) {
 	}
 	err = pgClient.Model(&inventory).Where(
 		"id = ?",
-		record.ID,
+		record.InventoryID,
 	).Select("Quantity", "SoldOut").Updates(
 		models.Inventory{
 			Quantity: revisedQuantity,
@@ -405,8 +405,12 @@ func DeleteSales(c *gin.Context) {
 
 	err = pgClient.Model(&models.Inventory{}).Where(
 		"id = ?",
-		inventory.ID,
-	).Update("Quantity", (record.Inventory.Quantity + record.Quantity)).Error
+		record.InventoryID,
+	).Select("Quantity").Updates(
+		models.Inventory{
+			Quantity: record.Inventory.Quantity + record.Quantity,
+		},
+	).Error
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 
