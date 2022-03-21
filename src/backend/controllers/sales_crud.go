@@ -378,9 +378,54 @@ func ReadSales(c *gin.Context) {
 func DeleteSales(c *gin.Context) {
 	// Read and parse request body.
 	var record models.Sales
+	var inventory models.Inventory
 	err := parseRequestBody(c, &record)
 	if err != nil {
 		errorResponse(c, http.StatusBadRequest, err.Error())
+
+		return
+	}
+
+	err = pgClient.Where(
+		"id = ?",
+		record.InventoryID,
+	).Find(&inventory).Error
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+
+	err = pgClient.Model(&inventory).Select("Quantity").Updates(
+		models.Inventory{
+			Quantity: inventory.Quantity + record.Quantity,
+		},
+	).Error
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+	// Update corresponding cached inventory record.
+	updatedInventory := map[string]interface{}{
+		"id":                     inventory.ID,
+		"part_name":              inventory.PartName,
+		"quantity":               inventory.Quantity,
+		"sold_out":               inventory.SoldOut,
+		"date":                   inventory.Date,
+		"purchase_id":            inventory.PurchaseID,
+		"purchases.company_name": inventory.Purchases.CompanyName,
+		"purchases.vehicle_name": inventory.Purchases.VehicleName,
+		"purchases": map[string]interface{}{
+			"id":           inventory.Purchases.ID,
+			"company_name": inventory.Purchases.CompanyName,
+			"vehicle_name": inventory.Purchases.VehicleName,
+		},
+	}
+
+	_, err = inventoryIndex.UpdateDocuments(updatedInventory)
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
 
 		return
 	}
