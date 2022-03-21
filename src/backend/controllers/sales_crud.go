@@ -386,6 +386,23 @@ func DeleteSales(c *gin.Context) {
 		return
 	}
 
+	err = pgClient.Preload(
+		"Relationships",
+	).Preload(
+		"Purchases",
+	).Preload(
+		"Purchases.Relationships",
+	).Preload(
+		"Inventory",
+	).Preload(
+		"Inventory.Purchases.Relationships",
+	).First(&record).Error
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+
 	err = pgClient.Where(
 		"id = ?",
 		record.InventoryID,
