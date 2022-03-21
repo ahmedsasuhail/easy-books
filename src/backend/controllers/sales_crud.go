@@ -406,7 +406,7 @@ func DeleteSales(c *gin.Context) {
 	err = pgClient.Model(&models.Inventory{}).Where(
 		"id = ?",
 		inventory.ID,
-	).Update("quantity", (record.Inventory.Quantity + record.Quantity)).Error
+	).Update("Quantity", (record.Inventory.Quantity + record.Quantity)).Error
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 
