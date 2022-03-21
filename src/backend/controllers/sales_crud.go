@@ -409,6 +409,16 @@ func DeleteSales(c *gin.Context) {
 
 		return
 	}
+
+	err = pgClient.Where(
+		"id = ?",
+		record.InventoryID,
+	).Find(&inventory).Error
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
 	// Update corresponding cached inventory record.
 	updatedInventory := map[string]interface{}{
 		"id":                     inventory.ID,
