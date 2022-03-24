@@ -86,7 +86,10 @@ func UpdateRelationships(c *gin.Context) {
 	}
 
 	// Update parent records.
-	pgClient.Preload(
+	pgClient.Where(
+		"relationship_id = ?",
+		record.ID,
+	).Preload(
 		"Relationships",
 	).Preload(
 		"Purchases",
@@ -136,7 +139,10 @@ func UpdateRelationships(c *gin.Context) {
 		}
 	}
 
-	pgClient.Preload("Relationships").Find(&purchases)
+	pgClient.Where(
+		"relationship_id = ?",
+		record.ID,
+	).Preload("Relationships").Find(&purchases)
 	for _, purchase := range purchases {
 		filteredPurchases := map[string]interface{}{
 			"id":                 purchase.ID,
