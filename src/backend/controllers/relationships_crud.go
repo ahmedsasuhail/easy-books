@@ -53,6 +53,8 @@ func CreateRelationships(c *gin.Context) {
 func UpdateRelationships(c *gin.Context) {
 	// Read and parse request body.
 	var record models.Relationships
+	var sales models.Sales
+	var purchases models.Purchases
 	err := parseRequestBody(c, &record)
 	if err != nil {
 		errorResponse(c, http.StatusBadRequest, err.Error())
@@ -77,6 +79,76 @@ func UpdateRelationships(c *gin.Context) {
 	}
 
 	_, err = relationshipsIndex.UpdateDocuments(filteredRecord)
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+
+	// Update parent records.
+	pgClient.Preload(
+		"Relationships",
+	).Preload(
+		"Purchases",
+	).Preload(
+		"Purchases.Relationships",
+	).Preload(
+		"Inventory",
+	).Preload(
+		"Inventory.Purchases.Relationships",
+	).First(&sales)
+	filteredSales := map[string]interface{}{
+		"id":                     sales.ID,
+		"price":                  sales.Price,
+		"date":                   sales.Date,
+		"credit":                 sales.Credit,
+		"returned":               sales.Returned,
+		"quantity":               sales.Quantity,
+		"relationships.name":     sales.Relationships.Name,
+		"purchases.company_name": sales.Purchases.CompanyName,
+		"purchases.vehicle_name": sales.Purchases.VehicleName,
+		"inventory.part_name":    sales.Inventory.PartName,
+		"relationships": map[string]interface{}{
+			"id":   record.ID,
+			"name": record.Name,
+		},
+		"purchases": map[string]interface{}{
+			"id":           sales.Purchases.ID,
+			"company_name": sales.Purchases.CompanyName,
+			"vehicle_name": sales.Purchases.VehicleName,
+			"price":        sales.Purchases.Price,
+		},
+		"inventory": map[string]interface{}{
+			"id":        sales.Inventory.ID,
+			"part_name": sales.Inventory.PartName,
+			"quantity":  sales.Inventory.Quantity,
+			"sold_out":  sales.Inventory.SoldOut,
+			"date":      sales.Inventory.Date,
+		},
+	}
+
+	_, err = salesIndex.UpdateDocuments(filteredSales)
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+
+	pgClient.Preload("Relationships").First(&purchases)
+	filteredPurchases := map[string]interface{}{
+		"id":                 purchases.ID,
+		"company_name":       purchases.CompanyName,
+		"vehicle_name":       purchases.VehicleName,
+		"price":              purchases.Price,
+		"date":               purchases.Date,
+		"relationships.name": purchases.Relationships.Name,
+		"relationships": map[string]interface{}{
+			"id":   record.ID,
+			"name": record.Name,
+		},
+	}
+
+	_, err = purchasesIndex.UpdateDocuments(filteredPurchases)
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 
