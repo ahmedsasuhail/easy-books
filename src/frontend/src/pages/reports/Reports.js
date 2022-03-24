@@ -115,7 +115,8 @@ const Reports = () => {
   };
 
   const [state, dispatch] = useReducer(reducer, initialState);
-
+  // TODO
+  // console.log(state.purchaseRows, state.rangeRows);
   useEffect(() => {
     document.title = `Dashboard | ${
       process.env.REACT_APP_NAME || "Easy Books"

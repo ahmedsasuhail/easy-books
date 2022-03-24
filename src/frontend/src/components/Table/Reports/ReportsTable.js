@@ -35,7 +35,7 @@ export default function SpanningTable(props) {
       props.relationshipRows.credited_sales_total +
         props.relationshipRows.purchased_total +
         props.relationshipRows.sales_returned_total +
-        props.relationshipRowssales_total >
+        props.relationshipRows.sales_total >
         0) ||
     (props.rangeRows && !!props.rangeRows.total)
   ) {
