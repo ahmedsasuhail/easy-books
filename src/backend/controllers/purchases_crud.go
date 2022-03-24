@@ -62,6 +62,8 @@ func CreatePurchases(c *gin.Context) {
 func UpdatePurchases(c *gin.Context) {
 	// Read and parse request body.
 	var record models.Purchases
+	var sales []models.Sales
+	var inventory []models.Inventory
 	err := parseRequestBody(c, &record)
 	if err != nil {
 		errorResponse(c, http.StatusBadRequest, err.Error())
@@ -96,6 +98,92 @@ func UpdatePurchases(c *gin.Context) {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 
 		return
+	}
+
+	// Update parent records.
+	pgClient.Where(
+		"purchase_id = ?",
+		record.ID,
+	).Preload(
+		"Relationships",
+	).Preload(
+		"Purchases",
+	).Preload(
+		"Purchases.Relationships",
+	).Preload(
+		"Inventory",
+	).Preload(
+		"Inventory.Purchases.Relationships",
+	).Find(&sales)
+	for _, sale := range sales {
+		filteredSales := map[string]interface{}{
+			"id":                     sale.ID,
+			"price":                  sale.Price,
+			"date":                   sale.Date,
+			"credit":                 sale.Credit,
+			"returned":               sale.Returned,
+			"quantity":               sale.Quantity,
+			"relationships.name":     sale.Relationships.Name,
+			"purchases.company_name": record.CompanyName,
+			"purchases.vehicle_name": record.VehicleName,
+			"inventory.part_name":    sale.Inventory.PartName,
+			"relationships": map[string]interface{}{
+				"id":   sale.Relationships.ID,
+				"name": sale.Relationships.Name,
+			},
+			"purchases": map[string]interface{}{
+				"id":           record.ID,
+				"company_name": record.CompanyName,
+				"vehicle_name": record.VehicleName,
+				"price":        record.Price,
+			},
+			"inventory": map[string]interface{}{
+				"id":        sale.Inventory.ID,
+				"part_name": sale.Inventory.PartName,
+				"quantity":  sale.Inventory.Quantity,
+				"sold_out":  sale.Inventory.SoldOut,
+				"date":      sale.Inventory.Date,
+			},
+		}
+
+		_, err = salesIndex.UpdateDocuments(filteredSales)
+		if err != nil {
+			errorResponse(c, http.StatusInternalServerError, err.Error())
+
+			return
+		}
+	}
+
+	pgClient.Where(
+		"purchase_id = ?",
+		record.ID,
+	).Preload(
+		"Purchases",
+	).Preload(
+		"Purchases.Relationships",
+	).Find(&inventory)
+	for _, inv := range inventory {
+		filteredInventory := map[string]interface{}{
+			"id":                     inv.ID,
+			"part_name":              inv.PartName,
+			"quantity":               inv.Quantity,
+			"date":                   inv.Date,
+			"purchase_id":            record.ID,
+			"purchases.company_name": record.CompanyName,
+			"purchases.vehicle_name": record.VehicleName,
+			"purchases": map[string]interface{}{
+				"id":           record.ID,
+				"company_name": record.CompanyName,
+				"vehicle_name": record.VehicleName,
+			},
+		}
+
+		_, err = inventoryIndex.AddDocuments(filteredInventory)
+		if err != nil {
+			errorResponse(c, http.StatusInternalServerError, err.Error())
+
+			return
+		}
 	}
 
 	// Remove unnecessary keys from response.
