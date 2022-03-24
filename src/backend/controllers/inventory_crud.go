@@ -70,6 +70,7 @@ func CreateInventory(c *gin.Context) {
 func UpdateInventory(c *gin.Context) {
 	// Read and parse request body.
 	var record models.Inventory
+	var sales []models.Sales
 	err := parseRequestBody(c, &record)
 	if err != nil {
 		errorResponse(c, http.StatusBadRequest, err.Error())
@@ -110,6 +111,60 @@ func UpdateInventory(c *gin.Context) {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 
 		return
+	}
+
+	// Update parent records.
+	pgClient.Where(
+		"inventory_id = ?",
+		record.ID,
+	).Preload(
+		"Relationships",
+	).Preload(
+		"Purchases",
+	).Preload(
+		"Purchases.Relationships",
+	).Preload(
+		"Inventory",
+	).Preload(
+		"Inventory.Purchases.Relationships",
+	).Find(&sales)
+	for _, sale := range sales {
+		filteredSales := map[string]interface{}{
+			"id":                     sale.ID,
+			"price":                  sale.Price,
+			"date":                   sale.Date,
+			"credit":                 sale.Credit,
+			"returned":               sale.Returned,
+			"quantity":               sale.Quantity,
+			"relationships.name":     sale.Relationships.Name,
+			"purchases.company_name": sale.Purchases.CompanyName,
+			"purchases.vehicle_name": sale.Purchases.VehicleName,
+			"inventory.part_name":    record.PartName,
+			"relationships": map[string]interface{}{
+				"id":   sale.Relationships.ID,
+				"name": sale.Relationships.Name,
+			},
+			"purchases": map[string]interface{}{
+				"id":           sale.Purchases.ID,
+				"company_name": sale.Purchases.CompanyName,
+				"vehicle_name": sale.Purchases.VehicleName,
+				"price":        sale.Purchases.Price,
+			},
+			"inventory": map[string]interface{}{
+				"id":        record.ID,
+				"part_name": record.PartName,
+				"quantity":  record.Quantity,
+				"sold_out":  record.SoldOut,
+				"date":      record.Date,
+			},
+		}
+
+		_, err = salesIndex.UpdateDocuments(filteredSales)
+		if err != nil {
+			errorResponse(c, http.StatusInternalServerError, err.Error())
+
+			return
+		}
 	}
 
 	// Remove unnecessary keys from response.
