@@ -157,6 +157,20 @@ func UpdateSales(c *gin.Context) {
 		return
 	}
 
+	pgClient.Where(
+		"id = ?",
+		record.ID,
+	).Preload(
+		"Relationships",
+	).Preload(
+		"Purchases",
+	).Preload(
+		"Purchases.Relationships",
+	).Preload(
+		"Inventory",
+	).Preload(
+		"Inventory.Purchases.Relationships",
+	).First(&record)
 	// Validate specified quantity.
 	quantity := record.Quantity
 	pgClient.Where(
