@@ -195,7 +195,7 @@ func UpdateSales(c *gin.Context) {
 	if record.Returned {
 		revisedQuantity = inventory.Quantity + quantity
 	} else {
-		revisedQuantity = inventory.Quantity - quantity
+		revisedQuantity = inventory.Quantity
 	}
 	err = pgClient.Model(&inventory).Where(
 		"id = ?",
