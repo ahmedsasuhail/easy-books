@@ -100,6 +100,7 @@ const PurchasesModal = (props) => {
           headCells={headCells}
           rows={rows}
           submitAddFunction={handleSetPurchaseName}
+          linkId={props.purchaseId}
         />
       </DialogContent>
       <DialogActions>

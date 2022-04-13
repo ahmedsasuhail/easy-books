@@ -129,6 +129,7 @@ const CreateUpdatePurchase = () => {
         validate={required}
       />
       <RelationshipModal
+        relationshipId={relationshipId}
         relationshipItems={relationshipItems}
         openRelationshipModal={openRelationshipModal}
         handleSetRelationshipName={handleSetRelationshipName}

@@ -131,6 +131,7 @@ export const CustomMuiTable = (props) => {
       submitDeleteFunction={props.submitDeleteFunction}
       submitAddFunction={props.submitAddFunction}
       size={props.submitAddFunction ? "small" : "medium"}
+      linkId={props.linkId}
     />
   );
 };

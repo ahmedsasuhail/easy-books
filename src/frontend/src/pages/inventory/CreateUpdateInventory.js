@@ -112,6 +112,7 @@ const CreateUpdateInventory = () => {
         validate={required}
       />
       <PurchasesModal
+        purchaseId={purchaseId}
         purchaseItems={purchaseItems}
         openPurchasesModal={openPurchasesModal}
         handleSetPurchaseName={handleSetPurchaseName}

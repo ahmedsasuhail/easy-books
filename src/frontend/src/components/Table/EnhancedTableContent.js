@@ -89,7 +89,17 @@ const EnhancedTableContent = (props) => {
       });
 
       return (
-        <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+        <TableRow
+          selected={
+            (row.name && row.id === props.linkId) ||
+            (row.part_name && row.id === props.linkId) ||
+            (row.company_name && row.id === props.linkId)
+          }
+          hover
+          role="checkbox"
+          tabIndex={-1}
+          key={index}
+        >
           {list}
           {actions && (
             <TableCell align="center">

@@ -85,6 +85,7 @@ const RelationshipModal = (props) => {
           headCells={headCells}
           rows={rows}
           submitAddFunction={handleSetRelationshipName}
+          linkId={props.relationshipId}
         />
       </DialogContent>
       <DialogActions>

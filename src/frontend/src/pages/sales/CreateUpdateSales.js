@@ -278,6 +278,7 @@ const CreateUpdateSales = (props) => {
         validate={required}
       />
       <PurchasesModal
+        purchaseId={purchaseId}
         purchaseItems={purchaseItems}
         openPurchasesModal={openPurchasesModal}
         handleSetPurchaseName={handleSetPurchaseName}
@@ -285,12 +286,14 @@ const CreateUpdateSales = (props) => {
       />
       <InventoryModal
         id={purchaseId}
+        inventoryId={inventoryId}
         inventoryItems={inventoryPurchaseData.records}
         openInventoryModal={openInventoryModal}
         handleSetInventoryName={handleSetInventoryName}
         handleCloseInventoryModal={handleCloseInventoryModal}
       />
       <RelationshipModal
+        relationshipId={relationshipId}
         relationshipItems={relationshipItems}
         openRelationshipModal={openRelationshipModal}
         handleSetRelationshipName={handleSetRelationshipName}

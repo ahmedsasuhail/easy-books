@@ -148,6 +148,7 @@ const InventoryModal = (props) => {
           actions={true}
           submitAddFunction={handleSetInventoryName}
           size="small"
+          linkId={props.inventoryId}
         />
       </DialogContent>
       <DialogActions>

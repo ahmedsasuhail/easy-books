@@ -66,6 +66,7 @@ const Table = (props) => {
               openEditFunction={openEditFunction}
               submitDeleteFunction={submitDeleteFunction}
               submitReturnFunction={submitReturnFunction}
+              linkId={props.linkId}
             />
           </TableBody>
         </MuiTable>
