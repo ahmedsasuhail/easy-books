@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import {
+  Button,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -72,7 +73,11 @@ const RelationshipModal = (props) => {
       fullWidth={true}
       maxWidth="md"
       open={openRelationshipModal}
-      onClose={handleCloseRelationshipModal}
+      onClose={(_, reason) => {
+        if (reason !== "backdropClick") {
+          handleCloseRelationshipModal();
+        }
+      }}
     >
       <DialogTitle id="max-width-dialog-title">Relationships</DialogTitle>
       <DialogContent>
@@ -82,7 +87,11 @@ const RelationshipModal = (props) => {
           submitAddFunction={handleSetRelationshipName}
         />
       </DialogContent>
-      <DialogActions></DialogActions>
+      <DialogActions>
+        <Button onClick={handleCloseRelationshipModal} color="primary">
+          Close
+        </Button>
+      </DialogActions>
     </Dialog>
   );
 };

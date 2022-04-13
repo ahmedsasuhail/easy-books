@@ -171,7 +171,7 @@ const CreateUpdateSales = (props) => {
             size="small"
             color="primary"
           >
-            Add Purchase
+            Choose Purchase
           </Button>
         )}
       </Field>
@@ -202,7 +202,7 @@ const CreateUpdateSales = (props) => {
                 inventoryPurchaseData.records.length === 0
               }
             >
-              Add Inventory
+              Choose Inventory
             </Button>
           )}
         </Field>
@@ -227,7 +227,7 @@ const CreateUpdateSales = (props) => {
             size="small"
             color="primary"
           >
-            Add Buyer
+            Choose Buyer
           </Button>
         )}
       </Field>

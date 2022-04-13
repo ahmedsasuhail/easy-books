@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import {
+  Button,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -87,7 +88,11 @@ const PurchasesModal = (props) => {
       fullWidth={true}
       maxWidth="md"
       open={openPurchasesModal}
-      onClose={handleClosePurchasesModal}
+      onClose={(_, reason) => {
+        if (reason !== "backdropClick") {
+          handleClosePurchasesModal();
+        }
+      }}
     >
       <DialogTitle id="max-width-dialog-title">Purchases</DialogTitle>
       <DialogContent>
@@ -97,7 +102,11 @@ const PurchasesModal = (props) => {
           submitAddFunction={handleSetPurchaseName}
         />
       </DialogContent>
-      <DialogActions></DialogActions>
+      <DialogActions>
+        <Button onClick={handleClosePurchasesModal} color="primary">
+          Close
+        </Button>
+      </DialogActions>
     </Dialog>
   );
 };

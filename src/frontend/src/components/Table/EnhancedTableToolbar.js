@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { TextField, IconButton } from "@material-ui/core";
-import { Search as SearchIcon } from "@material-ui/icons";
+import { Search as SearchIcon, Close as CloseIcon } from "@material-ui/icons";
 
 const EnhancedTableToolbar = (props) => {
   const { title, onRequestSearch, clearSearch } = props;
@@ -12,6 +12,10 @@ const EnhancedTableToolbar = (props) => {
 
   const requestSearch = () => {
     onRequestSearch(searched);
+  };
+
+  const cancelSearch = () => {
+    onRequestSearch("");
   };
 
   useEffect(() => {
@@ -52,6 +56,19 @@ const EnhancedTableToolbar = (props) => {
       >
         <SearchIcon fontSize="small" />
       </IconButton>
+      {searched && (
+        <IconButton
+          onClick={() => {
+            setSearched("");
+            cancelSearch();
+          }}
+          color="primary"
+          component="span"
+          size="small"
+        >
+          <CloseIcon fontSize="small" />
+        </IconButton>
+      )}
     </Toolbar>
   );
 };

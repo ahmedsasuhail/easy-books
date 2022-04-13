@@ -109,7 +109,7 @@ const CreateUpdatePurchase = () => {
             size="small"
             color="primary"
           >
-            Add Seller
+            Choose Seller
           </Button>
         )}
       </Field>

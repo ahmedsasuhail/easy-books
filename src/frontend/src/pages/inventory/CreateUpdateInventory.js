@@ -69,7 +69,7 @@ const CreateUpdateInventory = () => {
             size="small"
             color="primary"
           >
-            Add Purchase
+            Choose Purchase
           </Button>
         )}
       </Field>

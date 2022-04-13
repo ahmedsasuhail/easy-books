@@ -17,7 +17,11 @@ const CustomDialog = (props) => {
         fullWidth={props.fullWidth}
         maxWidth={props.maxWidth}
         open={props.open}
-        onClose={props.handleClose}
+        onClose={(_, reason) => {
+          if (reason !== "backdropClick") {
+            props.handleClose();
+          }
+        }}
       >
         <DialogTitle id="max-width-dialog-title">{props.title}</DialogTitle>
         <Form

@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
+  Button,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -124,7 +125,11 @@ const InventoryModal = (props) => {
       fullWidth={true}
       maxWidth="md"
       open={openInventoryModal}
-      onClose={handleCloseInventoryModal}
+      onClose={(_, reason) => {
+        if (reason !== "backdropClick") {
+          handleCloseInventoryModal();
+        }
+      }}
     >
       <DialogTitle id="max-width-dialog-title">Inventory</DialogTitle>
       <DialogContent>
@@ -145,7 +150,11 @@ const InventoryModal = (props) => {
           size="small"
         />
       </DialogContent>
-      <DialogActions></DialogActions>
+      <DialogActions>
+        <Button onClick={handleCloseInventoryModal} color="primary">
+          Close
+        </Button>
+      </DialogActions>
     </Dialog>
   );
 };
