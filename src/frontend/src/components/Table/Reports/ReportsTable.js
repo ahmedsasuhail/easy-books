@@ -101,91 +101,43 @@ export default function SpanningTable(props) {
                       <Typography variant="h6" gutterBottom component="div">
                         Items
                       </Typography>
-                      <Table size="small" aria-label="purchases">
-                        <TableHead>
-                          <TableRow>
-                            <TableCell className={classes.cellBold}>
-                              Part Name
-                            </TableCell>
-                            <TableCell
-                              className={classes.cellBold}
-                              align="right"
-                            >
-                              Date
-                            </TableCell>
-                            <TableCell className={classes.cellBold}>
-                              Returned
-                            </TableCell>
-                            <TableCell className={classes.cellBold}>
-                              Credited
-                            </TableCell>
-                            <TableCell
-                              className={classes.cellBold}
-                              align="right"
-                            >
-                              Price
-                            </TableCell>
-                            <TableCell
-                              className={classes.cellBold}
-                              align="right"
-                            >
-                              Quantity
-                            </TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {props.purchaseRows &&
-                            props.purchaseRows.sales &&
-                            props.purchaseRows.sales.map((item, idx) => (
-                              <TableRow key={idx}>
-                                <TableCell>{item.part_name}</TableCell>
-                                <TableCell align="right">
-                                  {
-                                    new Date(item.date)
-                                      .toISOString()
-                                      .split("T")[0]
-                                  }
-                                </TableCell>
-                                <TableCell>No</TableCell>
-                                <TableCell>No</TableCell>
-                                <TableCell align="right">
-                                  {item.price}
-                                </TableCell>
-                                <TableCell align="right">
-                                  {item.quantity}
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          {props.purchaseRows &&
-                            props.purchaseRows.sales_returned &&
-                            props.purchaseRows.sales_returned.map(
-                              (item, idx) => (
-                                <TableRow key={idx}>
-                                  <TableCell>{item.part_name}</TableCell>
-                                  <TableCell align="right">
-                                    {
-                                      new Date(item.date)
-                                        .toISOString()
-                                        .split("T")[0]
-                                    }
-                                  </TableCell>
-                                  <TableCell>Yes</TableCell>
-                                  <TableCell>
-                                    {item.credit ? "Yes" : "No"}
-                                  </TableCell>
-                                  <TableCell align="right">
-                                    {item.price}
-                                  </TableCell>
-                                  <TableCell align="right">
-                                    {item.quantity}
-                                  </TableCell>
-                                </TableRow>
-                              )
-                            )}
-                          {props.purchaseRows &&
-                            props.purchaseRows.credited_sales &&
-                            props.purchaseRows.credited_sales.map(
-                              (item, idx) => (
+                      <TableContainer sx={{ maxHeight: 440 }}>
+                        <Table stickyHeader size="small" aria-label="purchases">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell className={classes.cellBold}>
+                                Part Name
+                              </TableCell>
+                              <TableCell
+                                className={classes.cellBold}
+                                align="right"
+                              >
+                                Date
+                              </TableCell>
+                              <TableCell className={classes.cellBold}>
+                                Returned
+                              </TableCell>
+                              <TableCell className={classes.cellBold}>
+                                Credited
+                              </TableCell>
+                              <TableCell
+                                className={classes.cellBold}
+                                align="right"
+                              >
+                                Price
+                              </TableCell>
+                              <TableCell
+                                className={classes.cellBold}
+                                align="right"
+                              >
+                                Quantity
+                              </TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {props.purchaseRows &&
+                              props.purchaseRows.sales &&
+                              props.purchaseRows.sales.map((item, idx) => (
                                 <TableRow key={idx}>
                                   <TableCell>{item.part_name}</TableCell>
                                   <TableCell align="right">
@@ -196,7 +148,7 @@ export default function SpanningTable(props) {
                                     }
                                   </TableCell>
                                   <TableCell>No</TableCell>
-                                  <TableCell>Yes</TableCell>
+                                  <TableCell>No</TableCell>
                                   <TableCell align="right">
                                     {item.price}
                                   </TableCell>
@@ -204,60 +156,60 @@ export default function SpanningTable(props) {
                                     {item.quantity}
                                   </TableCell>
                                 </TableRow>
-                              )
-                            )}
-                          {props.relationshipRows &&
-                            props.relationshipRows.sales &&
-                            props.relationshipRows.sales.map((item, idx) => (
-                              <TableRow key={idx}>
-                                <TableCell>{item.part_name}</TableCell>
-                                <TableCell align="right">
-                                  {
-                                    new Date(item.date)
-                                      .toISOString()
-                                      .split("T")[0]
-                                  }
-                                </TableCell>
-                                <TableCell>No</TableCell>
-                                <TableCell>No</TableCell>
-                                <TableCell align="right">
-                                  {item.price}
-                                </TableCell>
-                                <TableCell align="right">
-                                  {item.quantity}
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          {props.relationshipRows &&
-                            props.relationshipRows.sales_returned &&
-                            props.relationshipRows.sales_returned.map(
-                              (item, idx) => (
-                                <TableRow key={idx}>
-                                  <TableCell>{item.part_name}</TableCell>
-                                  <TableCell align="right">
-                                    {
-                                      new Date(item.date)
-                                        .toISOString()
-                                        .split("T")[0]
-                                    }
-                                  </TableCell>
-                                  <TableCell>Yes</TableCell>
-                                  <TableCell>
-                                    {item.credit ? "Yes" : "No"}
-                                  </TableCell>
-                                  <TableCell align="right">
-                                    {item.price}
-                                  </TableCell>
-                                  <TableCell align="right">
-                                    {item.quantity}
-                                  </TableCell>
-                                </TableRow>
-                              )
-                            )}
-                          {props.relationshipRows &&
-                            props.relationshipRows.credited_sales &&
-                            props.relationshipRows.credited_sales.map(
-                              (item, idx) => (
+                              ))}
+                            {props.purchaseRows &&
+                              props.purchaseRows.sales_returned &&
+                              props.purchaseRows.sales_returned.map(
+                                (item, idx) => (
+                                  <TableRow key={idx}>
+                                    <TableCell>{item.part_name}</TableCell>
+                                    <TableCell align="right">
+                                      {
+                                        new Date(item.date)
+                                          .toISOString()
+                                          .split("T")[0]
+                                      }
+                                    </TableCell>
+                                    <TableCell>Yes</TableCell>
+                                    <TableCell>
+                                      {item.credit ? "Yes" : "No"}
+                                    </TableCell>
+                                    <TableCell align="right">
+                                      {item.price}
+                                    </TableCell>
+                                    <TableCell align="right">
+                                      {item.quantity}
+                                    </TableCell>
+                                  </TableRow>
+                                )
+                              )}
+                            {props.purchaseRows &&
+                              props.purchaseRows.credited_sales &&
+                              props.purchaseRows.credited_sales.map(
+                                (item, idx) => (
+                                  <TableRow key={idx}>
+                                    <TableCell>{item.part_name}</TableCell>
+                                    <TableCell align="right">
+                                      {
+                                        new Date(item.date)
+                                          .toISOString()
+                                          .split("T")[0]
+                                      }
+                                    </TableCell>
+                                    <TableCell>No</TableCell>
+                                    <TableCell>Yes</TableCell>
+                                    <TableCell align="right">
+                                      {item.price}
+                                    </TableCell>
+                                    <TableCell align="right">
+                                      {item.quantity}
+                                    </TableCell>
+                                  </TableRow>
+                                )
+                              )}
+                            {props.relationshipRows &&
+                              props.relationshipRows.sales &&
+                              props.relationshipRows.sales.map((item, idx) => (
                                 <TableRow key={idx}>
                                   <TableCell>{item.part_name}</TableCell>
                                   <TableCell align="right">
@@ -268,7 +220,7 @@ export default function SpanningTable(props) {
                                     }
                                   </TableCell>
                                   <TableCell>No</TableCell>
-                                  <TableCell>Yes</TableCell>
+                                  <TableCell>No</TableCell>
                                   <TableCell align="right">
                                     {item.price}
                                   </TableCell>
@@ -276,36 +228,86 @@ export default function SpanningTable(props) {
                                     {item.quantity}
                                   </TableCell>
                                 </TableRow>
-                              )
-                            )}
-                          {props.rangeRows &&
-                            props.rangeRows.sales &&
-                            props.rangeRows.sales.map((item, idx) => (
-                              <TableRow key={idx}>
-                                <TableCell>{item.part_name}</TableCell>
-                                <TableCell align="right">
-                                  {
-                                    new Date(item.date)
-                                      .toISOString()
-                                      .split("T")[0]
-                                  }
-                                </TableCell>
-                                <TableCell>
-                                  {item.returned ? "Yes" : "No"}
-                                </TableCell>
-                                <TableCell>
-                                  {item.credit ? "Yes" : "No"}
-                                </TableCell>
-                                <TableCell align="right">
-                                  {item.price}
-                                </TableCell>
-                                <TableCell align="right">
-                                  {item.quantity}
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                        </TableBody>
-                      </Table>
+                              ))}
+                            {props.relationshipRows &&
+                              props.relationshipRows.sales_returned &&
+                              props.relationshipRows.sales_returned.map(
+                                (item, idx) => (
+                                  <TableRow key={idx}>
+                                    <TableCell>{item.part_name}</TableCell>
+                                    <TableCell align="right">
+                                      {
+                                        new Date(item.date)
+                                          .toISOString()
+                                          .split("T")[0]
+                                      }
+                                    </TableCell>
+                                    <TableCell>Yes</TableCell>
+                                    <TableCell>
+                                      {item.credit ? "Yes" : "No"}
+                                    </TableCell>
+                                    <TableCell align="right">
+                                      {item.price}
+                                    </TableCell>
+                                    <TableCell align="right">
+                                      {item.quantity}
+                                    </TableCell>
+                                  </TableRow>
+                                )
+                              )}
+                            {props.relationshipRows &&
+                              props.relationshipRows.credited_sales &&
+                              props.relationshipRows.credited_sales.map(
+                                (item, idx) => (
+                                  <TableRow key={idx}>
+                                    <TableCell>{item.part_name}</TableCell>
+                                    <TableCell align="right">
+                                      {
+                                        new Date(item.date)
+                                          .toISOString()
+                                          .split("T")[0]
+                                      }
+                                    </TableCell>
+                                    <TableCell>No</TableCell>
+                                    <TableCell>Yes</TableCell>
+                                    <TableCell align="right">
+                                      {item.price}
+                                    </TableCell>
+                                    <TableCell align="right">
+                                      {item.quantity}
+                                    </TableCell>
+                                  </TableRow>
+                                )
+                              )}
+                            {props.rangeRows &&
+                              props.rangeRows.sales &&
+                              props.rangeRows.sales.map((item, idx) => (
+                                <TableRow key={idx}>
+                                  <TableCell>{item.part_name}</TableCell>
+                                  <TableCell align="right">
+                                    {
+                                      new Date(item.date)
+                                        .toISOString()
+                                        .split("T")[0]
+                                    }
+                                  </TableCell>
+                                  <TableCell>
+                                    {item.returned ? "Yes" : "No"}
+                                  </TableCell>
+                                  <TableCell>
+                                    {item.credit ? "Yes" : "No"}
+                                  </TableCell>
+                                  <TableCell align="right">
+                                    {item.price}
+                                  </TableCell>
+                                  <TableCell align="right">
+                                    {item.quantity}
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
                     </Box>
                   </Collapse>
                 </TableCell>
@@ -350,31 +352,57 @@ export default function SpanningTable(props) {
                         <Typography variant="h6" gutterBottom component="div">
                           Items
                         </Typography>
-                        <Table size="small" aria-label="purchases">
-                          <TableHead>
-                            <TableRow>
-                              <TableCell className={classes.cellBold}>
-                                Purchase Name
-                              </TableCell>
-                              <TableCell
-                                className={classes.cellBold}
-                                align="right"
-                              >
-                                Date
-                              </TableCell>
-                              <TableCell
-                                className={classes.cellBold}
-                                align="right"
-                              >
-                                Price
-                              </TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {props.relationshipRows &&
-                            props.relationshipRows.purchases
-                              ? props.relationshipRows.purchases.map(
-                                  (item, idx) => (
+                        <TableContainer sx={{ maxHeight: 440 }}>
+                          <Table
+                            stickyHeader
+                            size="small"
+                            aria-label="purchases"
+                          >
+                            <TableHead>
+                              <TableRow>
+                                <TableCell className={classes.cellBold}>
+                                  Purchase Name
+                                </TableCell>
+                                <TableCell
+                                  className={classes.cellBold}
+                                  align="right"
+                                >
+                                  Date
+                                </TableCell>
+                                <TableCell
+                                  className={classes.cellBold}
+                                  align="right"
+                                >
+                                  Price
+                                </TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {props.relationshipRows &&
+                              props.relationshipRows.purchases
+                                ? props.relationshipRows.purchases.map(
+                                    (item, idx) => (
+                                      <TableRow key={idx}>
+                                        <TableCell>
+                                          {item.company_name} -{" "}
+                                          {item.vehicle_name}
+                                        </TableCell>
+                                        <TableCell align="right">
+                                          {
+                                            new Date(item.date)
+                                              .toISOString()
+                                              .split("T")[0]
+                                          }
+                                        </TableCell>
+                                        <TableCell align="right">
+                                          {item.price}
+                                        </TableCell>
+                                      </TableRow>
+                                    )
+                                  )
+                                : props.rangeRows &&
+                                  props.rangeRows.purchases &&
+                                  props.rangeRows.purchases.map((item, idx) => (
                                     <TableRow key={idx}>
                                       <TableCell>
                                         {item.company_name} -{" "}
@@ -391,29 +419,10 @@ export default function SpanningTable(props) {
                                         {item.price}
                                       </TableCell>
                                     </TableRow>
-                                  )
-                                )
-                              : props.rangeRows &&
-                                props.rangeRows.purchases &&
-                                props.rangeRows.purchases.map((item, idx) => (
-                                  <TableRow key={idx}>
-                                    <TableCell>
-                                      {item.company_name} - {item.vehicle_name}
-                                    </TableCell>
-                                    <TableCell align="right">
-                                      {
-                                        new Date(item.date)
-                                          .toISOString()
-                                          .split("T")[0]
-                                      }
-                                    </TableCell>
-                                    <TableCell align="right">
-                                      {item.price}
-                                    </TableCell>
-                                  </TableRow>
-                                ))}
-                          </TableBody>
-                        </Table>
+                                  ))}
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
                       </Box>
                     </Collapse>
                   </TableCell>
@@ -458,68 +467,74 @@ export default function SpanningTable(props) {
                         <Typography variant="h6" gutterBottom component="div">
                           Items
                         </Typography>
-                        <Table size="small" aria-label="purchases">
-                          <TableHead>
-                            <TableRow>
-                              <TableCell className={classes.cellBold}>
-                                {props.purchaseRows && "Part Name"}
-                                {props.relationshipRows && "Purchase Name"}
-                              </TableCell>
-                              <TableCell
-                                className={classes.cellBold}
-                                align="right"
-                              >
-                                Date
-                              </TableCell>
-                              <TableCell
-                                className={classes.cellBold}
-                                align="right"
-                              >
-                                Price
-                              </TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {props.purchaseRows &&
-                            props.purchaseRows.sales_returned
-                              ? props.purchaseRows.sales_returned.map(
-                                  (item, idx) => (
-                                    <TableRow key={idx}>
-                                      <TableCell>{item.part_name}</TableCell>
-                                      <TableCell align="right">
-                                        {
-                                          new Date(item.date)
-                                            .toISOString()
-                                            .split("T")[0]
-                                        }
-                                      </TableCell>
-                                      <TableCell align="right">
-                                        {item.price}
-                                      </TableCell>
-                                    </TableRow>
+                        <TableContainer sx={{ maxHeight: 440 }}>
+                          <Table
+                            stickyHeader
+                            size="small"
+                            aria-label="purchases"
+                          >
+                            <TableHead>
+                              <TableRow>
+                                <TableCell className={classes.cellBold}>
+                                  {props.purchaseRows && "Part Name"}
+                                  {props.relationshipRows && "Purchase Name"}
+                                </TableCell>
+                                <TableCell
+                                  className={classes.cellBold}
+                                  align="right"
+                                >
+                                  Date
+                                </TableCell>
+                                <TableCell
+                                  className={classes.cellBold}
+                                  align="right"
+                                >
+                                  Price
+                                </TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {props.purchaseRows &&
+                              props.purchaseRows.sales_returned
+                                ? props.purchaseRows.sales_returned.map(
+                                    (item, idx) => (
+                                      <TableRow key={idx}>
+                                        <TableCell>{item.part_name}</TableCell>
+                                        <TableCell align="right">
+                                          {
+                                            new Date(item.date)
+                                              .toISOString()
+                                              .split("T")[0]
+                                          }
+                                        </TableCell>
+                                        <TableCell align="right">
+                                          {item.price}
+                                        </TableCell>
+                                      </TableRow>
+                                    )
                                   )
-                                )
-                              : props.relationshipRows &&
-                                props.relationshipRows.sales_returned &&
-                                props.relationshipRows.sales_returned.map(
-                                  (item, idx) => (
-                                    <TableRow key={idx}>
-                                      <TableCell>{item.part_name}</TableCell>
-                                      <TableCell align="right">
-                                        {
-                                          new Date(item.date)
-                                            .toISOString()
-                                            .split("T")[0]
-                                        }
-                                      </TableCell>
-                                      <TableCell align="right">
-                                        {item.price}
-                                      </TableCell>
-                                    </TableRow>
-                                  )
-                                )}
-                          </TableBody>
-                        </Table>
+                                : props.relationshipRows &&
+                                  props.relationshipRows.sales_returned &&
+                                  props.relationshipRows.sales_returned.map(
+                                    (item, idx) => (
+                                      <TableRow key={idx}>
+                                        <TableCell>{item.part_name}</TableCell>
+                                        <TableCell align="right">
+                                          {
+                                            new Date(item.date)
+                                              .toISOString()
+                                              .split("T")[0]
+                                          }
+                                        </TableCell>
+                                        <TableCell align="right">
+                                          {item.price}
+                                        </TableCell>
+                                      </TableRow>
+                                    )
+                                  )}
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
                       </Box>
                     </Collapse>
                   </TableCell>
@@ -563,67 +578,73 @@ export default function SpanningTable(props) {
                         <Typography variant="h6" gutterBottom component="div">
                           Items
                         </Typography>
-                        <Table size="small" aria-label="purchases">
-                          <TableHead>
-                            <TableRow>
-                              <TableCell className={classes.cellBold}>
-                                Part Name
-                              </TableCell>
-                              <TableCell
-                                className={classes.cellBold}
-                                align="right"
-                              >
-                                Date
-                              </TableCell>
-                              <TableCell
-                                className={classes.cellBold}
-                                align="right"
-                              >
-                                Price
-                              </TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {props.purchaseRows &&
-                            props.purchaseRows.credited_sales
-                              ? props.purchaseRows.credited_sales.map(
-                                  (item, idx) => (
-                                    <TableRow key={idx}>
-                                      <TableCell>{item.part_name}</TableCell>
-                                      <TableCell align="right">
-                                        {
-                                          new Date(item.date)
-                                            .toISOString()
-                                            .split("T")[0]
-                                        }
-                                      </TableCell>
-                                      <TableCell align="right">
-                                        {item.price}
-                                      </TableCell>
-                                    </TableRow>
+                        <TableContainer sx={{ maxHeight: 440 }}>
+                          <Table
+                            stickyHeader
+                            size="small"
+                            aria-label="purchases"
+                          >
+                            <TableHead>
+                              <TableRow>
+                                <TableCell className={classes.cellBold}>
+                                  Part Name
+                                </TableCell>
+                                <TableCell
+                                  className={classes.cellBold}
+                                  align="right"
+                                >
+                                  Date
+                                </TableCell>
+                                <TableCell
+                                  className={classes.cellBold}
+                                  align="right"
+                                >
+                                  Price
+                                </TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {props.purchaseRows &&
+                              props.purchaseRows.credited_sales
+                                ? props.purchaseRows.credited_sales.map(
+                                    (item, idx) => (
+                                      <TableRow key={idx}>
+                                        <TableCell>{item.part_name}</TableCell>
+                                        <TableCell align="right">
+                                          {
+                                            new Date(item.date)
+                                              .toISOString()
+                                              .split("T")[0]
+                                          }
+                                        </TableCell>
+                                        <TableCell align="right">
+                                          {item.price}
+                                        </TableCell>
+                                      </TableRow>
+                                    )
                                   )
-                                )
-                              : props.relationshipRows &&
-                                props.relationshipRows.credited_sales &&
-                                props.relationshipRows.credited_sales.map(
-                                  (item, idx) => (
-                                    <TableRow key={idx}>
-                                      <TableCell>{item.part_name}</TableCell>
-                                      <TableCell align="right">
-                                        {
-                                          new Date(item.date)
-                                            .toISOString()
-                                            .split("T")[0]
-                                        }
-                                      </TableCell>
-                                      <TableCell align="right">
-                                        {item.price}
-                                      </TableCell>
-                                    </TableRow>
-                                  )
-                                )}
-                          </TableBody>
-                        </Table>
+                                : props.relationshipRows &&
+                                  props.relationshipRows.credited_sales &&
+                                  props.relationshipRows.credited_sales.map(
+                                    (item, idx) => (
+                                      <TableRow key={idx}>
+                                        <TableCell>{item.part_name}</TableCell>
+                                        <TableCell align="right">
+                                          {
+                                            new Date(item.date)
+                                              .toISOString()
+                                              .split("T")[0]
+                                          }
+                                        </TableCell>
+                                        <TableCell align="right">
+                                          {item.price}
+                                        </TableCell>
+                                      </TableRow>
+                                    )
+                                  )}
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
                       </Box>
                     </Collapse>
                   </TableCell>
@@ -662,45 +683,47 @@ export default function SpanningTable(props) {
                       <Typography variant="h6" gutterBottom component="div">
                         Items
                       </Typography>
-                      <Table size="small" aria-label="purchases">
-                        <TableHead>
-                          <TableRow>
-                            <TableCell className={classes.cellBold}>
-                              Description
-                            </TableCell>
-                            <TableCell
-                              className={classes.cellBold}
-                              align="right"
-                            >
-                              Date
-                            </TableCell>
-                            <TableCell
-                              className={classes.cellBold}
-                              align="right"
-                            >
-                              Price
-                            </TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {props.rangeRows.expenses &&
-                            props.rangeRows.expenses.map((item, idx) => (
-                              <TableRow key={idx}>
-                                <TableCell>{item.description}</TableCell>
-                                <TableCell align="right">
-                                  {
-                                    new Date(item.date)
-                                      .toISOString()
-                                      .split("T")[0]
-                                  }
-                                </TableCell>
-                                <TableCell align="right">
-                                  {item.price}
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                        </TableBody>
-                      </Table>
+                      <TableContainer sx={{ maxHeight: 440 }}>
+                        <Table stickyHeader size="small" aria-label="purchases">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell className={classes.cellBold}>
+                                Description
+                              </TableCell>
+                              <TableCell
+                                className={classes.cellBold}
+                                align="right"
+                              >
+                                Date
+                              </TableCell>
+                              <TableCell
+                                className={classes.cellBold}
+                                align="right"
+                              >
+                                Price
+                              </TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {props.rangeRows.expenses &&
+                              props.rangeRows.expenses.map((item, idx) => (
+                                <TableRow key={idx}>
+                                  <TableCell>{item.description}</TableCell>
+                                  <TableCell align="right">
+                                    {
+                                      new Date(item.date)
+                                        .toISOString()
+                                        .split("T")[0]
+                                    }
+                                  </TableCell>
+                                  <TableCell align="right">
+                                    {item.price}
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
                     </Box>
                   </Collapse>
                 </TableCell>
@@ -737,55 +760,57 @@ export default function SpanningTable(props) {
                       <Typography variant="h6" gutterBottom component="div">
                         Items
                       </Typography>
-                      <Table size="small" aria-label="purchases">
-                        <TableHead>
-                          <TableRow>
-                            <TableCell className={classes.cellBold}>
-                              Part Name
-                            </TableCell>
-                            <TableCell
-                              className={classes.cellBold}
-                              align="right"
-                            >
-                              Date
-                            </TableCell>
-                            <TableCell
-                              className={classes.cellBold}
-                              align="right"
-                            >
-                              Price
-                            </TableCell>
-                            <TableCell
-                              className={classes.cellBold}
-                              align="right"
-                            >
-                              Quantity
-                            </TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {props.purchaseRows &&
-                            props.purchaseRows.not_sold &&
-                            props.purchaseRows.not_sold.map((item, idx) => (
-                              <TableRow key={idx}>
-                                <TableCell>{item.part_name}</TableCell>
-                                <TableCell align="right">
-                                  {
-                                    new Date(item.date)
-                                      .toISOString()
-                                      .split("T")[0]
-                                  }
-                                </TableCell>
-                                <TableCell align="right">
-                                  {item.price}
-                                </TableCell>
-                                <TableCell align="right">
-                                  {item.quantity}
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                        </TableBody>
-                      </Table>
+                      <TableContainer sx={{ maxHeight: 440 }}>
+                        <Table stickyHeader size="small" aria-label="purchases">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell className={classes.cellBold}>
+                                Part Name
+                              </TableCell>
+                              <TableCell
+                                className={classes.cellBold}
+                                align="right"
+                              >
+                                Date
+                              </TableCell>
+                              <TableCell
+                                className={classes.cellBold}
+                                align="right"
+                              >
+                                Price
+                              </TableCell>
+                              <TableCell
+                                className={classes.cellBold}
+                                align="right"
+                              >
+                                Quantity
+                              </TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {props.purchaseRows &&
+                              props.purchaseRows.not_sold &&
+                              props.purchaseRows.not_sold.map((item, idx) => (
+                                <TableRow key={idx}>
+                                  <TableCell>{item.part_name}</TableCell>
+                                  <TableCell align="right">
+                                    {
+                                      new Date(item.date)
+                                        .toISOString()
+                                        .split("T")[0]
+                                    }
+                                  </TableCell>
+                                  <TableCell align="right">
+                                    {item.price}
+                                  </TableCell>
+                                  <TableCell align="right">
+                                    {item.quantity}
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
                     </Box>
                   </Collapse>
                 </TableCell>

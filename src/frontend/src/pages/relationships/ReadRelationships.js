@@ -97,6 +97,20 @@ export const CustomMuiTable = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageNo]);
 
+  useEffect(() => {
+    dispatch(
+      relationshipRead({
+        token: token,
+        pageNo: 0,
+        // TODO: Change 5 below
+        rowsPerPage: 2,
+        order: "asc",
+        orderBy: "id",
+        query: "",
+      })
+    );
+  }, []);
+
   return (
     <CustomTable
       tableTitle="All Relationships"

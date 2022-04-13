@@ -26,6 +26,9 @@ const EnhancedTableContent = (props) => {
 
   if (rows.length > 0) {
     listContent = rows.map((row, index) => {
+      if (submitAddFunction && row.quantity === 0) {
+        return <></>;
+      }
       const labelId = `enhanced-table-checkbox-${index}`;
 
       const value = {};
@@ -38,12 +41,18 @@ const EnhancedTableContent = (props) => {
           value[head.id] = row[head.id];
         }
       });
-
       const list = headCells.map((cell, idx) => {
         if (cell.display !== false) {
           const opts = {};
           if (cell.id === "sn") {
             opts.id = labelId;
+          }
+          if (cell.id === "quantity") {
+            return (
+              <TableCell {...opts} key={idx}>
+                {row[cell.id] === 0 ? "Sold Out" : row[cell.id]}
+              </TableCell>
+            );
           }
           if (!!cell.checkbox) {
             return (

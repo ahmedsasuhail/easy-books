@@ -277,6 +277,13 @@ const ReadSales = () => {
     if (result) {
       handleSubmitCreateUpdateSales({
         id: valueForm.id,
+        purchase_id: +valueForm.purchase_id,
+        inventory_id: +valueForm.inventory_id,
+        relationship_id: +valueForm.relationship_id,
+        price: +valueForm.price,
+        date: valueForm.date,
+        credit: valueForm.credit && valueForm.credit,
+        quantity: +valueForm.quantity,
         returned: valueForm.returned,
       });
     }

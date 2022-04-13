@@ -95,7 +95,7 @@ const ReadInventory = () => {
           ? `${inventory.purchases.company_name} - ${inventory.purchases.vehicle_name}`
           : "Not Specified",
         part_name: inventory.part_name ? inventory.part_name : "Not Specified",
-        quantity: inventory.quantity ? inventory.quantity : "Not Specified",
+        quantity: inventory.quantity && inventory.quantity,
         date: inventory.date ? formattedDate(inventory.date) : "Not Specified",
       };
     });
@@ -165,6 +165,20 @@ const ReadInventory = () => {
     handleChangePage(null, pageNo);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageNo]);
+
+  useEffect(() => {
+    dispatch(
+      inventoryRead({
+        token: token,
+        pageNo: 0,
+        // TODO: Change 5 below
+        rowsPerPage: 2,
+        order: "asc",
+        orderBy: "id",
+        query: "",
+      })
+    );
+  }, []);
 
   const handleOpenCreateInventory = () => {
     setOpenCreateUpdateInventory(true);

@@ -7,8 +7,6 @@ import {
   DialogTitle,
   DialogActions,
 } from "@material-ui/core";
-import TableContainer from "@mui/material/TableContainer";
-import Paper from "@mui/material/Paper";
 
 import { relationshipActions } from "../../store/actions/relationship/relationshipActions";
 
@@ -78,13 +76,11 @@ const RelationshipModal = (props) => {
     >
       <DialogTitle id="max-width-dialog-title">Relationships</DialogTitle>
       <DialogContent>
-        <TableContainer component={Paper}>
-          <CustomMuiTable
-            headCells={headCells}
-            rows={rows}
-            submitAddFunction={handleSetRelationshipName}
-          />
-        </TableContainer>
+        <CustomMuiTable
+          headCells={headCells}
+          rows={rows}
+          submitAddFunction={handleSetRelationshipName}
+        />
       </DialogContent>
       <DialogActions></DialogActions>
     </Dialog>

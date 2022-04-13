@@ -46,24 +46,20 @@ export const salesUpdate = (values) => {
     try {
       const response = await axios.patch(
         "sales/",
-        values.formValues.purchase_id
-          ? {
-              purchase_id: +values.formValues.purchase_id,
-              inventory_id: +values.formValues.inventory_id,
-              relationship_id: +values.formValues.relationship_id,
-              price: +values.formValues.price,
-              date: values.formValues.date,
-              credit: values.formValues.credit && values.formValues.credit,
-              quantity: +values.formValues.quantity,
-              id: +values.formValues.id,
-            }
-          : {
-              id: +values.formValues.id,
-              returned:
-                values.formValues.returned === true
-                  ? values.formValues.returned
-                  : false,
-            },
+        {
+          id: +values.formValues.id,
+          purchase_id: +values.formValues.purchase_id,
+          inventory_id: +values.formValues.inventory_id,
+          relationship_id: +values.formValues.relationship_id,
+          price: +values.formValues.price,
+          date: values.formValues.date,
+          credit: values.formValues.credit && values.formValues.credit,
+          quantity: +values.formValues.quantity,
+          returned:
+            values.formValues.returned === true
+              ? values.formValues.returned
+              : false,
+        },
         {
           headers: {
             Authorization: values.token,

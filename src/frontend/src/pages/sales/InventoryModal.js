@@ -7,8 +7,6 @@ import {
   DialogTitle,
   DialogActions,
 } from "@material-ui/core";
-import TableContainer from "@mui/material/TableContainer";
-import Paper from "@mui/material/Paper";
 
 import CustomTable from "../../components/Table/CustomTable";
 
@@ -64,7 +62,7 @@ const InventoryModal = (props) => {
         sn: pageNo === 0 ? idx + 1 : rowsPerPage * pageNo + (idx + 1),
         id: inventory.id,
         part_name: inventory.part_name ? inventory.part_name : "Not Specified",
-        quantity: inventory.quantity ? inventory.quantity : "Not Specified",
+        quantity: inventory.quantity && inventory.quantity,
         date: inventory.date ? formattedDate(inventory.date) : "Not Specified",
       };
     });
@@ -130,24 +128,22 @@ const InventoryModal = (props) => {
     >
       <DialogTitle id="max-width-dialog-title">Inventory</DialogTitle>
       <DialogContent>
-        <TableContainer component={Paper}>
-          <CustomTable
-            tableTitle="All Inventory"
-            order={order}
-            orderBy={orderBy}
-            requestSort={handleRequestSort}
-            headCells={headCells}
-            rows={rows}
-            totalCount={totalCount}
-            pageNo={pageNo}
-            rowsPerPage={rowsPerPage}
-            changePage={handleChangePage}
-            changeRowsPerPage={handleChangeRowsPerPage}
-            actions={true}
-            submitAddFunction={handleSetInventoryName}
-            size="small"
-          />
-        </TableContainer>
+        <CustomTable
+          tableTitle="All Inventory"
+          order={order}
+          orderBy={orderBy}
+          requestSort={handleRequestSort}
+          headCells={headCells}
+          rows={rows}
+          totalCount={totalCount}
+          pageNo={pageNo}
+          rowsPerPage={rowsPerPage}
+          changePage={handleChangePage}
+          changeRowsPerPage={handleChangeRowsPerPage}
+          actions={true}
+          submitAddFunction={handleSetInventoryName}
+          size="small"
+        />
       </DialogContent>
       <DialogActions></DialogActions>
     </Dialog>

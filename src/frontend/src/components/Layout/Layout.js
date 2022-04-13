@@ -51,38 +51,38 @@ function Layout() {
   );
   const isSalesLoading = useSelector((state) => state.sales.pageLoading);
 
-  useEffect(() => {
-    dispatch(
-      relationshipRead({
-        token: token,
-        pageNo: 0,
-        rowsPerPage: 5,
-        order: "asc",
-        orderBy: "id",
-        query: "",
-      })
-    );
-    dispatch(
-      purchaseRead({
-        token: token,
-        pageNo: 0,
-        rowsPerPage: 5,
-        order: "asc",
-        orderBy: "id",
-        query: "",
-      })
-    );
-    dispatch(
-      inventoryRead({
-        token: token,
-        pageNo: 0,
-        rowsPerPage: 5,
-        order: "asc",
-        orderBy: "id",
-        query: "",
-      })
-    );
-  }, [dispatch, token]);
+  // useEffect(() => {
+  //   dispatch(
+  //     relationshipRead({
+  //       token: token,
+  //       pageNo: 0,
+  //       rowsPerPage: 5,
+  //       order: "asc",
+  //       orderBy: "id",
+  //       query: "",
+  //     })
+  //   );
+  //   dispatch(
+  //     purchaseRead({
+  //       token: token,
+  //       pageNo: 0,
+  //       rowsPerPage: 5,
+  //       order: "asc",
+  //       orderBy: "id",
+  //       query: "",
+  //     })
+  //   );
+  //   dispatch(
+  //     inventoryRead({
+  //       token: token,
+  //       pageNo: 0,
+  //       rowsPerPage: 5,
+  //       order: "asc",
+  //       orderBy: "id",
+  //       query: "",
+  //     })
+  //   );
+  // }, [dispatch, token]);
 
   return (
     <Fragment>

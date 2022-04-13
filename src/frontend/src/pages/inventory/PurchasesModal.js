@@ -7,8 +7,6 @@ import {
   DialogTitle,
   DialogActions,
 } from "@material-ui/core";
-import TableContainer from "@mui/material/TableContainer";
-import Paper from "@mui/material/Paper";
 
 import { purchaseActions } from "../../store/actions/purchase/purchaseActions";
 
@@ -93,13 +91,11 @@ const PurchasesModal = (props) => {
     >
       <DialogTitle id="max-width-dialog-title">Purchases</DialogTitle>
       <DialogContent>
-        <TableContainer component={Paper}>
-          <CustomMuiTable
-            headCells={headCells}
-            rows={rows}
-            submitAddFunction={handleSetPurchaseName}
-          />
-        </TableContainer>
+        <CustomMuiTable
+          headCells={headCells}
+          rows={rows}
+          submitAddFunction={handleSetPurchaseName}
+        />
       </DialogContent>
       <DialogActions></DialogActions>
     </Dialog>
