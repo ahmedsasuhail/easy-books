@@ -139,7 +139,9 @@ const CreateUpdateSales = (props) => {
   useEffect(() => {
     if (props.initialValues && props.initialValues.purchase_id) {
       inventoryPurchaseHandler(props.initialValues.purchase_id);
-      setInventoryQuantity(props.initialValues.inventory_quantity);
+      setInventoryQuantity(
+        props.initialValues.inventory_quantity + props.initialValues.quantity
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

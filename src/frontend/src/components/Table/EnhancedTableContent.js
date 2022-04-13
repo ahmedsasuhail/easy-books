@@ -26,9 +26,13 @@ const EnhancedTableContent = (props) => {
 
   if (rows.length > 0) {
     listContent = rows.map((row, index) => {
-      if (submitAddFunction && row.quantity === 0) {
+      if (
+        (submitAddFunction && row.quantity === 0) ||
+        row.purchase_name === "Not Specified"
+      ) {
         return <></>;
       }
+
       const labelId = `enhanced-table-checkbox-${index}`;
 
       const value = {};
