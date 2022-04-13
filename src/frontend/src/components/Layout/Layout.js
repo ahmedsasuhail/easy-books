@@ -1,4 +1,5 @@
-import React, { useEffect, Fragment } from "react";
+import React, { Fragment } from "react";
+// import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Route, Switch, withRouter } from "react-router-dom";
 
@@ -23,9 +24,9 @@ import Reports from "../../pages/reports/Reports";
 
 import { useLayoutState } from "../../context/LayoutContext";
 
-import { relationshipRead } from "../../store/actions/relationship";
-import { purchaseRead } from "../../store/actions/purchase";
-import { inventoryRead } from "../../store/actions/inventory";
+// import { relationshipRead } from "../../store/actions/relationship";
+// import { purchaseRead } from "../../store/actions/purchase";
+// import { inventoryRead } from "../../store/actions/inventory";
 import { userLogout } from "../../store/actions/user";
 
 function Layout() {
@@ -35,7 +36,7 @@ function Layout() {
 
   const dispatch = useDispatch();
 
-  const token = useSelector((state) => state.user.token);
+  // const token = useSelector((state) => state.user.token);
   const isModalOpen = useSelector((state) => state.user.modelOpen);
   const message = useSelector((state) => state.user.message);
 

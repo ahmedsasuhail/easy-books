@@ -171,13 +171,13 @@ const ReadInventory = () => {
       inventoryRead({
         token: token,
         pageNo: 0,
-        // TODO: Change 5 below
-        rowsPerPage: 2,
+        rowsPerPage: 5,
         order: "asc",
         orderBy: "id",
         query: "",
       })
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleOpenCreateInventory = () => {
