@@ -176,26 +176,6 @@ func UpdateSales(c *gin.Context) {
 		return
 	}
 
-	// Update available inventory quantity.
-	revisedQuantity := inventory.Quantity
-	if record.Returned {
-		revisedQuantity += quantity
-	}
-	err = pgClient.Model(&inventory).Where(
-		"id = ?",
-		record.InventoryID,
-	).Select("Quantity", "SoldOut").Updates(
-		models.Inventory{
-			Quantity: revisedQuantity,
-			SoldOut:  (revisedQuantity == 0),
-		},
-	).Error
-	if err != nil {
-		errorResponse(c, http.StatusInternalServerError, err.Error())
-
-		return
-	}
-
 	// Update record in table and update Meilisearch index.
 	err = pgClient.Model(&record).Updates(&record).Error
 	if err != nil {
@@ -235,30 +215,6 @@ func UpdateSales(c *gin.Context) {
 		}
 	}
 
-	// Update corresponding cached inventory record.
-	updatedInventory := map[string]interface{}{
-		"id":                     inventory.ID,
-		"part_name":              inventory.PartName,
-		"quantity":               inventory.Quantity,
-		"sold_out":               inventory.SoldOut,
-		"date":                   inventory.Date,
-		"purchase_id":            inventory.PurchaseID,
-		"purchases.company_name": inventory.Purchases.CompanyName,
-		"purchases.vehicle_name": inventory.Purchases.VehicleName,
-		"purchases": map[string]interface{}{
-			"id":           inventory.Purchases.ID,
-			"company_name": inventory.Purchases.CompanyName,
-			"vehicle_name": inventory.Purchases.VehicleName,
-		},
-	}
-
-	_, err = inventoryIndex.UpdateDocuments(updatedInventory)
-	if err != nil {
-		errorResponse(c, http.StatusInternalServerError, err.Error())
-
-		return
-	}
-
 	pgClient.Preload(
 		"Relationships",
 	).Preload(
@@ -293,7 +249,7 @@ func UpdateSales(c *gin.Context) {
 			"vehicle_name": record.Purchases.VehicleName,
 			"price":        record.Purchases.Price,
 		},
-		"inventory": updatedInventory,
+		"inventory": record.Inventory,
 	}
 
 	_, err = salesIndex.UpdateDocuments(filteredRecord)
