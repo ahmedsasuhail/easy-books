@@ -182,7 +182,7 @@ func UpdateSales(c *gin.Context) {
 	}
 
 	// Update quantity if specified.
-	if record.Inventory.Quantity != 0 {
+	if record.Inventory.Quantity != 0 && !record.Returned {
 		err := pgClient.Preload(
 			"Purchases",
 		).Preload(
