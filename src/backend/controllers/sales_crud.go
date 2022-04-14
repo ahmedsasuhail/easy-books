@@ -149,6 +149,7 @@ func CreateSales(c *gin.Context) {
 func UpdateSales(c *gin.Context) {
 	// Read and parse request body.
 	var record models.Sales
+	var inventory models.Inventory
 	err := parseRequestBody(c, &record)
 	if err != nil {
 		errorResponse(c, http.StatusBadRequest, err.Error())
@@ -173,6 +174,42 @@ func UpdateSales(c *gin.Context) {
 			models.Sales{Returned: false},
 		).Error
 
+		if err != nil {
+			errorResponse(c, http.StatusInternalServerError, err.Error())
+
+			return
+		}
+	}
+
+	// Update quantity if specified.
+	if record.Inventory.Quantity != 0 {
+		err := pgClient.Preload(
+			"Purchases",
+		).Preload(
+			"Purchases.Relationships",
+		).First(&inventory).Error
+		if err != nil {
+			errorResponse(c, http.StatusInternalServerError, err.Error())
+
+			return
+		}
+
+		filteredRecord := map[string]interface{}{
+			"id":                     inventory.ID,
+			"part_name":              inventory.PartName,
+			"quantity":               record.Inventory.Quantity,
+			"date":                   inventory.Date,
+			"purchase_id":            inventory.PurchaseID,
+			"purchases.company_name": inventory.Purchases.CompanyName,
+			"purchases.vehicle_name": inventory.Purchases.VehicleName,
+			"purchases": map[string]interface{}{
+				"id":           record.Purchases.ID,
+				"company_name": record.Purchases.CompanyName,
+				"vehicle_name": record.Purchases.VehicleName,
+			},
+		}
+
+		_, err = inventoryIndex.UpdateDocuments(filteredRecord)
 		if err != nil {
 			errorResponse(c, http.StatusInternalServerError, err.Error())
 
