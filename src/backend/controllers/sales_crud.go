@@ -181,8 +181,8 @@ func UpdateSales(c *gin.Context) {
 		}
 	}
 
-	// Update quantity if specified.
-	if record.Inventory.Quantity != 0 && !record.Returned {
+	// Update quantity.
+	if !record.Returned {
 		err := pgClient.Where(
 			"id = ?",
 			record.Inventory.ID,
@@ -198,6 +198,9 @@ func UpdateSales(c *gin.Context) {
 		}
 
 		inventory.Quantity = record.Inventory.Quantity
+		if inventory.Quantity == 0 {
+			inventory.SoldOut = true
+		}
 		err = pgClient.Model(&inventory).Updates(&inventory).Error
 		if err != nil {
 			errorResponse(c, http.StatusInternalServerError, err.Error())
