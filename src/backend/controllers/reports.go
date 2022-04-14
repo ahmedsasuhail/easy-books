@@ -14,11 +14,11 @@ import (
 func ReportByPurchaseID(c *gin.Context) {
 	var record models.Sales
 	var records []models.Sales
+	var inventoryRecords []models.Inventory
 	var result *gorm.DB
 	var totalSales float64
 	var totalReturned float64
 	var totalCredit float64
-	var totalNotSold float64
 
 	err := parseRequestBody(c, &record)
 	if err != nil {
@@ -103,19 +103,24 @@ func ReportByPurchaseID(c *gin.Context) {
 				"sold_out":  record.Inventory.SoldOut,
 			})
 		}
+	}
 
-		if !record.Inventory.SoldOut {
-			totalNotSold += record.Price
+	pgClient.Where(
+		"purchase_id = ?",
+		record.PurchaseID,
+	).Preload(
+		"Purchases",
+	).Preload(
+		"Purchases.Relationships",
+	).Find(&inventoryRecords)
 
+	for _, inventory := range inventoryRecords {
+		if !inventory.SoldOut {
 			notSold = append(notSold, map[string]interface{}{
-				"id":        record.ID,
-				"price":     record.Price,
-				"date":      record.Date,
-				"credit":    record.Credit,
-				"returned":  record.Returned,
-				"quantity":  record.Inventory.Quantity,
-				"part_name": record.Inventory.PartName,
-				"sold_out":  record.Inventory.SoldOut,
+				"id":        inventory.ID,
+				"quantity":  inventory.Quantity,
+				"part_name": inventory.PartName,
+				"sold_out":  inventory.SoldOut,
 			})
 		}
 	}
@@ -132,7 +137,6 @@ func ReportByPurchaseID(c *gin.Context) {
 		"credited_sales_total": totalCredit,
 		"sales_returned_total": totalReturned,
 		"not_sold":             notSold,
-		"total_not_sold":       totalNotSold,
 		"total":                totalSales - record.Purchases.Price,
 	})
 }
