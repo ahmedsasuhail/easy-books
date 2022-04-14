@@ -149,29 +149,9 @@ func CreateSales(c *gin.Context) {
 func UpdateSales(c *gin.Context) {
 	// Read and parse request body.
 	var record models.Sales
-	var inventory models.Inventory
 	err := parseRequestBody(c, &record)
 	if err != nil {
 		errorResponse(c, http.StatusBadRequest, err.Error())
-
-		return
-	}
-
-	// Validate specified quantity.
-	quantity := record.Quantity
-	pgClient.Where(
-		"id = ?",
-		record.InventoryID,
-	).Preload("Purchases").Find(&inventory)
-	if quantity > inventory.Quantity {
-		errorResponse(
-			c,
-			http.StatusBadRequest,
-			fmt.Sprintf(
-				"Invalid quantity specified. Cannot be greater than %d",
-				inventory.Quantity,
-			),
-		)
 
 		return
 	}
