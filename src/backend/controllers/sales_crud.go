@@ -214,9 +214,9 @@ func UpdateSales(c *gin.Context) {
 			"purchases.company_name": inventory.Purchases.CompanyName,
 			"purchases.vehicle_name": inventory.Purchases.VehicleName,
 			"purchases": map[string]interface{}{
-				"id":           record.Purchases.ID,
-				"company_name": record.Purchases.CompanyName,
-				"vehicle_name": record.Purchases.VehicleName,
+				"id":           inventory.Purchases.ID,
+				"company_name": inventory.Purchases.CompanyName,
+				"vehicle_name": inventory.Purchases.VehicleName,
 			},
 		}
 
