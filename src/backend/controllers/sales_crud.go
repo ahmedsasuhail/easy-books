@@ -197,10 +197,18 @@ func UpdateSales(c *gin.Context) {
 			return
 		}
 
+		inventory.Quantity = record.Inventory.Quantity
+		err = pgClient.Model(&inventory).Updates(&inventory).Error
+		if err != nil {
+			errorResponse(c, http.StatusInternalServerError, err.Error())
+
+			return
+		}
+
 		filteredRecord := map[string]interface{}{
 			"id":                     inventory.ID,
 			"part_name":              inventory.PartName,
-			"quantity":               record.Inventory.Quantity,
+			"quantity":               inventory.Quantity,
 			"date":                   inventory.Date,
 			"purchase_id":            inventory.PurchaseID,
 			"purchases.company_name": inventory.Purchases.CompanyName,
