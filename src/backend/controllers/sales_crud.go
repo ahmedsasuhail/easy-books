@@ -197,13 +197,13 @@ func UpdateSales(c *gin.Context) {
 			return
 		}
 
-		inventory.Quantity = record.Inventory.Quantity
-		if inventory.Quantity == 0 {
-			inventory.SoldOut = true
-		} else {
-			inventory.SoldOut = false
-		}
-		err = pgClient.Model(&inventory).Updates(&inventory).Error
+		// Update inventory quantity.
+		err = pgClient.Model(&inventory).Select("Quantity", "SoldOut").Updates(
+			models.Inventory{
+				Quantity: record.Inventory.Quantity,
+				SoldOut:  (record.Inventory.Quantity == 0),
+			},
+		).Error
 		if err != nil {
 			errorResponse(c, http.StatusInternalServerError, err.Error())
 
