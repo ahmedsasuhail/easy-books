@@ -71,9 +71,9 @@ type Sales struct {
 	InventoryID    uint64         `json:"inventory_id"`
 	Credit         bool           `json:"credit"`
 	Returned       bool           `json:"returned"`
-	Relationships  Relationships  `gorm:"foreignKey:RelationshipID;" json:"relationships"`
-	Purchases      Purchases      `gorm:"foreignKey:PurchaseID;" json:"purchases"`
-	Inventory      Inventory      `gorm:"foreignKey:InventoryID;" json:"inventory"`
+	Relationships  Relationships  `gorm:"foreignKey:RelationshipID" json:"relationships"`
+	Purchases      Purchases      `gorm:"foreignKey:PurchaseID" json:"purchases"`
+	Inventory      Inventory      `gorm:"foreignKey:InventoryID" json:"inventory"`
 }
 
 func (Sales) TableName() string {
@@ -90,7 +90,7 @@ type Purchases struct {
 	Price          float64        `gorm:"type:decimal(8,2)" json:"price"`
 	Date           datatypes.Date `json:"date"`
 	RelationshipID uint64         `json:"relationship_id"`
-	Relationships  Relationships  `gorm:"foreignKey:RelationshipID;" json:"relationships"`
+	Relationships  Relationships  `gorm:"foreignKey:RelationshipID" json:"relationships"`
 }
 
 func (Purchases) TableName() string {
@@ -107,7 +107,7 @@ type Inventory struct {
 	PurchaseID uint64         `json:"purchase_id"`
 	Date       datatypes.Date `json:"date"`
 	SoldOut    bool           `json:"sold_out"`
-	Purchases  Purchases      `gorm:"foreignKey:PurchaseID;" json:"purchases"`
+	Purchases  Purchases      `gorm:"foreignKey:PurchaseID" json:"purchases"`
 }
 
 func (Inventory) TableName() string {
