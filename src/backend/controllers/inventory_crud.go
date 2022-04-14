@@ -42,6 +42,7 @@ func CreateInventory(c *gin.Context) {
 		"quantity":               record.Quantity,
 		"date":                   record.Date,
 		"purchase_id":            record.PurchaseID,
+		"sold_out":               record.SoldOut,
 		"purchases.company_name": record.Purchases.CompanyName,
 		"purchases.vehicle_name": record.Purchases.VehicleName,
 		"purchases": map[string]interface{}{
@@ -97,6 +98,7 @@ func UpdateInventory(c *gin.Context) {
 		"quantity":               record.Quantity,
 		"date":                   record.Date,
 		"purchase_id":            record.PurchaseID,
+		"sold_out":               record.SoldOut,
 		"purchases.company_name": record.Purchases.CompanyName,
 		"purchases.vehicle_name": record.Purchases.VehicleName,
 		"purchases": map[string]interface{}{
@@ -256,6 +258,7 @@ func DeleteInventory(c *gin.Context) {
 		"quantity":    record.Quantity,
 		"date":        record.Date,
 		"purchase_id": record.PurchaseID,
+		"sold_out":    record.SoldOut,
 		"purchases": map[string]interface{}{
 			"id":           record.Purchases.ID,
 			"company_name": record.Purchases.CompanyName,
