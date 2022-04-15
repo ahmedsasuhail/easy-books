@@ -168,7 +168,7 @@ const CreateUpdateSales = (props) => {
         required
         validate={required}
       />
-      <p>
+      <p style={{ marginBottom: 7 }}>
         Purchase Name: <br /> {purchaseName}
       </p>
       <Field>
@@ -192,7 +192,7 @@ const CreateUpdateSales = (props) => {
         required
         validate={required}
       />
-      <p>
+      <p style={{ marginBottom: 7 }}>
         Inventory Name: <br /> {inventoryName}
       </p>
       {isLoading ? (
@@ -226,7 +226,7 @@ const CreateUpdateSales = (props) => {
         required
         validate={required}
       />
-      <p>
+      <p style={{ marginBottom: 7 }}>
         Buyer Name: <br /> {relationshipName}
       </p>
       <Field>

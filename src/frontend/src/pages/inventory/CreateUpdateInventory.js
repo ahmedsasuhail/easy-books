@@ -59,7 +59,7 @@ const CreateUpdateInventory = () => {
         required
         validate={required}
       />
-      <p>
+      <p style={{ marginBottom: 7 }}>
         Purchase Name: <br />
         {purchaseName}
       </p>

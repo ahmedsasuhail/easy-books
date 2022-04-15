@@ -97,7 +97,7 @@ const CreateUpdatePurchase = () => {
         required
         validate={required}
       />
-      <p>
+      <p style={{ marginBottom: 7 }}>
         Seller Name: <br />
         {relationshipName}
       </p>

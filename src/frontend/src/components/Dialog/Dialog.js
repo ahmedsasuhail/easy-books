@@ -36,7 +36,9 @@ const CustomDialog = (props) => {
             window.setFormValue = form.mutators.setValue;
             return (
               <form onSubmit={handleSubmit}>
-                <DialogContent>{props.children}</DialogContent>
+                <DialogContent dividers={true} style={{ paddingTop: 0 }}>
+                  {props.children}
+                </DialogContent>
                 <DialogActions>
                   <>
                     <Button onClick={props.handleClose} color="primary">
