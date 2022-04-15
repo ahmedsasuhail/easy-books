@@ -730,7 +730,7 @@ export default function SpanningTable(props) {
               </TableRow>
             </>
           )}
-          {props.purchaseRows && props.purchaseRows.total_not_sold > 0 && (
+          {props.purchaseRows && props.purchaseRows.not_sold.length > 0 && (
             <>
               <TableRow className={classes.rowBgColor}>
                 <TableCell className={classes.cellBold}>
@@ -771,18 +771,6 @@ export default function SpanningTable(props) {
                                 className={classes.cellBold}
                                 align="right"
                               >
-                                Date
-                              </TableCell>
-                              <TableCell
-                                className={classes.cellBold}
-                                align="right"
-                              >
-                                Price
-                              </TableCell>
-                              <TableCell
-                                className={classes.cellBold}
-                                align="right"
-                              >
                                 Quantity
                               </TableCell>
                             </TableRow>
@@ -793,16 +781,6 @@ export default function SpanningTable(props) {
                               props.purchaseRows.not_sold.map((item, idx) => (
                                 <TableRow key={idx}>
                                   <TableCell>{item.part_name}</TableCell>
-                                  <TableCell align="right">
-                                    {
-                                      new Date(item.date)
-                                        .toISOString()
-                                        .split("T")[0]
-                                    }
-                                  </TableCell>
-                                  <TableCell align="right">
-                                    {item.price}
-                                  </TableCell>
                                   <TableCell align="right">
                                     {item.quantity}
                                   </TableCell>

@@ -109,6 +109,7 @@ const ReadSales = () => {
   const [valueForm, setValueForm] = useState(null);
   const [id, setId] = useState("");
   const [clearSearch, setClearSearch] = useState(false);
+  const [originalQuantity, setOriginalQuantity] = useState();
 
   const token = useSelector((state) => state.user.token);
   const salesItems = useSelector((state) => state.sales.sales);
@@ -229,6 +230,7 @@ const ReadSales = () => {
 
   const handleOpenEditSales = (values) => {
     setValueForm(values);
+    setOriginalQuantity(values.quantity);
     setOpenCreateUpdateSales(true);
   };
 
@@ -257,6 +259,18 @@ const ReadSales = () => {
   };
 
   const handleSubmitCreateUpdateSales = (formValues) => {
+    console.log(originalQuantity, formValues);
+    if (formValues && originalQuantity) {
+      if (originalQuantity > formValues.quantity) {
+        formValues.inventoryQuantity =
+          valueForm.inventory_quantity +
+          (originalQuantity - formValues.quantity);
+      } else {
+        formValues.inventoryQuantity =
+          valueForm.inventory_quantity -
+          (formValues.quantity - originalQuantity);
+      }
+    }
     if (formValues && formValues.date)
       formValues.date = new Date(formValues.date).toISOString();
     if (formValues && formValues.id) {
@@ -284,6 +298,7 @@ const ReadSales = () => {
         date: valueForm.date,
         credit: valueForm.credit && valueForm.credit,
         quantity: +valueForm.quantity,
+        inventoryQuantity: +valueForm.inventory_quantity,
         returned: valueForm.returned,
       });
     }
