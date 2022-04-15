@@ -37,7 +37,9 @@
     "golang.go",
     "dbaeumer.vscode-eslint",
     "ms-azuretools.vscode-docker",
-    "rangav.vscode-thunder-client"
+    "rangav.vscode-thunder-client",
+    "esbenp.prettier-vscode",
+    "eamodio.gitlens"
   ],
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
