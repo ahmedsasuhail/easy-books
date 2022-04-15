@@ -87,7 +87,6 @@ const EnhancedTableContent = (props) => {
           }
         } else return false;
       });
-
       return (
         <TableRow
           selected={
@@ -119,6 +118,7 @@ const EnhancedTableContent = (props) => {
                   color="primary"
                   component="span"
                   size="small"
+                  disabled={row.returned}
                 >
                   <EditIcon fontSize="small" />
                 </IconButton>

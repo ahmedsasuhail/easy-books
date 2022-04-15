@@ -16,6 +16,7 @@ const CreateUpdateInventory = () => {
   const [purchaseId, setPurchaseId] = useState();
   const [purchaseName, setPurchaseName] = useState();
   const [openPurchasesModal, setOpenPurchasesModal] = useState(false);
+  const [disabled, setDisabled] = useState(false);
 
   useEffect(() => {
     if (
@@ -24,6 +25,7 @@ const CreateUpdateInventory = () => {
       !purchaseId &&
       !purchaseName
     ) {
+      setDisabled(true);
       setPurchaseId(+formState.values.purchase_id);
       setPurchaseName(formState.values.purchase_name);
       window.setFormValue("purchase_id", +formState.values.purchase_id);
@@ -68,6 +70,7 @@ const CreateUpdateInventory = () => {
             onClick={() => setOpenPurchasesModal(true)}
             size="small"
             color="primary"
+            disabled={disabled}
           >
             Choose Purchase
           </Button>
