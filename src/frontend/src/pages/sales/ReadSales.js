@@ -259,7 +259,6 @@ const ReadSales = () => {
   };
 
   const handleSubmitCreateUpdateSales = (formValues) => {
-    console.log(originalQuantity, formValues);
     if (formValues && originalQuantity) {
       if (originalQuantity > formValues.quantity) {
         formValues.inventoryQuantity =

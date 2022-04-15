@@ -30,7 +30,7 @@ const EnhancedTableContent = (props) => {
         (submitAddFunction && row.quantity === 0) ||
         row.purchase_name === "Not Specified"
       ) {
-        return <></>;
+        return <React.Fragment key={index}></React.Fragment>;
       }
 
       const labelId = `enhanced-table-checkbox-${index}`;

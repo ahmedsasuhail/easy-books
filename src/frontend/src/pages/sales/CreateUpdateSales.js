@@ -93,9 +93,13 @@ const CreateUpdateSales = (props) => {
   const required = (value) => (value ? undefined : "Required");
 
   const handleSetPurchaseName = (value) => {
+    // TODO: Refactor below
+    // setInventoryId(0);
+    // setInventoryName("");
     setPurchaseId(value.id);
     setPurchaseName(`${value.company_name} - ${value.vehicle_name}`);
     window.setFormValue("purchase_id", value.id);
+    window.setFormValue("inventory_id", 0);
     handleClosePurchasesModal();
   };
 
@@ -130,9 +134,11 @@ const CreateUpdateSales = (props) => {
     dispatch(
       getInventoryPurchase({ id, token, pageNo, rowsPerPage, orderBy, order })
     ).then((res) => {
-      if (!res) {
-        setOpenAlertModal(true);
-      }
+      const checkRes = res.every((obj) => obj.sold_out === true);
+      const checkData =
+        inventoryPurchaseData.records &&
+        inventoryPurchaseData.records.every((obj) => obj.sold_out === true);
+      if (checkData !== undefined) setOpenAlertModal(checkRes);
     });
   };
 
@@ -200,8 +206,10 @@ const CreateUpdateSales = (props) => {
               size="small"
               color="primary"
               disabled={
-                !inventoryPurchaseData.records ||
-                inventoryPurchaseData.records.length === 0
+                inventoryPurchaseData.records &&
+                inventoryPurchaseData.records.every(
+                  (obj) => obj.sold_out === true
+                )
               }
             >
               Choose Inventory
