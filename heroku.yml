@@ -11,8 +11,12 @@ build:
       dockerfile: Dockerfile
       target: production
     web: Dockerfile
+    meilisearch: meilisearch/Dockerfile
 
 release:
   image: web
   command:
     - echo "Easy-Books Docker image successfully built."
+  image: meilisearch
+  command:
+    - echo "Meilisearch image successsfully built."
