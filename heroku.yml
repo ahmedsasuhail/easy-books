@@ -19,4 +19,4 @@ release:
     - echo "Easy-Books Docker image successfully built."
   image: meilisearch
   command:
-    - echo "Meilisearch image successsfully built."
+    - echo "Meilisearch Docker image successsfully built."
