@@ -1,0 +1,61 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:14.2-alpine
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: easybooks
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - type: bind
+        source: ./postgres
+        target: /var/lib/postgresql/data
+    networks:
+      easybooks:
+        ipv4_address: 172.16.1.2
+    hostname: easybooks-postgres
+        
+  meilisearch:
+    image: getmeili/meilisearch:v0.25.2
+    restart: unless-stopped
+    ports:
+      - "7700:7700"
+    volumes:
+      - ./meilisearch/data.ms:/data.ms
+    networks:
+      easybooks:
+        ipv4_address: 172.16.1.3
+    hostname: easybooks-meilisearch
+        
+  easybooks:
+    build: .
+    restart: unless-stopped
+    ports:
+      - 80:80
+    depends_on:
+      - postgres
+      - meilisearch
+    environment:
+      - DATABASE_URL=postgres://root:password@easybooks-postgres:5432/easybooks
+      - PORT=80
+      - EB_SECRET_KEY=easybooks
+      - EB_FRONTEND_PATH=/app/ui
+      - MEILISEARCH_HOST=http://easybooks-meilisearch:7700
+      - MEILISEARCH_API_KEY=masterKey
+      - REACT_APP_SERVER_URL=http://127.0.0.1
+    networks:
+      easybooks:
+        ipv4_address: 172.16.1.4
+    hostname: easybooks
+
+
+networks:
+  easybooks:
+    ipam:
+      config:
+        - subnet: 172.16.1.0/24

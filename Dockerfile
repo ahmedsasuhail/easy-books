@@ -26,14 +26,5 @@ FROM debian:bullseye AS production
 WORKDIR /app
 COPY --from=backend /backend/easy-books .
 COPY --from=frontend /frontend/build ./ui
-COPY ./startup.sh .
-
-# Install and lock meilisearch version.
-RUN echo "deb [trusted=yes] https://apt.fury.io/meilisearch/ /" > /etc/apt/sources.list.d/fury.list
-RUN apt update -y && export DEBIAN_FRONTEND=interactive && \
-	apt install meilisearch-http=0.25.2 -y
-RUN apt-mark hold meilisearch-http
-
-ENV PORT=${PORT}
 ENV EB_FRONTEND_PATH=/app/ui
-CMD ["./startup.sh"]
+CMD ["./easy-books"]
