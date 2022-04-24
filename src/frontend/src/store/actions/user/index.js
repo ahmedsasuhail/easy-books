@@ -1,5 +1,5 @@
-import { userActions } from './userActions';
-import axios from '../../../utils/axiosInstance';
+import { userActions } from "./userActions";
+import axios from "../../../utils/axiosInstance";
 
 // Action Creators
 // export const userRegisteration = (values) => {
@@ -25,7 +25,7 @@ export const userLogin = (login, password) => {
   return async (dispatch) => {
     dispatch(userActions.loginRequest());
     try {
-      const response = await axios.post('auth/login', {
+      const response = await axios.post("auth/login", {
         email: login,
         password: password,
       });
@@ -35,14 +35,14 @@ export const userLogin = (login, password) => {
           name: response.data.data.user.name,
           email: response.data.data.user.email,
         };
-        localStorage.setItem('easyBooksAuth', JSON.stringify(authData));
+        localStorage.setItem("easyBooksAuth", JSON.stringify(authData));
         dispatch(userActions.loginSuccess(authData));
       } else {
-        console.log('Error: ', response);
+        console.log("Error: ", response);
         dispatch(userActions.loginFailure());
       }
     } catch (error) {
-      console.log('Catch Error: ', error);
+      console.log("Catch Error: ", error);
       dispatch(userActions.loginFailure());
     }
   };
@@ -50,7 +50,7 @@ export const userLogin = (login, password) => {
 
 export const userLogout = () => {
   return (dispatch) => {
-    localStorage.removeItem('easyBooksAuth');
+    localStorage.removeItem("easyBooksAuth");
     dispatch(userActions.logoutUser());
   };
 };

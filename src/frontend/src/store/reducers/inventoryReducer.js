@@ -41,13 +41,15 @@ const inventoryReducer = (state = initialState, action) => {
       let nextPageNo = state.pageNo;
 
       modifyInventoryForCreate =
-        state.inventory.length === 0
+        state.inventory &&
+        (state.inventory.length === 0
           ? [action.payload.inventory]
           : state.inventory.length === 5
           ? []
-          : [...state.inventory, action.payload.inventory];
+          : [...state.inventory, action.payload.inventory]);
 
       if (
+        state.inventory &&
         state.inventory.length !== 0 &&
         state.inventory.length % state.rowsPerPage === 0
       ) {

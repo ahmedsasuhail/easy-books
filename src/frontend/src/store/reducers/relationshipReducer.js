@@ -41,13 +41,15 @@ const relationshipReducer = (state = initialState, action) => {
       let nextPageNo = state.pageNo;
 
       modifyRelationshipsForCreate =
-        state.relationships.length === 0
+        state.relationships &&
+        (state.relationships.length === 0
           ? [action.payload.relationship]
           : state.relationships.length === 5
           ? []
-          : [...state.relationships, action.payload.relationship];
+          : [...state.relationships, action.payload.relationship]);
 
       if (
+        state.relationships &&
         state.relationships.length !== 0 &&
         state.relationships.length % state.rowsPerPage === 0
       ) {

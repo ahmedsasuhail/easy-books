@@ -22,8 +22,8 @@ export const formattedDate = (date) => {
   let day = String(d.getDate());
   const year = String(d.getFullYear());
 
-  if (month.length < 2) month = "0" + month;
-  if (day.length < 2) day = "0" + day;
+  if (month && month.length < 2) month = "0" + month;
+  if (day && day.length < 2) day = "0" + day;
 
   return `${day}/${month}/${year}`;
 };
@@ -33,9 +33,12 @@ export const validateFloat = (maxDecimal, maxFloat) => (value) => {
   if (!isNaN(value)) {
     const numArr = (value + "").split(".");
     if (value % 1 > 0) {
-      result = numArr[0].length <= maxDecimal && numArr[1].length <= maxFloat;
+      result =
+        numArr &&
+        numArr[0].length <= maxDecimal &&
+        numArr[1].length <= maxFloat;
     } else {
-      result = numArr[0].length <= maxDecimal;
+      result = numArr && numArr[0].length <= maxDecimal;
     }
   }
   return result ? undefined : "Invalid value";

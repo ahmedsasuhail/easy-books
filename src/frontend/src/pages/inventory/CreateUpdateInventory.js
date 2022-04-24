@@ -21,6 +21,7 @@ const CreateUpdateInventory = () => {
   useEffect(() => {
     if (
       formState.values.id &&
+      purchaseItems &&
       purchaseItems.length > 0 &&
       !purchaseId &&
       !purchaseName

@@ -59,6 +59,7 @@ const CreateUpdateSales = (props) => {
   useEffect(() => {
     if (
       formState.values.id &&
+      purchaseItems &&
       purchaseItems.length > 0 &&
       !purchaseId &&
       !purchaseName
@@ -68,6 +69,7 @@ const CreateUpdateSales = (props) => {
       window.setFormValue("purchase_id", +formState.values.purchase_id);
     } else if (
       formState.values.id &&
+      purchaseItems &&
       purchaseItems.length > 0 &&
       !inventoryId &&
       !inventoryName
@@ -77,6 +79,7 @@ const CreateUpdateSales = (props) => {
       window.setFormValue("inventory_id", +formState.values.inventory_id);
     } else if (
       formState.values.id &&
+      relationshipItems &&
       relationshipItems.length > 0 &&
       !relationshipId &&
       !relationshipName

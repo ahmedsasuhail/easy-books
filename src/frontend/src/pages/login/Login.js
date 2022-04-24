@@ -93,7 +93,8 @@ function Login() {
               ) : (
                 <Button
                   disabled={
-                    loginValue.length === 0 || passwordValue.length === 0
+                    (loginValue && loginValue.length === 0) ||
+                    (passwordValue && passwordValue.length === 0)
                   }
                   type="submit"
                   variant="contained"

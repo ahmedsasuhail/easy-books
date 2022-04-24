@@ -40,13 +40,15 @@ const miscellaneousReducer = (state = initialState, action) => {
       let nextPageNo = state.pageNo;
 
       modifyMiscellaneousForCreate =
-        state.miscellaneous.length === 0
+        state.miscellaneous &&
+        (state.miscellaneous.length === 0
           ? [action.payload.miscellaneous]
           : state.miscellaneous.length === 5
           ? []
-          : [...state.miscellaneous, action.payload.miscellaneous];
+          : [...state.miscellaneous, action.payload.miscellaneous]);
 
       if (
+        state.miscellaneous &&
         state.miscellaneous.length !== 0 &&
         state.miscellaneous.length % state.rowsPerPage === 0
       ) {

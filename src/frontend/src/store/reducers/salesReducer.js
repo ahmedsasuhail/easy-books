@@ -40,13 +40,15 @@ const salesReducer = (state = initialState, action) => {
       let nextPageNo = state.pageNo;
 
       modifySalesForCreate =
-        state.sales.length === 0
+        state.sales &&
+        (state.sales.length === 0
           ? [action.payload.sales]
           : state.sales.length === 5
           ? []
-          : [...state.sales, action.payload.sales];
+          : [...state.sales, action.payload.sales]);
 
       if (
+        state.sales &&
         state.sales.length !== 0 &&
         state.sales.length % state.rowsPerPage === 0
       ) {

@@ -141,7 +141,9 @@ const Header = ({ classes, isSidebarOpened, toggleSidebar, ...props }) => (
       >
         <Badge
           badgeContent={
-            props.isNotificationsUnread ? notifications.length : null
+            props.isNotificationsUnread
+              ? notifications && notifications.length
+              : null
           }
           colortheme="warning"
         >
@@ -156,7 +158,9 @@ const Header = ({ classes, isSidebarOpened, toggleSidebar, ...props }) => (
         className={classes.headerMenuButton}
       >
         <Badge
-          badgeContent={props.isMailsUnread ? messages.length : null}
+          badgeContent={
+            props.isMailsUnread ? messages && messages.length : null
+          }
           color="secondary"
         >
           <MailIcon classes={{ root: classes.headerIcon }} />
@@ -190,7 +194,7 @@ const Header = ({ classes, isSidebarOpened, toggleSidebar, ...props }) => (
             component="a"
             color="secondary"
           >
-            {messages.length} New Messages
+            {messages && messages.length} New Messages
           </Typography>
         </div>
         {messages.map((message) => (

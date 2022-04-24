@@ -24,7 +24,7 @@ const EnhancedTableContent = (props) => {
 
   let listContent = [];
 
-  if (rows.length > 0) {
+  if (rows && rows.length > 0) {
     listContent = rows.map((row, index) => {
       if (
         (submitAddFunction && row.quantity === 0) ||
@@ -141,7 +141,7 @@ const EnhancedTableContent = (props) => {
   } else {
     listContent = (
       <TableRow>
-        <TableCell align="center" colSpan={headCells.length + 1}>
+        <TableCell align="center" colSpan={headCells && headCells.length + 1}>
           No records found in this page!
         </TableCell>
       </TableRow>

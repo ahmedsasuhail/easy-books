@@ -24,6 +24,7 @@ const CreateUpdatePurchase = () => {
   useEffect(() => {
     if (
       formState.values.id &&
+      relationshipItems &&
       relationshipItems.length > 0 &&
       !relationshipId &&
       !relationshipName

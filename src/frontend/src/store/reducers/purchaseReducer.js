@@ -41,13 +41,15 @@ const purchaseReducer = (state = initialState, action) => {
       let nextPageNo = state.pageNo;
 
       modifyPurchasesForCreate =
-        state.purchases.length === 0
+        state.purchases &&
+        (state.purchases.length === 0
           ? [action.payload.purchase]
           : state.purchases.length === 5
           ? []
-          : [...state.purchases, action.payload.purchase];
+          : [...state.purchases, action.payload.purchase]);
 
       if (
+        state.purchases &&
         state.purchases.length !== 0 &&
         state.purchases.length % state.rowsPerPage === 0
       ) {
