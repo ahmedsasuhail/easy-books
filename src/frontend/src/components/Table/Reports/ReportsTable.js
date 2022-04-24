@@ -730,71 +730,77 @@ export default function SpanningTable(props) {
               </TableRow>
             </>
           )}
-          {props.purchaseRows && props.purchaseRows.not_sold.length > 0 && (
-            <>
-              <TableRow className={classes.rowBgColor}>
-                <TableCell className={classes.cellBold}>
-                  <span>
-                    <IconButton
-                      aria-label="expand row"
-                      size="small"
-                      onClick={() => setUnsoldOpen(!unsoldOpen)}
-                    >
-                      {unsoldOpen ? (
-                        <KeyboardArrowUpIcon />
-                      ) : (
-                        <KeyboardArrowDownIcon />
-                      )}
-                    </IconButton>
-                  </span>
-                  Not Sold
-                </TableCell>
-                <TableCell className={classes.headCellError} align="right">
-                  {props.purchaseRows.total_not_sold}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className={classes.cellPadding} colSpan={2}>
-                  <Collapse in={unsoldOpen} timeout="auto" unmountOnExit>
-                    <Box className={classes.box}>
-                      <Typography variant="h6" gutterBottom component="div">
-                        Items
-                      </Typography>
-                      <TableContainer sx={{ maxHeight: 440 }}>
-                        <Table stickyHeader size="small" aria-label="purchases">
-                          <TableHead>
-                            <TableRow>
-                              <TableCell className={classes.cellBold}>
-                                Part Name
-                              </TableCell>
-                              <TableCell
-                                className={classes.cellBold}
-                                align="right"
-                              >
-                                Quantity
-                              </TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {props.purchaseRows &&
-                              props.purchaseRows.not_sold &&
-                              props.purchaseRows.not_sold.map((item, idx) => (
-                                <TableRow key={idx}>
-                                  <TableCell>{item.part_name}</TableCell>
-                                  <TableCell align="right">
-                                    {item.quantity}
-                                  </TableCell>
-                                </TableRow>
-                              ))}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    </Box>
-                  </Collapse>
-                </TableCell>
-              </TableRow>
-            </>
-          )}
+          {props.purchaseRows &&
+            props.purchaseRows.not_sold &&
+            props.purchaseRows.not_sold.length > 0 && (
+              <>
+                <TableRow className={classes.rowBgColor}>
+                  <TableCell className={classes.cellBold}>
+                    <span>
+                      <IconButton
+                        aria-label="expand row"
+                        size="small"
+                        onClick={() => setUnsoldOpen(!unsoldOpen)}
+                      >
+                        {unsoldOpen ? (
+                          <KeyboardArrowUpIcon />
+                        ) : (
+                          <KeyboardArrowDownIcon />
+                        )}
+                      </IconButton>
+                    </span>
+                    Not Sold
+                  </TableCell>
+                  <TableCell className={classes.headCellError} align="right">
+                    {props.purchaseRows.total_not_sold}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className={classes.cellPadding} colSpan={2}>
+                    <Collapse in={unsoldOpen} timeout="auto" unmountOnExit>
+                      <Box className={classes.box}>
+                        <Typography variant="h6" gutterBottom component="div">
+                          Items
+                        </Typography>
+                        <TableContainer sx={{ maxHeight: 440 }}>
+                          <Table
+                            stickyHeader
+                            size="small"
+                            aria-label="purchases"
+                          >
+                            <TableHead>
+                              <TableRow>
+                                <TableCell className={classes.cellBold}>
+                                  Part Name
+                                </TableCell>
+                                <TableCell
+                                  className={classes.cellBold}
+                                  align="right"
+                                >
+                                  Quantity
+                                </TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {props.purchaseRows &&
+                                props.purchaseRows.not_sold &&
+                                props.purchaseRows.not_sold.map((item, idx) => (
+                                  <TableRow key={idx}>
+                                    <TableCell>{item.part_name}</TableCell>
+                                    <TableCell align="right">
+                                      {item.quantity}
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
+                      </Box>
+                    </Collapse>
+                  </TableCell>
+                </TableRow>
+              </>
+            )}
           {(props.purchaseRows || props.rangeRows) && (
             <TableRow>
               <TableCell className={classes.cellBold}>Total</TableCell>
