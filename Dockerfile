@@ -26,6 +26,5 @@ FROM debian:bullseye AS production
 WORKDIR /app
 COPY --from=backend /backend/easy-books .
 COPY --from=frontend /frontend/build ./ui
-ENV PORT=${PORT}
 ENV EB_FRONTEND_PATH=/app/ui
 CMD ["./easy-books"]
